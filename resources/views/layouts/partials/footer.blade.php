@@ -12,20 +12,20 @@
                 <!-- Dynamic Footer Logo Option (Image logo or HTML text logo) -->
                 <div class="footer-logo mb-3">
                     @if(!empty($themeSettings['footer_logo_image']))
-                        <img src="{{ asset($themeSettings['footer_logo_image']) }}" alt="দৈনিক ভোলা টাইমস্" style="max-height: 52px; display: inline-block;">
+                        <img src="{{ asset($themeSettings['footer_logo_image']) }}" alt="দৈনিক ভোলা জার্নাল" style="max-height: 52px; display: inline-block;">
                     @elseif(!empty($themeSettings['logo_image']))
-                        <img src="{{ asset($themeSettings['logo_image']) }}" alt="দৈনিক ভোলা টাইমস্" style="max-height: 52px; display: inline-block;">
+                        <img src="{{ asset($themeSettings['logo_image']) }}" alt="দৈনিক ভোলা জার্নাল" style="max-height: 52px; display: inline-block;">
                     @else
-                        <h2 class="footer-brand-title" style="margin-bottom: 0;">{!! $themeSettings['logo_text'] ?? 'দৈনিক ভোলা<span>টাইমস্</span>' !!}</h2>
+                        <h2 class="footer-brand-title" style="margin-bottom: 0;">{!! $themeSettings['logo_text'] ?? 'দৈনিক ভোলা<span>জার্নাল</span>' !!}</h2>
                     @endif
                 </div>
                 
                 <p class="footer-text">
-                    {{ $themeSettings['footer_text'] ?? 'দৈনিক ভোলা টাইমস্ জেলার শীর্ষস্থানীয় একটি অনলাইন সংবাদপত্র। আমরা অত্যন্ত সততা, নিষ্ঠা ও নিরপেক্ষতার সাথে সব ধরণের স্থানীয় ও জাতীয় সংবাদ সবার আগে প্রকাশ করি।' }}
+                    {{ $themeSettings['footer_text'] ?? 'দৈনিক ভোলা জার্নাল জেলার শীর্ষস্থানীয় একটি অনলাইন সংবাদপত্র ও ডিজিটাল ই-পেপার। আমরা অত্যন্ত সততা, নিষ্ঠা ও নিরপেক্ষতার সাথে সব ধরণের স্থানীয় ও জাতীয় সংবাদ প্রকাশ করি।' }}
                 </p>
                 <div class="footer-social-icons">
                     <a href="{{ $themeSettings['social_facebook'] ?? '#' }}" target="_blank" class="footer-social-btn"><i class="fa-brands fa-facebook-f"></i></a>
-                    <a href="{{ $themeSettings['social_twitter'] ?? '#' }}" target="_blank" class="footer-social-btn"><i class="fa-brands fa-twitter"></i></a>
+                    <a href="{{ $themeSettings['social_twitter'] ?? '#' }}" target="_blank" class="footer-social-btn"><i class="fa-brands fa-x-twitter"></i></a>
                     <a href="{{ $themeSettings['social_youtube'] ?? '#' }}" target="_blank" class="footer-social-btn"><i class="fa-brands fa-youtube"></i></a>
                     <a href="{{ $themeSettings['social_instagram'] ?? '#' }}" target="_blank" class="footer-social-btn"><i class="fa-brands fa-instagram"></i></a>
                 </div>
@@ -46,7 +46,7 @@
                             </li>
                             <li>
                                 <i class="fa-solid fa-envelope"></i>
-                                <span>{{ $themeSettings['contact_email'] ?? 'news.bholatimes@gmail.com' }}</span>
+                                <span>{{ $themeSettings['contact_email'] ?? 'news.dailybholajournal@gmail.com' }}</span>
                             </li>
                         </ul>
                     </div>
@@ -54,8 +54,8 @@
                         <h4 class="footer-sec-title">সম্পাদনা পর্ষদ</h4>
                         <div class="footer-editorial mt-0 pt-0" style="border-top: none;">
                             <p style="margin-bottom: 8px;"><strong>সম্পাদক মণ্ডলীর সভাপতি:</strong> {{ $themeSettings['editorial_board_president'] ?? 'সামস্-উল-আলম মিঠু' }}</p>
-                            <p style="margin-bottom: 8px;"><strong>প্রধান সম্পাদক ও প্রকাশক:</strong> {{ $themeSettings['editorial_publisher'] ?? 'মোঃ আলী জিন্নাহ (রাজিব)' }}</p>
-                            <p style="margin-bottom: 0;"><strong>ভারপ্রাপ্ত সম্পাদক:</strong> {{ $themeSettings['editorial_editor'] ?? 'মোঃ হেলাল উদ্দিন' }}</p>
+                            <p style="margin-bottom: 8px;"><strong>প্রধান সম্পাদক ও প্রকাশক:</strong> {{ $themeSettings['editorial_publisher'] ?? 'দৈনিক ভোলা জার্নাল প্রকাশনা পর্ষদ' }}</p>
+                            <p style="margin-bottom: 0;"><strong>ভারপ্রাপ্ত সম্পাদক:</strong> {{ $themeSettings['editorial_editor'] ?? 'সম্পাদক' }}</p>
                         </div>
                     </div>
                 </div>
@@ -63,7 +63,7 @@
         </div>
         
         <div class="footer-bottom">
-           <p>&copy; {{ date('Y') }} {{ $themeSettings['copyright_text'] ?? 'দৈনিক ভোলা টাইমস্। সর্বস্বত্ব সংরক্ষিত।' }}</p>
+           <p>&copy; {{ date('Y') }} {{ $themeSettings['copyright_text'] ?? 'দৈনিক ভোলা জার্নাল। সর্বস্বত্ব সংরক্ষিত।' }}</p>
            <p>ডিজাইন ও ডেভেলপমেন্ট: Antigravity AI</p>
         </div>
     </div>
@@ -137,8 +137,8 @@
             overlay.classList.toggle('show');
         }
 
-        // Attach event listener to all open elements (both desktop and mobile hamburger buttons)
-        const openButtons = document.querySelectorAll('.mobile-menu-toggle, #openDrawer, #openDrawerMobile');
+        // Attach event listener to mobile hamburger buttons
+        const openButtons = document.querySelectorAll('.mobile-menu-toggle, #openDrawerMobile');
         openButtons.forEach(btn => {
             btn.addEventListener('click', toggleDrawer);
         });

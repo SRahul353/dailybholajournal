@@ -73,37 +73,55 @@ class NewspaperController extends Controller
             ->limit(10)
             ->get();
 
-        // 4. Popular News (Top 5 read posts)
+        // 4. Popular News (Top 8 read posts for feed & sidebar)
         $popularPosts = Post::where('status', 'publish')
             ->orderBy('views_count', 'desc')
             ->latest()
-            ->limit(5)
+            ->limit(8)
             ->get();
 
-        // 5. Categorized News Blocks (load from settings layout list if set, otherwise empty to respect "sudho first section ta thakbo")
+        // 5. Categorized News Blocks (load from settings layout list if set, or fallback to categories with posts)
         $themeSettingsPath = storage_path('app/theme_settings.json');
         $homepageCategoryIds = [];
+        $categoryNamesMap = [];
         if (file_exists($themeSettingsPath)) {
             $themeSettings = json_decode(file_get_contents($themeSettingsPath), true);
             $homepageCategories = $themeSettings['homepage_categories'] ?? [];
-            $homepageCategoryIds = collect($homepageCategories)->pluck('id')->toArray();
+            $homepageCategoryIds = collect($homepageCategories)->pluck('id')->map(fn($id) => (int)$id)->toArray();
+            $categoryNamesMap = collect($homepageCategories)->pluck('name', 'id')->toArray();
         }
 
         if (!empty($homepageCategoryIds)) {
-            $categoriesWithPosts = Category::with(['posts' => function($query) use ($leadPostId) {
+            $categoriesWithPosts = Category::whereIn('id', $homepageCategoryIds)
+                ->with(['posts' => function($query) {
                     $query->where('status', 'publish')
-                        ->where('posts.id', '!=', $leadPostId)
                         ->latest()
-                        ->limit(4);
+                        ->limit(6);
                 }])
-                ->whereIn('id', $homepageCategoryIds)
                 ->get()
+                ->map(function($category) use ($leadPostId, $categoryNamesMap) {
+                    // Attach custom display name from theme settings if defined
+                    $category->display_name = $categoryNamesMap[$category->id] ?? $category->name;
+
+                    // If category has multiple posts, exclude leadPostId to avoid duplicating the lead story
+                    if ($category->posts->count() > 1 && $leadPostId) {
+                        $filtered = $category->posts->where('id', '!=', $leadPostId)->values()->take(5);
+                        $category->setRelation('posts', $filtered);
+                    }
+                    return $category;
+                })
                 ->sortBy(function($category) use ($homepageCategoryIds) {
-                    return array_search($category->id, $homepageCategoryIds);
+                    return array_search((int)$category->id, $homepageCategoryIds);
                 })
                 ->values();
         } else {
-            $categoriesWithPosts = collect();
+            $categoriesWithPosts = Category::has('posts')->with(['posts' => function($query) {
+                    $query->where('status', 'publish')
+                        ->latest()
+                        ->limit(5);
+                }])
+                ->limit(8)
+                ->get();
         }
 
         return view('home', compact('leadPost', 'subLeadPosts', 'latestPosts', 'popularPosts', 'categoriesWithPosts'));

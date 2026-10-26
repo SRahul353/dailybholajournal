@@ -46,7 +46,9 @@ class AdminThemeSettingsController extends Controller
             $settings = array_merge($settings, json_decode(file_get_contents($themeSettingsPath), true));
         }
 
-        $categories = \App\Models\Category::orderBy('name')->get();
+        $categories = \App\Models\Category::withCount(['posts' => function($q) {
+            $q->where('status', 'publish');
+        }])->orderBy('name')->get();
 
         return view('admin.theme.settings', compact('settings', 'categories'));
     }
@@ -123,8 +125,8 @@ class AdminThemeSettingsController extends Controller
         $settings['text_main'] = $request->text_main;
         $settings['font_family'] = $request->font_family;
         $settings['custom_css'] = $request->custom_css;
-        $settings['menu_structure'] = $request->menu_structure ? json_decode($request->menu_structure, true) : [];
-        $settings['homepage_categories'] = $request->homepage_categories ? json_decode($request->homepage_categories, true) : [];
+        $settings['menu_structure'] = $request->filled('menu_structure') ? (json_decode($request->menu_structure, true) ?: []) : [];
+        $settings['homepage_categories'] = $request->filled('homepage_categories') ? (json_decode($request->homepage_categories, true) ?: []) : [];
         $settings['footer_text'] = $request->footer_text ?? '';
         $settings['social_facebook'] = $request->social_facebook ?? '';
         $settings['social_twitter'] = $request->social_twitter ?? '';
@@ -180,6 +182,13 @@ class AdminThemeSettingsController extends Controller
 
         // Save back to JSON config file
         file_put_contents($themeSettingsPath, json_encode($settings, JSON_PRETTY_PRINT | JSON_UNESCAPED_UNICODE));
+
+        // Clear view cache so changes immediately take effect
+        try {
+            \Illuminate\Support\Facades\Artisan::call('view:clear');
+        } catch (\Exception $e) {
+            // Ignore if artisan cache clear fails in local env
+        }
 
         return redirect()->route('admin.theme.settings')->with('success', 'থিম ডিজাইন সেটিংস সফলভাবে আপডেট করা হয়েছে।');
     }

@@ -25,7 +25,7 @@
         border: 1px solid var(--border-color);
         padding: 12px 16px;
         border-radius: var(--radius-sm);
-        background-color: rgba(9, 13, 22, 0.4);
+        background-color: #f8fafc;
     }
 
     .check-label {
@@ -33,6 +33,7 @@
         align-items: center;
         gap: 10px;
         font-size: 0.95rem;
+        color: var(--text-dark);
         margin-bottom: 8px;
         cursor: pointer;
     }
@@ -138,8 +139,8 @@
 
                 <!-- Content -->
                 <div class="form-group">
-                    <label for="content" class="form-label">মূল সংবাদ কন্টেন্ট (Main Content)</label>
-                    <textarea name="content" id="content" rows="18" required placeholder="এখানে আপনার সংবাদের বিস্তারিত কন্টেন্ট লিখুন..." class="form-control" style="line-height: 1.7; font-size: 1.05rem;">{{ old('content') }}</textarea>
+                    <label for="content" class="form-label">মূল সংবাদ কন্টেন্ট (Main Content) <span class="text-danger">*</span></label>
+                    <textarea name="content" id="content" rows="18" placeholder="এখানে আপনার সংবাদের বিস্তারিত কন্টেন্ট লিখুন..." class="form-control" style="line-height: 1.7; font-size: 1.05rem;">{{ old('content') }}</textarea>
                 </div>
             </div>
 
@@ -229,9 +230,9 @@
                     </div>
 
                     <!-- New tag add option -->
-                    <div class="form-group" style="margin: 0; border-top: 1px dashed rgba(255, 255, 255, 0.1); padding-top: 14px;">
+                    <div class="form-group" style="margin: 0; border-top: 1px dashed var(--border-color); padding-top: 14px;">
                         <label for="new_tags" class="form-label" style="font-size: 0.85rem; font-weight: 600; margin-bottom: 6px;">নতুন ট্যাগ যোগ করুন (ঐচ্ছিক)</label>
-                        <input type="text" name="new_tags" id="new_tags" value="{{ old('new_tags') }}" placeholder="যেমন: শীর্ষ খবর, আন্তর্জাতিক (কমা দিয়ে আলাদা করুন)" class="form-control" style="font-size: 0.85rem; padding: 6px 12px; background-color: rgba(9, 13, 22, 0.4); border-color: var(--border-color);">
+                        <input type="text" name="new_tags" id="new_tags" value="{{ old('new_tags') }}" placeholder="যেমন: শীর্ষ খবর, আন্তর্জাতিক (কমা দিয়ে আলাদা করুন)" class="form-control" style="font-size: 0.85rem; padding: 6px 12px; background-color: #ffffff; border-color: var(--border-color);">
                     </div>
                 </div>
             </div>
@@ -271,23 +272,61 @@
         };
     }
 
+    let postEditorInstance = null;
+
     document.addEventListener('DOMContentLoaded', function() {
-        ClassicEditor
-            .create(document.querySelector('#content'), {
-                extraPlugins: [Base64UploadAdapterPlugin],
-                toolbar: {
-                    items: [
-                        'heading', '|',
-                        'bold', 'italic', '|',
-                        'bulletedList', 'numberedList', 'blockQuote', '|',
-                        'uploadImage', 'link', '|',
-                        'undo', 'redo'
-                    ]
+        const contentEl = document.querySelector('#content');
+        if (typeof ClassicEditor !== 'undefined' && contentEl) {
+            ClassicEditor
+                .create(contentEl, {
+                    extraPlugins: [Base64UploadAdapterPlugin],
+                    toolbar: {
+                        items: [
+                            'heading', '|',
+                            'bold', 'italic', '|',
+                            'bulletedList', 'numberedList', 'blockQuote', '|',
+                            'imageUpload', 'link', '|',
+                            'undo', 'redo'
+                        ]
+                    }
+                })
+                .then(editor => {
+                    postEditorInstance = editor;
+                    // Sync data to textarea whenever content changes
+                    editor.model.document.on('change:data', () => {
+                        contentEl.value = editor.getData();
+                    });
+                })
+                .catch(error => {
+                    console.error('CKEditor init error:', error);
+                });
+        }
+
+        // Form submit safety & validation
+        const formEl = document.querySelector('form');
+        if (formEl) {
+            formEl.addEventListener('submit', function(e) {
+                let contentVal = '';
+                if (postEditorInstance) {
+                    contentVal = postEditorInstance.getData();
+                    contentEl.value = contentVal;
+                } else {
+                    contentVal = contentEl.value;
                 }
-            })
-            .catch(error => {
-                console.error(error);
+
+                const stripped = contentVal.replace(/<[^>]*>/g, '').trim();
+                if (!stripped && !contentVal.includes('<img')) {
+                    e.preventDefault();
+                    alert('অনুগ্রহ করে সংবাদের মূল কন্টেন্ট লিখুন।');
+                    if (postEditorInstance) {
+                        postEditorInstance.editing.view.focus();
+                    } else {
+                        contentEl.focus();
+                    }
+                    return false;
+                }
             });
+        }
     });
 
     // Sync Featured Image upload local preview

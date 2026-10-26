@@ -1,993 +1,837 @@
 @extends('layouts.app')
 
-@section('title', 'দৈনিক ভোলা টাইমস্ | Dainik Bhola Times - সত্যের সন্ধানে সার্বক্ষণিক')
+@section('title', 'দৈনিক ভোলা জার্নাল | Daily Bhola Journal - সত্য ও ন্যায়ের সন্ধানে সার্বক্ষণিক')
 
 @section('styles')
 <style>
-    /* Hero Grid Setup */
-    .hero-grid {
+    /* ==========================================================================
+       The Daily Star Bangla Authentic Broad-sheet Layout Design
+       ========================================================================== */
+
+    /* Helpers & Typography */
+    .font-serif {
+        font-family: 'Noto Serif Bengali', serif !important;
+    }
+    .hover-danger:hover {
+        color: var(--accent, #c90000) !important;
+    }
+
+    /* Top Lead Section Grid (2-Column Asymmetrical Grid like Daily Star) */
+    .top-lead-grid {
         display: grid;
         grid-template-columns: 1fr;
         gap: 24px;
-        margin-bottom: 36px;
+        margin-bottom: 28px;
     }
     @media (min-width: 768px) {
-        .hero-grid {
-            grid-template-columns: 1.5fr 1fr;
-        }
-    }
-    @media (min-width: 1024px) {
-        .hero-grid {
-            grid-template-columns: 2fr 1fr 1fr;
+        .top-lead-grid {
+            grid-template-columns: 1.45fr 1fr;
         }
     }
 
-    /* Lead News Card */
-    .lead-news-card {
-        background-color: var(--bg-card);
-        border: 1px solid var(--border-color);
-        border-radius: var(--radius-md);
+    /* Big Lead Article Card */
+    .main-lead-card {
+        background-color: #ffffff;
+        border: 1px solid #e5e7eb;
+        border-radius: 8px;
         overflow: hidden;
         display: flex;
         flex-direction: column;
         height: 100%;
-        transition: var(--transition);
-        position: relative;
-        box-shadow: var(--shadow-sm);
+        transition: transform 0.25s ease, box-shadow 0.25s ease;
+        box-shadow: 0 1px 3px rgba(0, 0, 0, 0.04);
     }
-    .lead-news-card:hover {
-        transform: translateY(-4px);
-        box-shadow: var(--shadow-md);
+    .main-lead-card:hover {
+        transform: translateY(-3px);
+        box-shadow: 0 8px 18px rgba(0, 0, 0, 0.08);
+        border-color: #cbd5e1;
     }
-    .lead-image-box {
+    .main-lead-img-box {
         position: relative;
         width: 100%;
-        height: 340px;
+        height: 260px;
         overflow: hidden;
-        background-color: #cbd5e1;
+        background-color: #e2e8f0;
     }
-    .lead-image {
+    @media (min-width: 768px) {
+        .main-lead-img-box {
+            height: 340px;
+        }
+    }
+    .main-lead-img {
         width: 100%;
         height: 100%;
         object-fit: cover;
-        transition: var(--transition);
+        transition: transform 0.4s ease;
     }
-    .lead-news-card:hover .lead-image {
+    .main-lead-card:hover .main-lead-img {
         transform: scale(1.03);
     }
-    .lead-category-badge {
+    .main-lead-badge {
         position: absolute;
-        top: 16px;
-        left: 16px;
-        background-color: var(--accent);
+        top: 14px;
+        left: 14px;
+        background-color: var(--accent, #c90000);
         color: #ffffff;
-        padding: 4px 10px;
-        border-radius: var(--radius-sm);
+        padding: 4px 12px;
+        border-radius: 4px;
         font-weight: 700;
-        font-size: 0.85rem;
+        font-size: 0.84rem;
         z-index: 10;
-        box-shadow: 0 4px 8px rgba(227, 28, 37, 0.3);
+        box-shadow: 0 4px 8px rgba(201, 0, 0, 0.3);
     }
-    .lead-content {
-        padding: 20px;
+    .main-lead-body {
+        padding: 22px;
         display: flex;
         flex-direction: column;
         justify-content: space-between;
         flex-grow: 1;
     }
-    .lead-title {
+    .main-lead-headline {
         font-family: 'Noto Serif Bengali', serif;
-        font-size: 1.7rem;
+        font-size: 1.5rem;
         font-weight: 800;
-        color: var(--text-dark);
-        margin-bottom: 10px;
+        color: #111827;
+        margin-bottom: 12px;
         line-height: 1.35;
     }
-    .lead-title a:hover {
-        color: var(--accent);
+    @media (min-width: 768px) {
+        .main-lead-headline {
+            font-size: 1.95rem;
+        }
     }
-    .lead-excerpt {
-        color: var(--text-main);
-        font-size: 0.95rem;
+    .main-lead-headline a:hover {
+        color: var(--accent, #c90000);
+    }
+    .main-lead-excerpt {
+        color: #374151;
+        font-size: 0.98rem;
         margin-bottom: 16px;
-        line-height: 1.6;
+        line-height: 1.65;
         display: -webkit-box;
         -webkit-line-clamp: 3;
         -webkit-box-orient: vertical;
         overflow: hidden;
     }
-    .lead-meta {
+    .main-lead-meta {
         display: flex;
         align-items: center;
         gap: 16px;
         font-size: 0.82rem;
-        color: var(--text-light);
-        border-top: 1px solid var(--border-color);
+        color: #6b7280;
+        border-top: 1px solid #f1f5f9;
         padding-top: 12px;
     }
-    .lead-meta span {
-        display: flex;
-        align-items: center;
-        gap: 5px;
-    }
 
-    /* Side Lead Columns */
-    .column-header {
-        border-bottom: 2px solid var(--primary);
-        margin-bottom: 16px;
-        padding-bottom: 6px;
-        display: flex;
-        align-items: center;
-    }
-    .column-title {
-        font-family: 'Noto Serif Bengali', serif;
-        font-size: 1.15rem;
-        font-weight: 800;
-        color: var(--primary);
-        margin: 0;
-        position: relative;
-        padding-bottom: 6px;
-    }
-    .column-title::after {
-        content: '';
-        position: absolute;
-        bottom: -2px;
-        left: 0;
-        width: 45px;
-        height: 2px;
-        background-color: var(--accent);
-    }
-    .side-lead-container {
-        display: flex;
-        flex-direction: column;
-        gap: 12px;
-        height: 100%;
-    }
-    .side-lead-card {
-        background-color: var(--bg-card);
-        border: 1px solid var(--border-color);
-        border-radius: var(--radius-md);
-        padding: 10px;
-        display: flex;
-        gap: 12px;
-        align-items: center;
-        transition: var(--transition);
-        flex: 1;
-    }
-    .side-lead-card:hover {
-        transform: translateY(-2px);
-        box-shadow: 0 6px 12px rgba(227, 28, 37, 0.06);
-        border-color: var(--accent);
-    }
-    .side-lead-img-box {
-        width: 100px;
-        height: 76px;
-        border-radius: var(--radius-sm);
-        overflow: hidden;
-        flex-shrink: 0;
-        background-color: #f3f4f6;
-    }
-    .side-lead-img {
-        width: 100%;
-        height: 100%;
-        object-fit: cover;
-        transition: var(--transition);
-    }
-    .side-lead-card:hover .side-lead-img {
-        transform: scale(1.06);
-    }
-    .side-lead-content {
-        flex-grow: 1;
-        min-width: 0;
-    }
-    .side-lead-title {
-        font-size: 0.94rem;
-        font-weight: 700;
-        line-height: 1.45;
-        color: var(--text-dark);
-        margin-bottom: 4px;
-        display: -webkit-box;
-        -webkit-line-clamp: 3;
-        -webkit-box-orient: vertical;
-        overflow: hidden;
-    }
-    .side-lead-title a:hover {
-        color: var(--accent);
-    }
-    .side-lead-time {
-        font-size: 0.78rem;
-        color: var(--text-light);
-        display: flex;
-        align-items: center;
-        gap: 4px;
-    }
-
-    /* Tabbed Widget */
-    .tabbed-widget {
-        background-color: var(--bg-card);
-        border: 1px solid var(--border-color);
-        border-radius: var(--radius-md);
-        overflow: hidden;
-        display: flex;
-        flex-direction: column;
-        height: 100%;
-        box-shadow: var(--shadow-sm);
-    }
-    .widget-tabs {
-        display: flex;
-        border-bottom: 2px solid var(--border-color);
-    }
-    .widget-tab {
-        flex: 1;
-        background: #f8fafc;
-        border: none;
-        padding: 12px 0;
-        font-size: 0.98rem;
-        font-weight: 700;
-        color: var(--text-light);
-        cursor: pointer;
-        transition: var(--transition);
-        font-family: 'Noto Sans Bengali', sans-serif;
-        position: relative;
-    }
-    .widget-tab.active {
+    /* Sub-Leads List (Column 2) */
+    .sub-leads-card {
         background-color: #ffffff;
-        color: var(--accent);
-    }
-    .widget-tab::after {
-        content: '';
-        position: absolute;
-        bottom: 0;
-        left: 0;
-        width: 100%;
-        height: 3px;
-        background-color: transparent;
-        transition: var(--transition);
-    }
-    .widget-tab.active::after {
-        background-color: var(--accent);
-    }
-    .widget-content-pane {
-        padding: 16px;
-        display: none;
-        max-height: 440px;
-        overflow-y: auto;
-    }
-    .widget-content-pane.active {
-        display: block;
-    }
-    .widget-list {
-        list-style: none;
+        border: 1px solid #e5e7eb;
+        border-radius: 8px;
+        padding: 18px;
         display: flex;
         flex-direction: column;
         gap: 14px;
-        padding: 0;
-        margin: 0;
+        height: 100%;
+        box-shadow: 0 1px 3px rgba(0, 0, 0, 0.04);
     }
-    .widget-item {
+    .sub-leads-header {
+        border-bottom: 2px solid #111827;
+        padding-bottom: 8px;
+        margin-bottom: 4px;
         display: flex;
         align-items: center;
+        justify-content: space-between;
+    }
+    .sub-leads-header h3 {
+        font-family: 'Noto Serif Bengali', serif;
+        font-size: 1.25rem;
+        font-weight: 800;
+        margin: 0;
+        color: #111827;
+        position: relative;
+    }
+    .sub-leads-header h3::after {
+        content: '';
+        position: absolute;
+        bottom: -10px;
+        left: 0;
+        width: 40px;
+        height: 2px;
+        background-color: var(--accent, #c90000);
+    }
+    .sub-lead-item {
+        display: flex;
         gap: 12px;
-        border-bottom: 1px solid #f1f5f9;
+        align-items: center;
         padding-bottom: 12px;
-        transition: var(--transition);
+        border-bottom: 1px solid #f1f5f9;
+        transition: transform 0.2s ease;
     }
-    .widget-item:hover {
-        transform: translateX(3px);
-    }
-    .widget-item:last-child {
+    .sub-lead-item:last-child {
         border-bottom: none;
         padding-bottom: 0;
     }
-    .widget-img-box {
-        width: 80px;
-        height: 58px;
-        border-radius: var(--radius-sm);
+    .sub-lead-item:hover {
+        transform: translateX(3px);
+    }
+    .sub-lead-thumb-box {
+        width: 105px;
+        height: 74px;
+        border-radius: 6px;
         overflow: hidden;
         flex-shrink: 0;
         background-color: #f1f5f9;
     }
-    .widget-img-box img {
+    .sub-lead-thumb {
         width: 100%;
         height: 100%;
         object-fit: cover;
-        transition: var(--transition);
+        transition: transform 0.3s ease;
     }
-    .widget-item:hover .widget-img-box img {
-        transform: scale(1.08);
+    .sub-lead-item:hover .sub-lead-thumb {
+        transform: scale(1.06);
     }
-    .widget-item-title {
-        font-size: 0.92rem;
+    .sub-lead-info {
+        flex-grow: 1;
+        min-width: 0;
+    }
+    .sub-lead-title {
+        font-size: 0.95rem;
         font-weight: 700;
         line-height: 1.45;
-        color: var(--text-main);
-        margin: 0;
+        color: #111827;
+        margin-bottom: 4px;
         display: -webkit-box;
-        -webkit-line-clamp: 3;
+        -webkit-line-clamp: 2;
         -webkit-box-orient: vertical;
         overflow: hidden;
     }
-    .widget-item-title a:hover {
-        color: var(--accent);
+    .sub-lead-title a:hover {
+        color: var(--accent, #c90000);
+    }
+    .sub-lead-time {
+        font-size: 0.76rem;
+        color: #94a3b8;
     }
 
-    /* Custom Scrollbar for widget content */
-    .widget-content-pane::-webkit-scrollbar {
-        width: 4px;
+    /* Bhola District News Module */
+    .district-news-bar {
+        background: #ffffff;
+        border: 1px solid #e5e7eb;
+        border-left: 4px solid var(--accent, #c90000);
+        border-radius: 8px;
+        padding: 18px 22px;
+        margin-bottom: 28px;
+        box-shadow: 0 1px 3px rgba(0, 0, 0, 0.03);
     }
-    .widget-content-pane::-webkit-scrollbar-track {
-        background: #f1f5f9;
-        border-radius: 2px;
-    }
-    .widget-content-pane::-webkit-scrollbar-thumb {
-        background: #cbd5e1;
-        border-radius: 2px;
-    }
-    .widget-content-pane::-webkit-scrollbar-thumb:hover {
-        background: #94a3b8;
-    }
-
-    /* "সারাদেশ" (District News) Section */
-    .district-card {
-        background: linear-gradient(135deg, #ffffff 0%, #f8fafc 100%);
-        border: 1px solid var(--border-color);
-        border-radius: var(--radius-md);
-        padding: 24px;
-        margin-bottom: 36px;
-        box-shadow: var(--shadow-sm);
-        font-family: 'Noto Sans Bengali', sans-serif;
-    }
-    .district-header {
+    .district-news-header {
         display: flex;
         align-items: center;
         gap: 10px;
-        margin-bottom: 16px;
+        margin-bottom: 14px;
     }
-    .district-header i {
-        color: var(--accent);
+    .district-news-header i {
+        color: var(--accent, #c90000);
         font-size: 1.4rem;
     }
-    .district-title {
-        font-size: 1.3rem;
+    .district-news-title {
+        font-family: 'Noto Serif Bengali', serif;
+        font-size: 1.25rem;
         font-weight: 800;
-        color: var(--primary);
+        color: #111827;
         margin: 0;
     }
-    .district-selector-row {
+    .district-controls {
         display: grid;
         grid-template-columns: 1fr;
         gap: 12px;
     }
     @media (min-width: 640px) {
-        .district-selector-row {
+        .district-controls {
             grid-template-columns: repeat(3, 1fr);
         }
     }
-    .district-select {
-        padding: 8px 12px;
+    .district-select-box {
+        padding: 8px 14px;
         border: 1px solid #d1d5db;
-        border-radius: var(--radius-sm);
+        border-radius: 6px;
         font-size: 0.92rem;
-        color: var(--text-main);
+        color: #374151;
         outline: none;
         background-color: #ffffff;
-        font-family: inherit;
         font-weight: 600;
     }
-    .district-select:focus {
-        border-color: var(--accent);
-        box-shadow: 0 0 0 3px rgba(227, 28, 37, 0.1);
+    .district-select-box:focus {
+        border-color: var(--accent, #c90000);
+        box-shadow: 0 0 0 3px rgba(201, 0, 0, 0.1);
     }
-    .district-btn {
-        background-color: var(--accent);
+    .district-search-btn {
+        background-color: var(--accent, #c90000);
         color: #ffffff;
         border: none;
-        border-radius: var(--radius-sm);
+        border-radius: 6px;
         padding: 8px 16px;
         font-weight: 700;
         cursor: pointer;
-        transition: var(--transition);
-        font-family: inherit;
+        transition: background-color 0.2s ease;
     }
-    .district-btn:hover {
-        background-color: var(--accent-hover);
-        box-shadow: 0 4px 10px rgba(227, 28, 37, 0.2);
+    .district-search-btn:hover {
+        background-color: #a50000;
     }
-    .district-quick-links {
+    .district-pills {
         display: flex;
         flex-wrap: wrap;
         gap: 8px;
-        margin-top: 16px;
-        font-size: 0.85rem;
+        margin-top: 14px;
         align-items: center;
+        font-size: 0.85rem;
     }
-    .district-quick-label {
-        font-weight: 700;
-        color: var(--text-light);
-    }
-    .district-quick-link {
-        background-color: #e2e8f0;
-        color: var(--text-main);
+    .district-pill {
+        background-color: #f1f5f9;
+        color: #374151;
         padding: 3px 12px;
         border-radius: 20px;
         font-weight: 600;
-        transition: var(--transition);
+        border: 1px solid #e2e8f0;
+        transition: all 0.2s ease;
     }
-    .district-quick-link:hover {
-        background-color: var(--accent);
+    .district-pill:hover {
+        background-color: var(--accent, #c90000);
         color: #ffffff;
+        border-color: var(--accent, #c90000);
     }
 
-    /* Advertisements placeholders styling */
-    .homepage-ad-banner {
-        margin: 12px auto 36px auto;
-        text-align: center;
-    }
-    .homepage-ad-label {
-        font-size: 0.65rem;
-        color: var(--text-light);
-        text-transform: uppercase;
-        margin-bottom: 4px;
-        letter-spacing: 1px;
-        display: block;
-        font-weight: 600;
-    }
-    .homepage-ad-box-728 {
-        width: 100%;
-        max-width: 728px;
-        height: 90px;
-        background: #ffffff;
-        border: 1px dashed #cbd5e1;
-        margin: 0 auto;
-        display: flex;
-        align-items: center;
-        justify-content: center;
-        border-radius: var(--radius-sm);
-        color: #94a3b8;
-        font-size: 0.8rem;
-        font-family: 'Outfit', sans-serif;
-        font-weight: 500;
-        transition: var(--transition);
-    }
-    .homepage-ad-box-728:hover {
-        background-color: #f8fafc;
-        border-color: #94a3b8;
-    }
-    .homepage-ad-box-300 {
-        width: 300px;
-        height: 250px;
-        background: #ffffff;
-        border: 1px dashed #cbd5e1;
-        margin: 0 auto;
-        display: flex;
-        flex-direction: column;
-        align-items: center;
-        justify-content: center;
-        border-radius: var(--radius-md);
-        color: #94a3b8;
-        font-size: 0.82rem;
-        font-family: 'Outfit', sans-serif;
-        font-weight: 500;
-        gap: 6px;
-        transition: var(--transition);
-    }
-    .homepage-ad-box-300:hover {
-        background-color: #f8fafc;
-        border-color: #94a3b8;
-    }
-
-    /* Categorized Section title wrapper */
-    .section-title-wrapper {
-        border-bottom: 2px solid var(--primary);
+    /* Daily Star Signature Category Section Headings */
+    .daily-star-section-head {
+        border-bottom: 2px solid #111827;
         margin-bottom: 20px;
         display: flex;
         justify-content: space-between;
         align-items: flex-end;
-        padding-bottom: 4px;
-    }
-    .sec-title {
-        font-family: 'Noto Serif Bengali', serif;
-        font-size: 1.4rem;
-        font-weight: 800;
-        color: var(--primary);
-        margin: 0;
+        padding-bottom: 6px;
         position: relative;
-        padding-bottom: 4px;
     }
-    .sec-title::after {
+    .daily-star-sec-title {
+        font-family: 'Noto Serif Bengali', serif;
+        font-size: 1.45rem;
+        font-weight: 800;
+        color: #111827;
+        margin: 0;
+        display: inline-flex;
+        align-items: center;
+        gap: 8px;
+        position: relative;
+    }
+    .daily-star-sec-title::after {
         content: '';
         position: absolute;
-        bottom: -2px;
+        bottom: -8px;
         left: 0;
-        width: 60px;
-        height: 2px;
-        background-color: var(--accent);
+        width: 50px;
+        height: 3px;
+        background-color: var(--accent, #c90000);
     }
-    .sec-more-link {
-        font-size: 0.85rem;
+    .daily-star-more-link {
+        font-size: 0.88rem;
         font-weight: 700;
-        color: var(--accent);
+        color: var(--accent, #c90000);
+        display: inline-flex;
+        align-items: center;
+        gap: 4px;
     }
-    .sec-more-link:hover {
-        color: var(--primary);
+    .daily-star-more-link:hover {
+        color: #111827;
     }
 
-    /* alternate layout structures */
-    .grid-alternate-4 {
+    /* Layout Type 1: 1 Medium Lead + 3 Horizontal Cards (e.g. বাংলাদেশ, রাজনীতি) */
+    .cat-split-grid {
         display: grid;
         grid-template-columns: 1fr;
         gap: 20px;
     }
-    @media (min-width: 640px) {
-        .grid-alternate-4 {
-            grid-template-columns: repeat(2, 1fr);
+    @media (min-width: 768px) {
+        .cat-split-grid {
+            grid-template-columns: 1.25fr 1fr;
         }
     }
-    @media (min-width: 1024px) {
-        .grid-alternate-4 {
-            grid-template-columns: repeat(4, 1fr);
-        }
-    }
-
-    .news-grid-card {
-        background-color: var(--bg-card);
-        border: 1px solid var(--border-color);
-        border-radius: var(--radius-md);
+    .cat-lead-card {
+        background-color: #ffffff;
+        border: 1px solid #e5e7eb;
+        border-radius: 8px;
         overflow: hidden;
+        height: 100%;
         display: flex;
         flex-direction: column;
-        height: 100%;
-        transition: var(--transition);
-        box-shadow: var(--shadow-sm);
+        transition: transform 0.25s ease, box-shadow 0.25s ease;
     }
-    .news-grid-card:hover {
-        transform: translateY(-3px);
-        box-shadow: var(--shadow-md);
-        border-color: var(--accent);
+    .cat-lead-card:hover {
+        transform: translateY(-2px);
+        box-shadow: 0 6px 15px rgba(0,0,0,0.06);
     }
-    .news-grid-img-box {
+    .cat-lead-img-box {
         position: relative;
-        height: 168px;
+        height: 220px;
         overflow: hidden;
-        background-color: #cbd5e1;
+        background-color: #e2e8f0;
     }
-    .news-grid-img {
+    .cat-lead-img {
         width: 100%;
         height: 100%;
         object-fit: cover;
-        transition: var(--transition);
+        transition: transform 0.3s ease;
     }
-    .news-grid-card:hover .news-grid-img {
-        transform: scale(1.04);
+    .cat-lead-card:hover .cat-lead-img {
+        transform: scale(1.05);
     }
-    .news-grid-content {
-        padding: 14px;
+    .cat-lead-content {
+        padding: 16px;
+        flex-grow: 1;
         display: flex;
         flex-direction: column;
         justify-content: space-between;
-        flex-grow: 1;
     }
-    .news-grid-title {
-        font-size: 0.98rem;
-        font-weight: 700;
-        line-height: 1.45;
-        color: var(--text-dark);
+    .cat-lead-title {
+        font-size: 1.28rem;
+        font-weight: 800;
+        line-height: 1.4;
+        color: #111827;
         margin-bottom: 8px;
+    }
+    .cat-lead-title a:hover {
+        color: var(--accent, #c90000);
+    }
+    .cat-lead-excerpt {
+        font-size: 0.92rem;
+        color: #4b5563;
+        line-height: 1.6;
+        margin-bottom: 12px;
         display: -webkit-box;
-        -webkit-line-clamp: 3;
+        -webkit-line-clamp: 2;
         -webkit-box-orient: vertical;
         overflow: hidden;
     }
-    .news-grid-title a:hover {
-        color: var(--accent);
-    }
-    .news-grid-meta {
-        display: flex;
-        justify-content: space-between;
-        font-size: 0.78rem;
-        color: var(--text-light);
-        border-top: 1px solid #f1f5f9;
-        padding-top: 8px;
-        margin-top: 8px;
-    }
-
-    /* alternate 1+3 Grid layout */
-    .alternate-split-grid {
-        display: grid;
-        grid-template-columns: 1fr;
-        gap: 20px;
-    }
-    @media (min-width: 992px) {
-        .alternate-split-grid {
-            grid-template-columns: 1.2fr 1fr;
-        }
-    }
-    .alternate-split-left {
-        height: 100%;
-    }
-    .alternate-split-right {
+    .cat-side-list {
         display: flex;
         flex-direction: column;
         gap: 12px;
         justify-content: space-between;
     }
-    .split-horizontal-card {
-        background-color: var(--bg-card);
-        border: 1px solid var(--border-color);
-        border-radius: var(--radius-md);
+    .cat-side-card {
+        background: #ffffff;
+        border: 1px solid #e5e7eb;
+        border-radius: 8px;
         padding: 12px;
         display: flex;
         gap: 12px;
         align-items: center;
-        transition: var(--transition);
+        transition: transform 0.2s ease, border-color 0.2s ease;
+    }
+    .cat-side-card:hover {
+        transform: translateX(3px);
+        border-color: var(--accent, #c90000);
+        box-shadow: 0 4px 10px rgba(0,0,0,0.05);
+    }
+    .cat-side-thumb-box {
+        width: 95px;
+        height: 70px;
+        border-radius: 6px;
+        overflow: hidden;
+        flex-shrink: 0;
+        background-color: #f1f5f9;
+    }
+    .cat-side-thumb {
+        width: 100%;
+        height: 100%;
+        object-fit: cover;
+    }
+    .cat-side-content {
         flex-grow: 1;
-        box-shadow: var(--shadow-sm);
         min-width: 0;
     }
-    .split-horizontal-card:hover {
-        border-color: var(--accent);
-        box-shadow: var(--shadow-md);
-        transform: translateX(3px);
+    .cat-side-title {
+        font-size: 0.94rem;
+        font-weight: 700;
+        line-height: 1.4;
+        color: #111827;
+        margin-bottom: 4px;
+        display: -webkit-box;
+        -webkit-line-clamp: 2;
+        -webkit-box-orient: vertical;
+        overflow: hidden;
+    }
+    .cat-side-title a:hover {
+        color: var(--accent, #c90000);
     }
 
-    /* Multimedia Section - Sleek dark setup */
-    .multimedia-section {
-        background-color: #0b1120;
-        padding: 32px;
-        margin: 36px 0;
-        border-radius: var(--radius-lg);
-        border: 1px solid rgba(255, 255, 255, 0.05);
-        position: relative;
-        overflow: hidden;
-        font-family: 'Noto Sans Bengali', sans-serif;
+    /* Layout Type 2: 4-Column Card Grid (e.g. বাণিজ্য, খেলা, বিনোদন) */
+    .cat-grid-4 {
+        display: grid;
+        grid-template-columns: 1fr;
+        gap: 16px;
     }
-    .multimedia-title-wrapper {
-        border-bottom: 2px solid rgba(255, 255, 255, 0.1);
+    @media (min-width: 576px) {
+        .cat-grid-4 {
+            grid-template-columns: repeat(2, 1fr);
+        }
+    }
+    @media (min-width: 992px) {
+        .cat-grid-4 {
+            grid-template-columns: repeat(4, 1fr);
+        }
+    }
+    .cat-grid-card {
+        background: #ffffff;
+        border: 1px solid #e5e7eb;
+        border-radius: 8px;
+        overflow: hidden;
+        display: flex;
+        flex-direction: column;
+        height: 100%;
+        transition: transform 0.25s ease, box-shadow 0.25s ease;
+    }
+    .cat-grid-card:hover {
+        transform: translateY(-3px);
+        box-shadow: 0 6px 14px rgba(0,0,0,0.08);
+        border-color: var(--accent, #c90000);
+    }
+    .cat-grid-img-box {
+        position: relative;
+        height: 150px;
+        overflow: hidden;
+        background-color: #e2e8f0;
+    }
+    .cat-grid-img {
+        width: 100%;
+        height: 100%;
+        object-fit: cover;
+        transition: transform 0.3s ease;
+    }
+    .cat-grid-card:hover .cat-grid-img {
+        transform: scale(1.05);
+    }
+    .cat-grid-content {
+        padding: 12px;
+        flex-grow: 1;
+        display: flex;
+        flex-direction: column;
+        justify-content: space-between;
+    }
+    .cat-grid-title {
+        font-size: 0.94rem;
+        font-weight: 700;
+        line-height: 1.45;
+        color: #111827;
+        margin-bottom: 6px;
+        display: -webkit-box;
+        -webkit-line-clamp: 2;
+        -webkit-box-orient: vertical;
+        overflow: hidden;
+    }
+    .cat-grid-title a:hover {
+        color: var(--accent, #c90000);
+    }
+
+    /* Multimedia Showcase (Video & Photo - Dark Theme) */
+    .multimedia-strip {
+        background-color: #0f172a;
+        padding: 32px;
+        margin: 36px 0 16px 0;
+        border-radius: 12px;
+        border: 1px solid rgba(255, 255, 255, 0.08);
+    }
+    .multimedia-strip-head {
+        border-bottom: 2px solid rgba(255, 255, 255, 0.12);
         margin-bottom: 24px;
         display: flex;
         justify-content: space-between;
         align-items: flex-end;
-        padding-bottom: 6px;
+        padding-bottom: 8px;
     }
-    .multimedia-title {
-        font-size: 1.35rem;
+    .multimedia-strip-title {
+        font-family: 'Noto Serif Bengali', serif;
+        font-size: 1.45rem;
         font-weight: 800;
         color: #ffffff;
         margin: 0;
         position: relative;
     }
-    .multimedia-title::after {
+    .multimedia-strip-title::after {
         content: '';
         position: absolute;
-        bottom: -8px;
+        bottom: -10px;
         left: 0;
-        width: 60px;
-        height: 2px;
-        background-color: var(--accent);
+        width: 50px;
+        height: 3px;
+        background-color: var(--accent, #c90000);
     }
-    .multimedia-more {
-        color: var(--accent);
-        font-size: 0.85rem;
-        font-weight: 700;
-    }
-    .multimedia-grid {
+    .multimedia-grid-row {
         display: grid;
         grid-template-columns: 1fr;
-        gap: 20px;
+        gap: 18px;
     }
     @media (min-width: 640px) {
-        .multimedia-grid {
+        .multimedia-grid-row {
             grid-template-columns: repeat(2, 1fr);
         }
     }
     @media (min-width: 1024px) {
-        .multimedia-grid {
+        .multimedia-grid-row {
             grid-template-columns: repeat(4, 1fr);
         }
     }
-    .multimedia-card {
-        background-color: rgba(255, 255, 255, 0.03);
+    .multimedia-item-card {
+        background: rgba(255, 255, 255, 0.04);
         border: 1px solid rgba(255, 255, 255, 0.08);
-        border-radius: var(--radius-md);
+        border-radius: 8px;
         overflow: hidden;
-        transition: var(--transition);
         display: flex;
         flex-direction: column;
-        height: 100%;
-        position: relative;
+        transition: all 0.25s ease;
     }
-    .multimedia-card:hover {
+    .multimedia-item-card:hover {
         transform: translateY(-4px);
-        background-color: rgba(255, 255, 255, 0.06);
-        border-color: var(--accent);
+        background: rgba(255, 255, 255, 0.08);
+        border-color: var(--accent, #c90000);
         box-shadow: 0 10px 20px rgba(0, 0, 0, 0.4);
     }
-    .multimedia-img-box {
+    .multimedia-thumb-container {
         position: relative;
-        height: 160px;
+        height: 155px;
+        background: #000;
         overflow: hidden;
-        background-color: #000000;
     }
-    .multimedia-img {
+    .multimedia-thumb-img {
         width: 100%;
         height: 100%;
         object-fit: cover;
-        transition: var(--transition);
         opacity: 0.85;
+        transition: transform 0.3s ease;
     }
-    .multimedia-card:hover .multimedia-img {
+    .multimedia-item-card:hover .multimedia-thumb-img {
         transform: scale(1.05);
         opacity: 0.95;
     }
-    .multimedia-play-btn {
+    .play-badge-icon {
         position: absolute;
         top: 50%;
         left: 50%;
         transform: translate(-50%, -50%);
         width: 44px;
         height: 44px;
-        background-color: var(--accent);
+        background-color: var(--accent, #c90000);
         color: #ffffff;
         border-radius: 50%;
         display: flex;
         align-items: center;
         justify-content: center;
         font-size: 1.1rem;
-        box-shadow: 0 4px 12px rgba(227, 28, 37, 0.4);
-        transition: var(--transition);
-        padding-left: 3px; /* visual alignment of play arrow */
+        box-shadow: 0 4px 12px rgba(201, 0, 0, 0.4);
+        padding-left: 3px;
+        transition: transform 0.25s ease;
     }
-    .multimedia-card:hover .multimedia-play-btn {
+    .multimedia-item-card:hover .play-badge-icon {
+        transform: translate(-50%, -50%) scale(1.12);
         background-color: #ffffff;
-        color: var(--accent);
-        transform: translate(-50%, -50%) scale(1.1);
-        box-shadow: 0 4px 15px rgba(255, 255, 255, 0.4);
-    }
-    .multimedia-content {
-        padding: 14px;
-        flex-grow: 1;
-        display: flex;
-        flex-direction: column;
-        justify-content: space-between;
-    }
-    .multimedia-card-title {
-        font-size: 0.95rem;
-        font-weight: 700;
-        color: #cbd5e1;
-        line-height: 1.45;
-        margin: 0;
-        display: -webkit-box;
-        -webkit-line-clamp: 3;
-        -webkit-box-orient: vertical;
-        overflow: hidden;
-    }
-    .multimedia-card-title a:hover {
-        color: var(--accent);
+        color: var(--accent, #c90000);
     }
 </style>
 @endsection
 
 @section('content')
 
-    <!-- Dhaka Post Signature Hero Grid (Lead, Side Leads & Tabbed News) -->
-    <div class="hero-grid">
-        <!-- Lead News Column -->
-        <div>
-            @if($leadPost)
-                <article class="lead-news-card">
-                    <span class="lead-category-badge">
-                        {{ $leadPost->categories->first() ? $leadPost->categories->first()->name : 'মূল খবর' }}
-                    </span>
-                    <div class="lead-image-box">
-                        <img src="{{ $leadPost->featured_image_url }}" alt="{{ $leadPost->title }}" class="lead-image" onerror="this.src='https://images.unsplash.com/photo-1504711434969-e33886168f5c?auto=format&fit=crop&q=80&w=800'">
-                    </div>
-                    <div class="lead-content">
-                        <div>
-                            <h2 class="lead-title">
-                                <a href="{{ route('post', $leadPost->slug) }}">{{ $leadPost->title }}</a>
-                            </h2>
-                            <p class="lead-excerpt">
-                                {!! Str::limit(strip_tags($leadPost->content), 240) !!}
-                            </p>
-                        </div>
-                        <div class="lead-meta">
-                            <span><i class="fa-solid fa-user"></i> {{ $leadPost->user ? $leadPost->user->name : 'সম্পাদক' }}</span>
-                            <span><i class="fa-regular fa-calendar-days"></i> {{ $leadPost->created_at->format('d M, Y') }}</span>
-                            <span><i class="fa-regular fa-eye"></i> {{ $leadPost->views_count }} বার পঠিত</span>
-                        </div>
-                    </div>
-                </article>
-            @else
-                <div class="sidebar-card text-center" style="padding: 60px;">
-                    <i class="fa-solid fa-newspaper" style="font-size: 3rem; color: var(--text-light); margin-bottom: 16px;"></i>
-                    <p>কোন সংবাদ পাওয়া যায়নি।</p>
-                </div>
-            @endif
-        </div>
-
-        <!-- Side Leads Column (Older Lead News) -->
-        <div>
-            <div class="side-lead-container">
-                @forelse($subLeadPosts as $post)
-                    <article class="side-lead-card">
-                        <div class="side-lead-img-box">
-                            <img src="{{ $post->featured_image_url }}" alt="{{ $post->title }}" class="side-lead-img" onerror="this.src='https://images.unsplash.com/photo-1504711434969-e33886168f5c?auto=format&fit=crop&q=80&w=200'">
-                        </div>
-                        <div class="side-lead-content">
-                            <h4 class="side-lead-title">
-                                <a href="{{ route('post', $post->slug) }}">{{ $post->title }}</a>
-                            </h4>
-                            <div class="side-lead-time">
-                                <i class="fa-regular fa-clock"></i>
-                                <span>{{ $post->created_at->diffForHumans() }}</span>
+    <!-- ==========================================================================
+         The Daily Star Signature Main Broadsheet Stream with Persistent Right Rail
+         ========================================================================== -->
+    <div class="row g-4">
+        <!-- Main Content Area (8 Columns on Large Desktop) -->
+        <div class="col-lg-8 col-xl-8">
+            
+            <!-- 1. The Daily Star Signature Top Fold (Lead Story + Sub-Leads) -->
+            <div class="top-lead-grid">
+                <!-- Main Lead Story -->
+                <div>
+                    @if($leadPost)
+                        <article class="main-lead-card">
+                            <div class="main-lead-img-box">
+                                <span class="main-lead-badge">
+                                    {{ $leadPost->categories->first() ? $leadPost->categories->first()->name : 'শীর্ষ সংবাদ' }}
+                                </span>
+                                <img src="{{ $leadPost->featured_image_url }}" alt="{{ $leadPost->title }}" class="main-lead-img" onerror="this.src='https://images.unsplash.com/photo-1504711434969-e33886168f5c?auto=format&fit=crop&q=80&w=800'">
                             </div>
+                            <div class="main-lead-body">
+                                <div>
+                                    <h2 class="main-lead-headline">
+                                        <a href="{{ route('post', $leadPost->slug) }}">{{ $leadPost->title }}</a>
+                                    </h2>
+                                    <p class="main-lead-excerpt">
+                                        {!! Str::limit(strip_tags($leadPost->content), 220) !!}
+                                    </p>
+                                </div>
+                                <div class="main-lead-meta">
+                                    <span><i class="fa-solid fa-user-pen text-danger me-1"></i>{{ $leadPost->user ? $leadPost->user->name : 'ভোলা জার্নাল ডেস্ক' }}</span>
+                                    <span><i class="fa-regular fa-clock me-1"></i>{{ $leadPost->created_at->diffForHumans() }}</span>
+                                    <span><i class="fa-regular fa-eye me-1"></i>{{ $leadPost->views_count }} বার পঠিত</span>
+                                </div>
+                            </div>
+                        </article>
+                    @else
+                        <div class="p-4 text-center border rounded bg-white">
+                            <p class="text-muted m-0">কোন সংবাদ পাওয়া যায়নি।</p>
                         </div>
-                    </article>
-                @empty
-                    <p class="text-muted p-3 text-center">কোন খবর পাওয়া যায়নি।</p>
-                @endforelse
-            </div>
-        </div>
+                    @endif
+                </div>
 
-        <!-- Tabbed Widget Column (Latest / Popular) -->
-        <div>
-            <div class="tabbed-widget">
-                <div class="widget-tabs">
-                    <button class="widget-tab active" onclick="switchWidgetTab(event, 'widget-latest')">সর্বশেষ</button>
-                    <button class="widget-tab" onclick="switchWidgetTab(event, 'widget-popular')">পঠিত</button>
-                </div>
-                <!-- Latest News Tab -->
-                <div id="widget-latest" class="widget-content-pane active">
-                    <ul class="widget-list">
-                        @forelse($latestPosts->take(7) as $index => $post)
-                            <li class="widget-item">
-                                <div class="widget-img-box">
-                                    <img src="{{ $post->featured_image_url }}" alt="{{ $post->title }}" class="widget-img" onerror="this.src='https://images.unsplash.com/photo-1504711434969-e33886168f5c?auto=format&fit=crop&q=80&w=120'">
+                <!-- Sub-Leads List (3-4 Stories) -->
+                <div>
+                    <div class="sub-leads-card">
+                        <div class="sub-leads-header">
+                            <h3>শীর্ষ খবর</h3>
+                            <small class="text-muted"><i class="fa-solid fa-circle text-danger me-1" style="font-size: 0.55rem;"></i>তাজা খবর</small>
+                        </div>
+                        @forelse($subLeadPosts as $post)
+                            <article class="sub-lead-item">
+                                <div class="sub-lead-thumb-box">
+                                    <img src="{{ $post->featured_image_url }}" alt="{{ $post->title }}" class="sub-lead-thumb" onerror="this.src='https://images.unsplash.com/photo-1504711434969-e33886168f5c?auto=format&fit=crop&q=80&w=200'" loading="lazy">
                                 </div>
-                                <h5 class="widget-item-title">
-                                    <a href="{{ route('post', $post->slug) }}">{{ $post->title }}</a>
-                                </h5>
-                            </li>
-                        @empty
-                            <p class="text-muted p-2">কোনো খবর পাওয়া যায়নি।</p>
-                        @endforelse
-                    </ul>
-                </div>
-                <!-- Popular News Tab -->
-                <div id="widget-popular" class="widget-content-pane">
-                    <ul class="widget-list">
-                        @forelse($popularPosts->take(7) as $index => $post)
-                            <li class="widget-item">
-                                <div class="widget-img-box">
-                                    <img src="{{ $post->featured_image_url }}" alt="{{ $post->title }}" class="widget-img" onerror="this.src='https://images.unsplash.com/photo-1504711434969-e33886168f5c?auto=format&fit=crop&q=80&w=120'">
+                                <div class="sub-lead-info">
+                                    <h4 class="sub-lead-title">
+                                        <a href="{{ route('post', $post->slug) }}">{{ $post->title }}</a>
+                                    </h4>
+                                    <div class="sub-lead-time">
+                                        <i class="fa-regular fa-clock me-1"></i>{{ $post->created_at->diffForHumans() }}
+                                    </div>
                                 </div>
-                                <h5 class="widget-item-title">
-                                    <a href="{{ route('post', $post->slug) }}">{{ $post->title }}</a>
-                                </h5>
-                            </li>
+                            </article>
                         @empty
-                            <p class="text-muted p-2">কোনো খবর পাওয়া যায়নি।</p>
+                            <p class="text-muted py-2 m-0 text-center">শীর্ষ খবর পাওয়া যায়নি।</p>
                         @endforelse
-                    </ul>
+                    </div>
                 </div>
             </div>
-        </div>
-    </div>
 
-    <!-- Bhola District News Block -->
-    <div class="district-card">
-        <div class="district-header">
-            <i class="fa-solid fa-map-location-dot"></i>
-            <h3 class="district-title">ভোলা জেলার সংবাদ</h3>
-        </div>
-        <div class="district-selector-row">
-            <select class="district-select" id="upazilaSelect" onchange="loadUnions()">
-                <option value="">উপজেলা নির্বাচন করুন</option>
-                <option value="ভোলা সদর">ভোলা সদর</option>
-                <option value="চরফ্যাশন">চরফ্যাশন</option>
-                <option value="লালমোহন">লালমোহন</option>
-                <option value="বোরহানউদ্দিন">বোরহানউদ্দিন</option>
-                <option value="তজুমদ্দিন">তজুমদ্দিন</option>
-                <option value="দৌলতখান">দৌলতখান</option>
-                <option value="মনপুরা">মনপুরা</option>
-            </select>
-            <select class="district-select" id="unionSelect" disabled>
-                <option value="">ইউনিয়ন নির্বাচন করুন</option>
-            </select>
-            <button class="district-btn" onclick="searchBholaNews()"><i class="fa-solid fa-magnifying-glass me-1"></i>খুঁজুন</button>
-        </div>
-        <div class="district-quick-links">
-            <span class="district-quick-label">জনপ্রিয় উপজেলা:</span>
-            <a href="#" class="district-quick-link" onclick="selectQuickUpazila('ভোলা সদর')">ভোলা সদর</a>
-            <a href="#" class="district-quick-link" onclick="selectQuickUpazila('চরফ্যাশন')">চরফ্যাশন</a>
-            <a href="#" class="district-quick-link" onclick="selectQuickUpazila('লালমোহন')">লালমোহন</a>
-            <a href="#" class="district-quick-link" onclick="selectQuickUpazila('তজুমদ্দিন')">তজুমদ্দিন</a>
-            <a href="#" class="district-quick-link" onclick="selectQuickUpazila('বোরহানউদ্দিন')">বোরহানউদ্দিন</a>
-            <a href="#" class="district-quick-link" onclick="selectQuickUpazila('মনপুরা')">মনপুরা</a>
-            <a href="#" class="district-quick-link" onclick="selectQuickUpazila('দৌলতখান')">দৌলতখান</a>
-        </div>
-    </div>
+            <!-- 2. Bhola District Grassroots News Module (ভোলা জেলার সংবাদ) -->
+            <div class="district-news-bar">
+                <div class="district-news-header">
+                    <i class="fa-solid fa-map-location-dot"></i>
+                    <div>
+                        <h3 class="district-news-title">ভোলা জেলার সংবাদ</h3>
+                        <small class="text-muted">ভোলার ৭টি উপজেলার তৃণমূলের খবরাখবর</small>
+                    </div>
+                </div>
+                <div class="district-controls">
+                    <select class="district-select-box" id="upazilaSelect" onchange="loadUnions()">
+                        <option value="">উপজেলা নির্বাচন করুন</option>
+                        <option value="ভোলা সদর">ভোলা সদর</option>
+                        <option value="চরফ্যাশন">চরফ্যাশন</option>
+                        <option value="লালমোহন">লালমোহন</option>
+                        <option value="বোরহানউদ্দিন">বোরহানউদ্দিন</option>
+                        <option value="তজুমদ্দিন">তজুমদ্দিন</option>
+                        <option value="দৌলতখান">দৌলতখান</option>
+                        <option value="মনপুরা">মনপুরা</option>
+                    </select>
+                    <select class="district-select-box" id="unionSelect" disabled>
+                        <option value="">ইউনিয়ন নির্বাচন করুন</option>
+                    </select>
+                    <button class="district-search-btn" onclick="searchBholaNews()">
+                        <i class="fa-solid fa-magnifying-glass me-1"></i>খুঁজুন
+                    </button>
+                </div>
+                <div class="district-pills">
+                    <span class="fw-bold text-muted">উপজেলা:</span>
+                    <a href="{{ route('search') }}?query={{ urlencode('ভোলা সদর') }}" class="district-pill">ভোলা সদর</a>
+                    <a href="{{ route('search') }}?query={{ urlencode('চরফ্যাশন') }}" class="district-pill">চরফ্যাশন</a>
+                    <a href="{{ route('search') }}?query={{ urlencode('লালমোহন') }}" class="district-pill">লালমোহন</a>
+                    <a href="{{ route('search') }}?query={{ urlencode('বোরহানউদ্দিন') }}" class="district-pill">বোরহানউদ্দিন</a>
+                    <a href="{{ route('search') }}?query={{ urlencode('তজুমদ্দিন') }}" class="district-pill">তজুমদ্দিন</a>
+                    <a href="{{ route('search') }}?query={{ urlencode('মনপুরা') }}" class="district-pill">মনপুরা</a>
+                    <a href="{{ route('search') }}?query={{ urlencode('দৌলতখান') }}" class="district-pill">দৌলতখান</a>
+                </div>
+            </div>
 
-    <!-- Horizontal Leaderboard Ad slot -->
-    <div class="homepage-ad-banner">
-        <span class="homepage-ad-label">বিজ্ঞাপন</span>
-        <div class="homepage-ad-box-728">
-            <span>Responsive Leaderboard Ad Banner slot (728x90)</span>
-        </div>
-    </div>
+            <!-- 3. Mid-Leaderboard Ad Slot (728x90) -->
+            <div class="my-4 text-center">
+                <span style="font-size: 0.65rem; color: #94a3b8; text-transform: uppercase; letter-spacing: 1px; display: block; margin-bottom: 4px;">বিজ্ঞাপন</span>
+                <div style="width: 100%; height: 90px; background: #ffffff; border: 1px dashed #cbd5e1; border-radius: 6px; display: flex; flex-direction: column; align-items: center; justify-content: center; color: #94a3b8; font-size: 0.85rem;">
+                    <span class="fw-bold">বিজ্ঞাপনের জন্য স্থান নির্ধারিত (728x90)</span>
+                    <small style="color: #cbd5e1;">দৈনিক ভোলা জার্নাল ডিজিটাল বিজ্ঞাপন</small>
+                </div>
+            </div>
 
-    <!-- Categorized Blocks Alternating Grid Layouts (1+3 and 4-Column Grid) -->
-    <div class="row">
-        <!-- Main news stream -->
-        <div class="col-lg-9">
+            <!-- 4. Thematic Category Streams (Daily Star Signature Sections) -->
+            @php $sectionIndex = 0; @endphp
             @foreach($categoriesWithPosts as $cat)
                 @if($cat->posts->count() > 0)
                     <section class="mb-5">
-                        <div class="section-title-wrapper">
-                            <h3 class="sec-title">{{ $cat->name }}</h3>
-                            <a href="{{ route('category', $cat->slug) }}" class="sec-more-link">আরও খবর <i class="fa-solid fa-angle-right"></i></a>
+                        <div class="daily-star-section-head">
+                            <h3 class="daily-star-sec-title">
+                                <span>{{ $cat->display_name ?? $cat->name }}</span>
+                            </h3>
+                            <a href="{{ route('category', $cat->slug) }}" class="daily-star-more-link">
+                                <span>আরও খবর</span>
+                                <i class="fa-solid fa-angle-right"></i>
+                            </a>
                         </div>
-                        
-                        @if($loop->index % 2 == 0)
-                            <!-- 1+3 Grid Layout -->
-                            <div class="alternate-split-grid">
-                                <div class="alternate-split-left">
+
+                        @if($sectionIndex % 2 == 0)
+                            <!-- Layout Style A: 1 Lead + 3 Horizontal Cards -->
+                            <div class="cat-split-grid">
+                                <div class="cat-split-left d-flex flex-column">
                                     @php $firstPost = $cat->posts->first(); @endphp
                                     @if($firstPost)
-                                        <article class="lead-news-card">
-                                            <div class="lead-image-box" style="height: 250px;">
-                                                <img src="{{ $firstPost->featured_image_url }}" alt="{{ $firstPost->title }}" class="lead-image" onerror="this.src='https://images.unsplash.com/photo-1504711434969-e33886168f5c?auto=format&fit=crop&q=80&w=400'">
+                                        <article class="cat-lead-card">
+                                            <div class="cat-lead-img-box">
+                                                <img src="{{ $firstPost->featured_image_url }}" alt="{{ $firstPost->title }}" class="cat-lead-img" onerror="this.src='https://images.unsplash.com/photo-1504711434969-e33886168f5c?auto=format&fit=crop&q=80&w=500'" loading="lazy">
                                             </div>
-                                            <div class="lead-content">
-                                                <h4 class="lead-title" style="font-size: 1.3rem;">
+                                            <div class="cat-lead-content">
+                                                <h4 class="cat-lead-title">
                                                     <a href="{{ route('post', $firstPost->slug) }}">{{ $firstPost->title }}</a>
                                                 </h4>
-                                                <p class="lead-excerpt" style="-webkit-line-clamp: 2;">
+                                                <p class="cat-lead-excerpt">
                                                     {!! Str::limit(strip_tags($firstPost->content), 140) !!}
                                                 </p>
-                                                <div class="lead-meta">
-                                                    <span><i class="fa-regular fa-clock"></i> {{ $firstPost->created_at->format('d M, Y') }}</span>
-                                                    <span><i class="fa-regular fa-eye"></i> {{ $firstPost->views_count }} বার পঠিত</span>
+                                                <div class="d-flex align-items-center justify-content-between pt-2 border-top" style="font-size: 0.78rem; color: #94a3b8;">
+                                                    <span><i class="fa-regular fa-clock me-1"></i>{{ $firstPost->created_at->diffForHumans() }}</span>
+                                                    <span><i class="fa-regular fa-eye me-1"></i>{{ $firstPost->views_count }}</span>
                                                 </div>
                                             </div>
                                         </article>
                                     @endif
                                 </div>
-                                
-                                <div class="alternate-split-right">
+
+                                <div class="cat-side-list">
                                     @foreach($cat->posts->skip(1)->take(3) as $post)
-                                        <article class="split-horizontal-card">
-                                            <div class="side-lead-img-box">
-                                                <img src="{{ $post->featured_image_url }}" alt="{{ $post->title }}" class="side-lead-img" onerror="this.src='https://images.unsplash.com/photo-1504711434969-e33886168f5c?auto=format&fit=crop&q=80&w=200'">
+                                        <article class="cat-side-card">
+                                            <div class="cat-side-thumb-box">
+                                                <img src="{{ $post->featured_image_url }}" alt="{{ $post->title }}" class="cat-side-thumb" onerror="this.src='https://images.unsplash.com/photo-1504711434969-e33886168f5c?auto=format&fit=crop&q=80&w=200'" loading="lazy">
                                             </div>
-                                            <div class="side-lead-content">
-                                                <h4 class="side-lead-title" style="font-size: 0.92rem;">
+                                            <div class="cat-side-content">
+                                                <h4 class="cat-side-title">
                                                     <a href="{{ route('post', $post->slug) }}">{{ $post->title }}</a>
                                                 </h4>
-                                                <div class="side-lead-time">
-                                                    <i class="fa-regular fa-clock"></i>
-                                                    <span>{{ $post->created_at->format('d M, Y') }}</span>
-                                                </div>
+                                                <small class="text-muted" style="font-size: 0.76rem;">
+                                                    <i class="fa-regular fa-clock me-1"></i>{{ $post->created_at->diffForHumans() }}
+                                                </small>
                                             </div>
                                         </article>
                                     @endforeach
                                 </div>
                             </div>
                         @else
-                            <!-- Modern 4-Column Card Grid Layout -->
-                            <div class="grid-alternate-4">
+                            <!-- Layout Style B: 4-Column Card Grid -->
+                            <div class="cat-grid-4">
                                 @foreach($cat->posts->take(4) as $post)
-                                    <article class="news-grid-card">
-                                        <div class="news-grid-img-box">
-                                            <img src="{{ $post->featured_image_url }}" alt="{{ $post->title }}" class="news-grid-img" onerror="this.src='https://images.unsplash.com/photo-1504711434969-e33886168f5c?auto=format&fit=crop&q=80&w=400'">
+                                    <article class="cat-grid-card">
+                                        <div class="cat-grid-img-box">
+                                            <img src="{{ $post->featured_image_url }}" alt="{{ $post->title }}" class="cat-grid-img" onerror="this.src='https://images.unsplash.com/photo-1504711434969-e33886168f5c?auto=format&fit=crop&q=80&w=400'" loading="lazy">
                                         </div>
-                                        <div class="news-grid-content">
-                                            <h4 class="news-grid-title">
+                                        <div class="cat-grid-content">
+                                            <h4 class="cat-grid-title">
                                                 <a href="{{ route('post', $post->slug) }}">{{ $post->title }}</a>
                                             </h4>
-                                            <div class="news-grid-meta">
-                                                <span><i class="fa-regular fa-clock"></i> {{ $post->created_at->format('d M, Y') }}</span>
-                                                <span><i class="fa-regular fa-eye"></i> {{ $post->views_count }}</span>
+                                            <div class="d-flex align-items-center justify-content-between pt-2 border-top" style="font-size: 0.76rem; color: #94a3b8;">
+                                                <span><i class="fa-regular fa-clock me-1"></i>{{ $post->created_at->diffForHumans() }}</span>
+                                                <span><i class="fa-regular fa-eye me-1"></i>{{ $post->views_count }}</span>
                                             </div>
                                         </div>
                                     </article>
@@ -995,37 +839,52 @@
                             </div>
                         @endif
                     </section>
+                    @php $sectionIndex++; @endphp
                 @endif
             @endforeach
+
         </div>
 
-        <!-- Sidebar Column -->
-        <div class="col-lg-3">
+        <!-- Right Persistent Rail / Sidebar (4 Columns on Desktop) -->
+        <div class="col-lg-4 col-xl-4">
             @include('layouts.partials.sidebar')
         </div>
     </div>
 
-    <!-- Multimedia Video and Photo Gallery Showcase (Premium Dark Theme Container) -->
-    <div class="multimedia-section container-fluid">
-        <div class="multimedia-title-wrapper">
-            <h3 class="multimedia-title"><i class="fa-solid fa-circle-play me-2 text-danger"></i>ভিডিও ও ছবি</h3>
-            <a href="#" class="multimedia-more">আরও ভিডিও <i class="fa-solid fa-angle-right"></i></a>
+    <!-- ==========================================================================
+         Multimedia Showcase / Popular Highlights (Sleek Dark Theme)
+         ========================================================================== -->
+    <div class="multimedia-strip">
+        <div class="multimedia-strip-head">
+            <h3 class="multimedia-strip-title">
+                <i class="fa-solid fa-fire-flame-curved me-2 text-danger"></i>জনপ্রিয় সংবাদ
+            </h3>
+            <a href="#" class="daily-star-more-link text-white">
+                <span>আরও খবর</span>
+                <i class="fa-solid fa-angle-right ms-1"></i>
+            </a>
         </div>
-        <div class="multimedia-grid">
+        <div class="multimedia-grid-row">
             @forelse($popularPosts->take(4) as $post)
-                <article class="multimedia-card">
-                    <div class="multimedia-img-box">
-                        <img src="{{ $post->featured_image_url }}" alt="{{ $post->title }}" class="multimedia-img" onerror="this.src='https://images.unsplash.com/photo-1504711434969-e33886168f5c?auto=format&fit=crop&q=80&w=400'">
-                        <span class="multimedia-play-btn"><i class="fa-solid fa-play"></i></span>
+                <article class="multimedia-item-card">
+                    <div class="multimedia-thumb-container">
+                        <img src="{{ $post->featured_image_url }}" alt="{{ $post->title }}" class="multimedia-thumb-img" onerror="this.src='https://images.unsplash.com/photo-1504711434969-e33886168f5c?auto=format&fit=crop&q=80&w=400'" loading="lazy">
+                        <span class="main-lead-badge" style="top: 10px; left: 10px; font-size: 0.75rem; padding: 2px 8px;">
+                            {{ $post->categories->first()?->name ?? 'জনপ্রিয়' }}
+                        </span>
                     </div>
-                    <div class="multimedia-content">
-                        <h4 class="multimedia-card-title">
-                            <a href="{{ route('post', $post->slug) }}">{{ $post->title }}</a>
+                    <div class="p-3 flex-grow-1 d-flex flex-column justify-content-between">
+                        <h4 class="m-0" style="font-size: 0.94rem; font-weight: 700; color: #e2e8f0; line-height: 1.45; display: -webkit-box; -webkit-line-clamp: 2; -webkit-box-orient: vertical; overflow: hidden;">
+                            <a href="{{ route('post', $post->slug) }}" class="text-white hover-danger">{{ $post->title }}</a>
                         </h4>
+                        <div class="d-flex align-items-center justify-content-between mt-2 pt-2 border-top" style="border-color: rgba(255,255,255,0.1) !important; font-size: 0.76rem; color: #94a3b8;">
+                            <span><i class="fa-regular fa-clock me-1"></i>{{ $post->created_at->diffForHumans() }}</span>
+                            <span><i class="fa-regular fa-eye me-1"></i>{{ $post->views_count }}</span>
+                        </div>
                     </div>
                 </article>
             @empty
-                <p class="text-white-50 text-center py-4">কোন মাল্টিমিডিয়া কন্টেন্ট পাওয়া যায়নি।</p>
+                <p class="text-white-50 text-center py-4">কোন জনপ্রিয় সংবাদ পাওয়া যায়নি।</p>
             @endforelse
         </div>
     </div>
@@ -1034,26 +893,6 @@
 
 @section('scripts')
 <script>
-    // Tab switching logic for Latest/Popular news widget
-    function switchWidgetTab(event, tabId) {
-        // Prevent default button behavior
-        event.preventDefault();
-        
-        // Find the widget container
-        const widget = event.currentTarget.closest('.tabbed-widget');
-        
-        // Deactivate all tabs and tab content panes inside this widget
-        const tabs = widget.querySelectorAll('.widget-tab');
-        const panes = widget.querySelectorAll('.widget-content-pane');
-        
-        tabs.forEach(tab => tab.classList.remove('active'));
-        panes.forEach(pane => pane.classList.remove('active'));
-        
-        // Activate current tab and content pane
-        event.currentTarget.classList.add('active');
-        widget.querySelector(`#${tabId}`).classList.add('active');
-    }
-
     // Bhola district Upazilas and Unions data map
     const upazilaUnions = {
         "ভোলা সদর": ["পূর্ব ইলিশা", "পশ্চিম ইলিশা", "বাপ্তা", "ধনিয়া", "আলীনগর", "চরসামাইয়া", "ভেদুরিয়া", "চরশিবলি", "রাজাপুর", "উত্তর দিঘলদী", "দক্ষিণ দিঘলদী", "কাচিয়া", "শিবপুর"],
@@ -1070,7 +909,6 @@
         const unionSelect = document.getElementById('unionSelect');
         const selectedUpazila = upazilaSelect.value;
 
-        // Clear existing choices
         unionSelect.innerHTML = '<option value="">ইউনিয়ন নির্বাচন করুন</option>';
 
         if (selectedUpazila && upazilaUnions[selectedUpazila]) {
@@ -1088,12 +926,12 @@
 
     function searchBholaNews() {
         const unionSelect = document.getElementById('unionSelect');
-        const union = unionSelect.value;
+        const union = unionSelect ? unionSelect.value : '';
         if (union) {
             window.location.href = `{{ route('search') }}?query=${encodeURIComponent(union)}`;
         } else {
             const upazilaSelect = document.getElementById('upazilaSelect');
-            const upazila = upazilaSelect.value;
+            const upazila = upazilaSelect ? upazilaSelect.value : '';
             if (upazila) {
                 window.location.href = `{{ route('search') }}?query=${encodeURIComponent(upazila)}`;
             } else {

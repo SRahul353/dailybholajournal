@@ -633,6 +633,27 @@
                 </div>
             @endif
 
+            @if(session('error'))
+                <div class="alert alert-danger" style="background-color: rgba(239, 68, 68, 0.1); border: 1px solid rgba(239, 68, 68, 0.25); color: #dc2626; padding: 12px 16px; border-radius: var(--radius-sm); margin-bottom: 20px; display: flex; align-items: center; gap: 10px;">
+                    <i class="fa-solid fa-triangle-exclamation"></i>
+                    <span>{{ session('error') }}</span>
+                </div>
+            @endif
+
+            @if(isset($errors) && $errors->any())
+                <div class="alert alert-danger" style="background-color: rgba(239, 68, 68, 0.1); border: 1px solid rgba(239, 68, 68, 0.25); color: #dc2626; padding: 12px 16px; border-radius: var(--radius-sm); margin-bottom: 20px;">
+                    <div style="font-weight: 700; margin-bottom: 6px; display: flex; align-items: center; gap: 8px;">
+                        <i class="fa-solid fa-circle-exclamation"></i>
+                        <span>তথ্য সংরক্ষণে কিছু ত্রুটি পাওয়া গেছে:</span>
+                    </div>
+                    <ul class="mb-0 ps-3">
+                        @foreach($errors->all() as $err)
+                            <li>{{ $err }}</li>
+                        @endforeach
+                    </ul>
+                </div>
+            @endif
+
             @yield('content')
         </main>
     </div>

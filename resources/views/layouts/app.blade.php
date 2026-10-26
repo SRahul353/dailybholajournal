@@ -1,11 +1,11 @@
 @php
     $themeSettingsPath = storage_path('app/theme_settings.json');
     $themeSettings = [
-        'logo_text' => 'দৈনিক ভোলা<span>টাইমস্</span>',
+        'logo_text' => 'দৈনিক ভোলা<span>জার্নাল</span>',
         'logo_image' => '',
         'footer_logo_image' => '',
-        'primary_color' => '#1a1a2e',
-        'accent_color' => '#e70d0d',
+        'primary_color' => '#111827',
+        'accent_color' => '#c90000',
         'bg_site' => '#f0f1f5',
         'text_main' => '#1e1e2f',
         'font_family' => "'Noto Sans Bengali', 'Outfit', sans-serif",
@@ -120,13 +120,13 @@
             padding: 0 20px;
         }
 
-        /* Premium Header System */
+        /* Daily Star Premium Utility Top Bar */
         .top-bar {
-            background-color: var(--primary);
-            color: #ffffff;
+            background-color: #f8fafc;
+            color: #475569;
             font-size: 0.82rem;
-            padding: 10px 0;
-            border-bottom: 3px solid var(--accent);
+            padding: 8px 0;
+            border-bottom: 1px solid #e2e8f0;
             font-family: 'Noto Sans Bengali', sans-serif;
         }
 
@@ -140,6 +140,8 @@
             display: flex;
             align-items: center;
             gap: 8px;
+            color: #475569;
+            font-weight: 600;
         }
 
         .date-time i {
@@ -153,24 +155,24 @@
         }
 
         .top-nav-link {
-            color: #cbd5e1;
+            color: #475569;
             transition: var(--transition);
-            font-weight: 500;
+            font-weight: 600;
         }
 
         .top-nav-link:hover {
-            color: #ffffff;
+            color: var(--accent);
         }
 
         .top-socials {
             display: flex;
             gap: 12px;
-            border-left: 1px solid rgba(255, 255, 255, 0.15);
+            border-left: 1px solid #cbd5e1;
             padding-left: 12px;
         }
 
         .top-socials a {
-            color: #cbd5e1;
+            color: #64748b;
         }
 
         .top-socials a:hover {
@@ -326,21 +328,22 @@
             border-color: #94a3b8;
         }
 
-        /* Elegant Sticky Navigation */
+        /* Daily Star Signature Clean White Sticky Navigation */
         .nav-bar {
-            background-color: var(--accent);
+            background-color: #ffffff;
             position: sticky;
             top: 0;
             z-index: 1000;
-            box-shadow: 0 4px 12px rgba(231, 13, 13, 0.15);
-            border-bottom: none;
+            box-shadow: 0 2px 10px rgba(0, 0, 0, 0.05);
+            border-top: 1px solid #e5e7eb;
+            border-bottom: 2px solid var(--accent, #c90000);
         }
 
         .nav-container {
             display: flex;
             justify-content: space-between;
             align-items: center;
-            height: 52px;
+            height: 50px;
         }
 
         .nav-menu {
@@ -359,20 +362,20 @@
         .nav-link {
             display: flex;
             align-items: center;
-            padding: 0 16px;
+            padding: 0 13px;
             height: 100%;
             font-weight: 700;
             font-size: 1.02rem;
-            color: #ffffff;
+            color: #111827;
             transition: var(--transition);
             border-bottom: 3px solid transparent;
             font-family: 'Noto Sans Bengali', sans-serif;
         }
 
         .nav-link:hover, .nav-link.active {
-            color: #ffffff;
-            border-bottom-color: #ffffff;
-            background-color: rgba(255, 255, 255, 0.12);
+            color: var(--accent, #c90000);
+            border-bottom-color: var(--accent, #c90000);
+            background-color: transparent;
         }
 
         .nav-home-icon {
@@ -388,26 +391,26 @@
 
         .search-input {
             padding: 6px 14px 6px 36px;
-            border: 1px solid rgba(255,255,255,0.3);
+            border: 1px solid #d1d5db;
             border-radius: 50px;
             font-size: 0.85rem;
             outline: none;
             width: 170px;
             transition: var(--transition);
             font-family: inherit;
-            background-color: rgba(255,255,255,0.15);
-            color: #ffffff;
+            background-color: #f8fafc;
+            color: #111827;
         }
 
         .search-input:focus {
             width: 220px;
-            border-color: #ffffff;
-            box-shadow: 0 0 0 3px rgba(255, 255, 255, 0.2);
-            background-color: rgba(255,255,255,0.25);
+            border-color: var(--accent, #c90000);
+            box-shadow: 0 0 0 3px rgba(201, 0, 0, 0.1);
+            background-color: #ffffff;
         }
 
         .search-input::placeholder {
-            color: rgba(255,255,255,0.7);
+            color: #94a3b8;
         }
 
         .search-icon-btn {
@@ -415,13 +418,13 @@
             left: 12px;
             background: none;
             border: none;
-            color: rgba(255,255,255,0.7);
+            color: #64748b;
             cursor: pointer;
             outline: none;
         }
 
         .search-icon-btn:hover {
-            color: #ffffff;
+            color: var(--accent, #c90000);
         }
 
         /* Mobile Hamburger */

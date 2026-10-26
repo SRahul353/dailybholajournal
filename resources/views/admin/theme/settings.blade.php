@@ -335,7 +335,7 @@
                 </div>
                 
                 <!-- Hidden input to store serialized structure -->
-                <input type="hidden" name="menu_structure" id="menuStructureInput">
+                <input type="hidden" name="menu_structure" id="menuStructureInput" value="{{ json_encode($settings['menu_structure'] ?? []) }}">
                 <span class="form-text mt-3 d-block">যে ক্যাটাগরিগুলো মেনু লেআউটে সাজাবেন, শুধুমাত্র সেগুলোই হেডার মেনু এবং মোবাইল মেনুতে প্রদর্শিত হবে। কোনোটিই সাজানো না থাকলে ডিফল্টরূপে পোস্ট থাকা ক্যাটাগরিগুলো প্রদর্শিত হবে।</span>
             </div>
         </div>
@@ -346,7 +346,10 @@
                 <h4 class="mb-3 text-dark pb-2 border-bottom" style="font-size: 1.05rem; border-color: var(--border-color) !important;">
                     <i class="fa-solid fa-house-laptop text-danger me-2"></i>হোমপেজ ক্যাটাগরি লেআউট কনফিগারেশন (Drag & Drop Category Order)
                 </h4>
-                <span class="form-text mb-3 d-block text-muted" style="font-size: 0.88rem;">বাম দিকের তালিকা থেকে ক্যাটাগরিগুলো ডান দিকের "হোমপেজ লেআউট" এ যুক্ত করুন। ড্র্যাগ অ্যান্ড ড্রপ করে তাদের প্রদর্শনীর ক্রম সাজান। হোমপেজে এই ক্যাটাগরিগুলো ঠিক এই ক্রমানুসারে একের পর এক প্রদর্শিত হবে। কোনোটিই সাজানো না থাকলে হোমপেজে শুধুমাত্র শীর্ষ খবর ও সর্বশেষ খবর প্রদর্শিত হবে (কোনো ক্যাটাগরি ব্লক প্রদর্শিত হবে না)।</span>
+                <div class="alert alert-info py-2 px-3 d-flex align-items-center mb-3" style="font-size: 0.88rem; background-color: rgba(59, 130, 246, 0.08); border: 1px solid rgba(59, 130, 246, 0.2); color: #1e40af; border-radius: 6px;">
+                    <i class="fa-solid fa-circle-info me-2 fs-6"></i>
+                    <span><strong>কীভাবে কাজ করে:</strong> বাম দিকের তালিকা থেকে ক্যাটাগরি যুক্ত করুন এবং ডানদিকের "হোমপেজ লেআউট" এ ড্র্যাগ করে বা <strong>⬆️ উপরে / ⬇️ নিচে</strong> বাটনে ক্লিক করে ক্রম সাজান। যে ক্যাটাগরিগুলোতে অন্তত ১টি প্রকাশিত সংবাদ রয়েছে, সেগুলোই স্বয়ংক্রিয়ভাবে হোমপেজে এই ক্রমানুসারে দৃশ্যমান হবে।</span>
+                </div>
                 
                 <div class="row">
                     <!-- Left Column: Available Categories -->
@@ -375,7 +378,7 @@
                 </div>
                 
                 <!-- Hidden input to store serialized structure -->
-                <input type="hidden" name="homepage_categories" id="homepageCategoriesInput">
+                <input type="hidden" name="homepage_categories" id="homepageCategoriesInput" value="{{ json_encode($settings['homepage_categories'] ?? []) }}">
             </div>
         </div>
 
@@ -434,7 +437,7 @@
                     div.className = 'available-cat-item';
                     div.innerHTML = `
                         <span style="font-weight: 600; color: var(--text-dark);">${cat.name}</span>
-                        <button type="button" class="btn btn-secondary btn-sm p-1 px-2" onclick="addMenuItem(${cat.id}, '${cat.name.replace(/'/g, "\\'")}')">
+                        <button type="button" class="btn btn-secondary btn-sm p-1 px-2" onclick="addMenuItem(${cat.id})">
                             <i class="fa-solid fa-plus"></i>
                         </button>
                     `;
@@ -489,9 +492,12 @@
         }
 
         // Add menu item
-        window.addMenuItem = function (id, name) {
-            menuItems.push({ id: id, name: name, depth: 0 });
-            renderMenuBuilder();
+        window.addMenuItem = function (id) {
+            const cat = allCategories.find(c => parseInt(c.id) === parseInt(id));
+            if (cat) {
+                menuItems.push({ id: cat.id, name: cat.name, depth: 0 });
+                renderMenuBuilder();
+            }
         };
 
         // Remove menu item
@@ -514,27 +520,30 @@
         }
 
         // Initialize SortableJS for Menu Structure List
-        new Sortable(menuBuilderList, {
-            animation: 150,
-            handle: '.drag-handle',
-            ghostClass: 'bg-primary-subtle',
-            onEnd: function () {
-                // Read new DOM order
-                const reorderedItems = [];
-                menuBuilderList.querySelectorAll('li.menu-item-row').forEach(row => {
-                    const idx = parseInt(row.getAttribute('data-index'));
-                    reorderedItems.push(menuItems[idx]);
-                });
-                menuItems = reorderedItems;
-                
-                // First item can never be depth 1
-                if (menuItems.length > 0 && menuItems[0].depth === 1) {
-                    menuItems[0].depth = 0;
+        if (typeof Sortable !== 'undefined' && menuBuilderList) {
+            new Sortable(menuBuilderList, {
+                animation: 150,
+                handle: '.drag-handle',
+                ghostClass: 'bg-primary-subtle',
+                onEnd: function () {
+                    const reorderedItems = [];
+                    menuBuilderList.querySelectorAll('li.menu-item-row').forEach(row => {
+                        const id = parseInt(row.getAttribute('data-id'));
+                        const found = menuItems.find(c => parseInt(c.id) === id);
+                        if (found) reorderedItems.push(found);
+                    });
+                    if (reorderedItems.length === menuItems.length) {
+                        menuItems = reorderedItems;
+                    }
+                    
+                    if (menuItems.length > 0 && menuItems[0].depth === 1) {
+                        menuItems[0].depth = 0;
+                    }
+                    
+                    renderMenuBuilder();
                 }
-                
-                renderMenuBuilder();
-            }
-        });
+            });
+        }
 
         // First render
         renderMenuBuilder();
@@ -560,12 +569,18 @@
 
             // 1. Available categories
             allCategories.forEach(cat => {
-                if (!addedIds.includes(cat.id)) {
+                if (!addedIds.includes(parseInt(cat.id))) {
                     const div = document.createElement('div');
                     div.className = 'available-cat-item';
+                    const postCount = cat.posts_count !== undefined ? cat.posts_count : 0;
                     div.innerHTML = `
-                        <span style="font-weight: 600; color: var(--text-dark);">${cat.name}</span>
-                        <button type="button" class="btn btn-secondary btn-sm p-1 px-2" onclick="addHomeCategory(${cat.id}, '${cat.name.replace(/'/g, "\\'")}')">
+                        <div class="d-flex align-items-center gap-2">
+                            <span style="font-weight: 600; color: var(--text-dark);">${cat.name}</span>
+                            <span class="badge ${postCount > 0 ? 'bg-success' : 'bg-secondary'}" style="font-size: 0.68rem; font-weight: 500;">
+                                ${postCount}টি সংবাদ
+                            </span>
+                        </div>
+                        <button type="button" class="btn btn-secondary btn-sm p-1 px-2" onclick="addHomeCategory(${cat.id})" title="হোমপেজে যুক্ত করুন">
                             <i class="fa-solid fa-plus"></i>
                         </button>
                     `;
@@ -589,12 +604,25 @@
                     li.setAttribute('data-id', item.id);
                     li.setAttribute('data-index', index);
 
+                    const catObj = allCategories.find(c => parseInt(c.id) === parseInt(item.id));
+                    const postCount = catObj && catObj.posts_count !== undefined ? catObj.posts_count : 0;
+
                     li.innerHTML = `
-                        <div class="drag-handle"><i class="fa-solid fa-grip-vertical"></i></div>
+                        <div class="drag-handle" title="ড্র্যাগ করে সরান"><i class="fa-solid fa-grip-vertical"></i></div>
                         <div class="menu-item-title">
+                            <span class="text-muted me-2" style="font-size: 0.85rem; font-weight: 700;">#${index + 1}</span>
                             <span>${item.name}</span>
+                            <span class="badge ${postCount > 0 ? 'bg-success' : 'bg-warning text-dark'} ms-2" style="font-size: 0.68rem;">
+                                ${postCount > 0 ? postCount + 'টি সংবাদ' : 'কোনো পোস্ট নেই'}
+                            </span>
                         </div>
                         <div class="menu-item-actions">
+                            <button type="button" class="menu-btn" title="উপরে তুলুন" onclick="moveHomeCategory(${index}, -1)" ${index === 0 ? 'disabled style="opacity: 0.3; cursor: not-allowed;"' : ''}>
+                                <i class="fa-solid fa-arrow-up"></i>
+                            </button>
+                            <button type="button" class="menu-btn" title="নিচে নামান" onclick="moveHomeCategory(${index}, 1)" ${index === homeCategories.length - 1 ? 'disabled style="opacity: 0.3; cursor: not-allowed;"' : ''}>
+                                <i class="fa-solid fa-arrow-down"></i>
+                            </button>
                             <button type="button" class="menu-btn menu-btn-delete" title="মুছে ফেলুন" onclick="removeHomeCategory(${index})">
                                 <i class="fa-solid fa-trash-can"></i>
                             </button>
@@ -607,9 +635,12 @@
             updateHomeCategoriesInput();
         }
 
-        window.addHomeCategory = function (id, name) {
-            homeCategories.push({ id: id, name: name });
-            renderHomeCategoriesBuilder();
+        window.addHomeCategory = function (id) {
+            const cat = allCategories.find(c => parseInt(c.id) === parseInt(id));
+            if (cat) {
+                homeCategories.push({ id: cat.id, name: cat.name });
+                renderHomeCategoriesBuilder();
+            }
         };
 
         window.removeHomeCategory = function (index) {
@@ -617,24 +648,47 @@
             renderHomeCategoriesBuilder();
         };
 
+        window.moveHomeCategory = function (index, direction) {
+            const target = index + direction;
+            if (target < 0 || target >= homeCategories.length) return;
+            const temp = homeCategories[index];
+            homeCategories[index] = homeCategories[target];
+            homeCategories[target] = temp;
+            renderHomeCategoriesBuilder();
+        };
+
         function updateHomeCategoriesInput() {
             homepageCategoriesInput.value = JSON.stringify(homeCategories);
         }
 
-        new Sortable(homeCategoryList, {
-            animation: 150,
-            handle: '.drag-handle',
-            ghostClass: 'bg-primary-subtle',
-            onEnd: function () {
-                const reorderedItems = [];
-                homeCategoryList.querySelectorAll('li.menu-item-row').forEach(row => {
-                    const idx = parseInt(row.getAttribute('data-index'));
-                    reorderedItems.push(homeCategories[idx]);
-                });
-                homeCategories = reorderedItems;
-                renderHomeCategoriesBuilder();
-            }
-        });
+        if (typeof Sortable !== 'undefined' && homeCategoryList) {
+            new Sortable(homeCategoryList, {
+                animation: 150,
+                handle: '.drag-handle',
+                ghostClass: 'bg-primary-subtle',
+                onEnd: function () {
+                    const reorderedItems = [];
+                    homeCategoryList.querySelectorAll('li.menu-item-row').forEach(row => {
+                        const id = parseInt(row.getAttribute('data-id'));
+                        const found = homeCategories.find(c => parseInt(c.id) === id);
+                        if (found) reorderedItems.push(found);
+                    });
+                    if (reorderedItems.length === homeCategories.length) {
+                        homeCategories = reorderedItems;
+                    }
+                    renderHomeCategoriesBuilder();
+                }
+            });
+        }
+
+        // Ensure form submission always grabs the serialized arrays
+        const themeForm = document.querySelector('form');
+        if (themeForm) {
+            themeForm.addEventListener('submit', function() {
+                updateSerializedInput();
+                updateHomeCategoriesInput();
+            });
+        }
 
         // Initialize Home Categories builder
         renderHomeCategoriesBuilder();
