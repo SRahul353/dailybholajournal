@@ -16,7 +16,7 @@
         'social_youtube' => '#',
         'social_instagram' => '#',
         'contact_address' => 'বার্তা ও বাণিজ্যিক কার্যালয়- ভোলা সদর, ভোলা।',
-        'contact_phone' => '০১৭১১৪৬৯৫৩৯',
+        'contact_phone' => '01716-674375',
         'contact_email' => 'news.dailybholajournal@gmail.com',
         'editorial_board_president' => '',
         'editorial_publisher' => 'দৈনিক ভোলা জার্নাল প্রকাশনা পর্ষদ',
@@ -508,7 +508,7 @@
                                 </h1>
                                 <div style="font-family: 'Noto Sans Bengali', sans-serif; font-size: 0.75rem; font-weight: bold; width: 150px; text-align: right; line-height: 1.4;">
                                     প্রকাশক: সামস্-উল-আলম মিঠু<br>
-                                    facebook.com/BT.Bholatimes
+                                    facebook.com/dailybholajournal
                                 </div>
                             </div>
                             
@@ -700,7 +700,7 @@
 
                         <!-- Declaration Footer Page 4 -->
                         <div class="broadsheet-footer-brand">
-                            <span>বার্তা কক্ষ: {{ $themeSettings['contact_phone'] ?? '০১৭১১৪৬৯৫৩৯' }} | ইমেইল: {{ $themeSettings['contact_email'] ?? 'news.bholatimes@gmail.com' }}</span>
+                            <span>বার্তা কক্ষ: {{ $themeSettings['contact_phone'] ?? '01716-674375' }} | ইমেইল: {{ $themeSettings['contact_email'] ?? 'news.dailybholajournal@gmail.com' }}</span>
                             <span>দৈনিক ভোলা জার্নাল | পৃষ্ঠা ৪</span>
                         </div>
                     </div>

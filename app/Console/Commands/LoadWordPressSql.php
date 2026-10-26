@@ -26,7 +26,7 @@ class LoadWordPressSql extends Command
      */
     public function handle()
     {
-        $filePath = $this->argument('file') ?? 'D:\\FTP\\bholatimes\\Old_DB\\bilssknx_wp634.sql';
+        $filePath = $this->argument('file') ?? base_path('Old_DB/wp_database.sql');
 
         if (!file_exists($filePath)) {
             $this->error("SQL file not found at: {$filePath}");

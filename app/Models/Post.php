@@ -58,7 +58,7 @@ class Post extends Model
             return $this->featured_image;
         }
 
-        $siteUrl = rtrim(config('services.wordpress.site_url', env('WP_SITE_URL', 'https://www.bholatimes24.com')), '/');
+        $siteUrl = rtrim(config('services.wordpress.site_url', env('WP_SITE_URL', config('app.url', 'http://dailybholajournal.test'))), '/');
         
         // If it starts with wp-content or similar, prepend WP_SITE_URL
         if (Str::startsWith($this->featured_image, 'wp-content/')) {

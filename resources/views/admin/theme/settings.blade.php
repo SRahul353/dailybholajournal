@@ -1,6 +1,6 @@
 @extends('layouts.admin')
 
-@section('title', 'থিম ডিজাইন সেটিংস | দৈনিক ভোলা টাইমস্')
+@section('title', 'থিম ডিজাইন সেটিংস | দৈনিক ভোলা জার্নাল')
 @section('header_title', 'থিম ডিজাইন সেটিংস')
 
 @section('styles')
@@ -133,7 +133,7 @@
                     @if(!empty($settings['logo_image']))
                         <div class="mt-3 p-3 text-center" style="background-color: rgba(0,0,0,0.2); border: 1px solid rgba(255,255,255,0.05); border-radius: var(--radius-sm);">
                             <span class="d-block form-label mb-2" style="font-size: 0.85rem; color: var(--text-sub);">বর্তমান লোগো প্রিভিউ (Current Logo Preview)</span>
-                            <img src="{{ asset($settings['logo_image']) }}" alt="দৈনিক ভোলা টাইমস্ লোগো" style="max-height: 50px; background-color: white; padding: 8px; border-radius: 4px;">
+                            <img src="{{ asset($settings['logo_image']) }}" alt="দৈনিক ভোলা জার্নাল লোগো" style="max-height: 50px; background-color: white; padding: 8px; border-radius: 4px;">
                         </div>
                     @endif
                 </div>

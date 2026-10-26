@@ -21,9 +21,9 @@ class AdminUserSeeder extends Seeder
                 'password' => Hash::make('admin123'),
             ],
             [
-                'email' => 'admin@bholatimes24.com',
-                'name' => 'Administrator',
-                'role' => 'super_admin',
+                'email' => 'editor@dailybholajournal.com',
+                'name' => 'Editor',
+                'role' => 'admin',
                 'password' => Hash::make('admin123'),
             ]
         ];

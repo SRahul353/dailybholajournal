@@ -130,7 +130,7 @@
                 <div class="header-ad-frame text-end">
                     <span class="header-ad-label">বিজ্ঞাপন</span>
                     <div class="header-ad-box" style="width: 100%; max-width: 520px; height: 80px;">
-                        <span>বিজ্ঞাপনের জন্য যোগাযোগ করুন: {{ $themeSettings['contact_phone'] ?? '০১৭১১৪৬৯৫৩৯' }}</span>
+                        <span>বিজ্ঞাপনের জন্য যোগাযোগ করুন: {{ $themeSettings['contact_phone'] ?? '01716-674375' }}</span>
                     </div>
                 </div>
             </div>

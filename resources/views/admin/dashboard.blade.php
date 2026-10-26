@@ -1,6 +1,6 @@
 @extends('layouts.admin')
 
-@section('title', 'ড্যাশবোর্ড | অ্যাডমিন প্যানেল | দৈনিক ভোলা টাইমস্')
+@section('title', 'ড্যাশবোর্ড | অ্যাডমিন প্যানেল | দৈনিক ভোলা জার্নাল')
 @section('header_title', 'ড্যাশবোর্ড')
 
 @section('styles')

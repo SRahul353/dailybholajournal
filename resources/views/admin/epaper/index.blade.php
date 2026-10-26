@@ -13,7 +13,7 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>ই-পেপার লেআউট বিল্ডার | দৈনিক ভোলা টাইমস্</title>
+    <title>ই-পেপার লেআউট বিল্ডার | দৈনিক ভোলা জার্নাল</title>
     
     <!-- CSRF Token -->
     <meta name="csrf-token" content="{{ csrf_token() }}">
@@ -804,8 +804,8 @@
                                     <span>রেজিঃ নং ০১/১৬</span>
                                     <span>পৃষ্ঠা: ৪</span>
                                     <span>মূল্য: ৫ টাকা</span>
-                                    <span><i class="fa-brands fa-facebook text-primary"></i> facebook.com/BT.Bholatimes</span>
-                                    <span><i class="fa-solid fa-globe text-info"></i> www.bholatimes24.com</span>
+                                    <span><i class="fa-brands fa-facebook text-primary"></i> facebook.com/dailybholajournal</span>
+                                    <span><i class="fa-solid fa-globe text-info"></i> www.dailybholajournal.com</span>
                                 </div>
                             </header>
                             <div class="broadsheet-grid" id="grid1" style="padding: 0 10px 10px 10px;">
@@ -925,9 +925,9 @@
                                         <!-- Logo Area -->
                                         <div style="flex: 1; display: flex; align-items: center; justify-content: center; background-color: #ffffff; border: 2px solid #111111; border-left: none; border-bottom: none; border-top-right-radius: 4px;">
                                             @if(!empty($themeSettings['logo_image']))
-                                                <img src="{{ asset($themeSettings['logo_image']) }}" alt="দৈনিক ভোলা টাইমস্" style="max-height: 100px; max-width: 100%; object-fit: contain;">
+                                                <img src="{{ asset($themeSettings['logo_image']) }}" alt="দৈনিক ভোলা জার্নাল" style="max-height: 100px; max-width: 100%; object-fit: contain;">
                                             @else
-                                                <span style="font-size: 2.2rem; font-weight: 900; letter-spacing: -1px; color: #111111; line-height: 1;">দৈনিক ভোলা<span style="color: #dc2626;">টাইমস্</span></span>
+                                                <span style="font-size: 2.2rem; font-weight: 900; letter-spacing: -1px; color: #111111; line-height: 1;">দৈনিক ভোলা<span style="color: #dc2626;">জার্নাল</span></span>
                                             @endif
                                         </div>
                                     </div>
@@ -961,8 +961,8 @@
 
                             <!-- Footer Brand -->
                             <div style="border-top: 2px solid #111111; padding: 4px 0; display: flex; justify-content: space-between; font-size: 0.7rem; font-weight: bold; color: #333333; font-family: 'Noto Sans Bengali', sans-serif; margin-top: 5px;">
-                                <span>বার্তা কক্ষ: ০১৭১১৪৬৯৫৩৯ | ইমেইল: news.bholatimes@gmail.com</span>
-                                <span>দৈনিক ভোলা টাইমস্ | পৃষ্ঠা ৪</span>
+                                <span>বার্তা কক্ষ: 01716-674375 | ইমেইল: news.dailybholajournal@gmail.com</span>
+                                <span>দৈনিক ভোলা জার্নাল | পৃষ্ঠা ৪</span>
                             </div>
                         </div>
 

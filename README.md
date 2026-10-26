@@ -25,7 +25,7 @@ This project is hosted locally via Laravel Herd / XAMPP.
 
 ### Default Admin Credentials
 
-- **Email**: `admin@dailybholajournal.com` *(or `admin@bholatimes24.com`)*
+- **Email**: `admin@dailybholajournal.com`
 - **Password**: `admin123`
 
 ---

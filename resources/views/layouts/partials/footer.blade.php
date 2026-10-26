@@ -42,7 +42,7 @@
                             </li>
                             <li>
                                 <i class="fa-solid fa-phone"></i>
-                                <span>{{ $themeSettings['contact_phone'] ?? '০১৭১১৪৬৯৫৩৯' }}</span>
+                                <span>{{ $themeSettings['contact_phone'] ?? '01716-674375' }}</span>
                             </li>
                             <li>
                                 <i class="fa-solid fa-envelope"></i>

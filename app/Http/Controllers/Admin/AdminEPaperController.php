@@ -143,7 +143,7 @@ class AdminEPaperController extends Controller
      */
     public function proxyWPPosts(Request $request)
     {
-        $siteUrl = config('services.wordpress.site_url', env('WP_SITE_URL', 'https://www.bholatimes24.com'));
+        $siteUrl = config('services.wordpress.site_url', env('WP_SITE_URL', config('app.url', 'http://dailybholajournal.test')));
         
         $perPage = $request->input('per_page', 50);
         $search = $request->input('search', '');

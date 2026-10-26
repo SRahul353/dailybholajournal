@@ -87,7 +87,7 @@ class ImportWordPress extends Command
             
             // Protect admin password from being overwritten with WP phpass hash
             $password = $wpUser->user_pass;
-            if ($email === 'admin@bholatimes24.com') {
+            if ($email === 'admin@dailybholajournal.com') {
                 $password = \Illuminate\Support\Facades\Hash::make('admin123');
             }
             
@@ -302,7 +302,7 @@ class ImportWordPress extends Command
         }
 
         // Clean domain and make it root-relative
-        // e.g. "https://www.bholatimes24.com/wp-content/uploads/2023/10/img.jpg" -> "/wp-content/uploads/2023/10/img.jpg"
+        // e.g. "https://www.dailybholajournal.com/wp-content/uploads/2023/10/img.jpg" -> "/wp-content/uploads/2023/10/img.jpg"
         $path = $attachment->guid;
         $path = preg_replace('/https?:\/\/[^\/]+/', '', $path);
         

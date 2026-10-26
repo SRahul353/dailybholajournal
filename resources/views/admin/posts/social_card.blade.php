@@ -943,7 +943,7 @@
 
                 <!-- Advertisement bottom bar -->
                 <div class="full-width-ad-bar" id="main_ad_bar">
-                    <img src="https://bholatimes24.com/wp-content/uploads/2026/04/Gemini_Generated_Image_66o0b466o0b466o0-1.png" alt="Default Ad" crossorigin="anonymous">
+                    <img src="{{ asset('images/default-news.jpg') }}" alt="Default Ad" crossorigin="anonymous">
                 </div>
             </div>
         </div>
@@ -1077,7 +1077,7 @@
             defaultBtn.classList.add('active');
             sponsorBtn.classList.remove('active');
             container.style.display = 'none';
-            adImage.src = "https://bholatimes24.com/wp-content/uploads/2026/04/Gemini_Generated_Image_66o0b466o0b466o0-1.png";
+            adImage.src = "{{ asset('images/default-news.jpg') }}";
         } else {
             defaultBtn.classList.remove('active');
             sponsorBtn.classList.add('active');
@@ -1093,7 +1093,7 @@
         if (url) {
             adImage.src = url; 
         } else {
-            adImage.src = "https://bholatimes24.com/wp-content/uploads/2026/04/Gemini_Generated_Image_66o0b466o0b466o0-1.png";
+            adImage.src = "{{ asset('images/default-news.jpg') }}";
         }
     }
 
@@ -1232,7 +1232,7 @@
 
                 // Download JPG card
                 const link = document.createElement('a');
-                link.download = 'NewsCard-BholaTimes-{{ $post->id }}.jpg';
+                link.download = 'NewsCard-DailyBholaJournal-{{ $post->id }}.jpg';
                 link.href = canvas.toDataURL("image/jpeg", 0.95);
                 link.click();
 
@@ -1315,7 +1315,7 @@
                 }
 
                 const link = document.createElement('a');
-                link.download = 'NewsCard-BholaTimes-{{ $post->id }}.jpg';
+                link.download = 'NewsCard-DailyBholaJournal-{{ $post->id }}.jpg';
                 link.href = canvas.toDataURL("image/jpeg", 0.95);
                 link.click();
                 
