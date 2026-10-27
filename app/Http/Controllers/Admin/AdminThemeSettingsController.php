@@ -88,14 +88,14 @@ class AdminThemeSettingsController extends Controller
 
         $themeSettingsPath = storage_path('app/theme_settings.json');
         $settings = [
-            'logo_text' => 'ভোলা<span>টাইমস২৪</span>',
+            'logo_text' => 'দৈনিক ভোলা<span>জার্নাল</span>',
             'logo_image' => '',
             'footer_logo_image' => '',
-            'primary_color' => '#0a1128',
-            'accent_color' => '#e31c25',
-            'bg_site' => '#f3f4f6',
-            'text_main' => '#2b2d42',
-            'font_family' => "'Hind Siliguri', 'Outfit', sans-serif",
+            'primary_color' => '#111827',
+            'accent_color' => '#c90000',
+            'bg_site' => '#f4f5f8',
+            'text_main' => '#1f2937',
+            'font_family' => "'Noto Sans Bengali', 'Outfit', sans-serif",
             'custom_css' => '',
             'menu_structure' => [],
             'homepage_categories' => [],

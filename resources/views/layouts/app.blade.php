@@ -120,175 +120,222 @@
             padding: 0 20px;
         }
 
-        /* Daily Star Premium Utility Top Bar */
-        .top-bar {
-            background-color: #f8fafc;
-            color: #475569;
-            font-size: 0.82rem;
-            padding: 8px 0;
-            border-bottom: 1px solid #e2e8f0;
-            font-family: 'Noto Sans Bengali', sans-serif;
-        }
+        /* ==========================================================================
+           3-Column Newspaper Header (Masthead + Sticky Nav)
+           ========================================================================== */
 
-        .top-bar-content {
-            display: flex;
-            justify-content: space-between;
-            align-items: center;
-        }
-
-        .date-time {
-            display: flex;
-            align-items: center;
-            gap: 8px;
-            color: #475569;
-            font-weight: 600;
-        }
-
-        .date-time i {
-            color: var(--accent);
-        }
-
-        .top-nav-links {
-            display: flex;
-            align-items: center;
-            gap: 16px;
-        }
-
-        .top-nav-link {
-            color: #475569;
-            transition: var(--transition);
-            font-weight: 600;
-        }
-
-        .top-nav-link:hover {
-            color: var(--accent);
-        }
-
-        .top-socials {
-            display: flex;
-            gap: 12px;
-            border-left: 1px solid #cbd5e1;
-            padding-left: 12px;
-        }
-
-        .top-socials a {
-            color: #64748b;
-        }
-
-        .top-socials a:hover {
-            color: var(--accent);
-            transform: translateY(-1px);
-        }
-
+        /* ── Part 1: Masthead ── */
         .main-header {
             background-color: #ffffff;
-            padding: 24px 0;
-            border-bottom: 1px solid var(--border-color);
+            padding: 14px 0 10px;
+            border-bottom: 2px solid #e5e7eb;
         }
 
-        .header-masthead {
-            display: flex;
-            justify-content: space-between;
+        /* 3-column CSS Grid layout for desktop */
+        .masthead-grid {
+            display: grid;
+            grid-template-columns: 220px 1fr 300px;
+            gap: 24px;
             align-items: center;
         }
 
-        .masthead-left, .masthead-right {
-            flex: 1;
+        .masthead-col {
+            display: flex;
+            flex-direction: column;
+        }
+
+        /* COL 1 – Logo + date */
+        .masthead-col-logo {
+            align-items: flex-start;
+            gap: 8px;
+        }
+
+        .masthead-logo-link {
+            line-height: 1;
+        }
+
+        .masthead-logo-img {
+            max-height: 70px;
+            width: auto;
+            max-width: 100%;
+            object-fit: contain;
+            display: block;
+        }
+
+        .masthead-date-box {
             display: flex;
             align-items: center;
-        }
-
-        .masthead-right {
-            justify-content: flex-end;
-        }
-
-        .masthead-center {
-            flex: 2;
-        }
-
-        .masthead-btn {
-            background-color: #f1f2f6;
-            color: var(--text-main);
-            padding: 8px 16px;
-            border-radius: var(--radius-sm);
-            font-size: 0.85rem;
-            font-weight: 700;
-            transition: var(--transition);
-            border: 1px solid #e2e8f0;
+            flex-wrap: wrap;
+            font-size: 0.8rem;
+            color: #475569;
+            font-weight: 600;
             font-family: 'Noto Sans Bengali', sans-serif;
+            gap: 2px;
+            padding-top: 4px;
+        }
+
+        /* COL 2 – Quick links, social, search */
+        .masthead-col-center {
+            gap: 10px;
+            justify-content: center;
+            border-left: 1px solid #e5e7eb;
+            border-right: 1px solid #e5e7eb;
+            padding: 0 20px;
+        }
+
+        /* Quick links */
+        .masthead-quicklinks {
+            display: flex;
+            align-items: center;
+            gap: 4px;
+            flex-wrap: wrap;
+        }
+
+        .mql-item {
             display: inline-flex;
             align-items: center;
+            gap: 5px;
+            font-size: 0.82rem;
+            font-weight: 700;
+            color: #374151;
+            text-decoration: none;
+            padding: 4px 10px;
+            border-radius: 20px;
+            background: #f3f4f6;
+            transition: var(--transition);
+            font-family: 'Noto Sans Bengali', sans-serif;
+            white-space: nowrap;
         }
 
-        .masthead-btn:hover {
-            background-color: var(--accent);
+        .mql-item i {
+            color: var(--accent, #c90000);
+            font-size: 0.78rem;
+        }
+
+        .mql-item:hover {
+            background: var(--accent, #c90000);
             color: #ffffff;
-            border-color: var(--accent);
-            box-shadow: 0 4px 10px rgba(227, 28, 37, 0.15);
         }
 
-        .btn-epaper {
-            background-color: var(--accent);
+        .mql-item:hover i {
             color: #ffffff;
-            border-color: var(--accent);
         }
 
-        .btn-epaper:hover {
-            background-color: var(--accent-hover);
-            border-color: var(--accent-hover);
+        .mql-sep {
+            display: inline-block;
+            width: 1px;
+            height: 16px;
+            background: #d1d5db;
+            margin: 0 2px;
         }
 
-        .logo-wrapper {
+        /* Social + Search row */
+        .masthead-social-search {
             display: flex;
-            flex-direction: column;
+            align-items: center;
+            justify-content: space-between;
+            gap: 12px;
+        }
+
+        .masthead-social {
+            display: flex;
+            align-items: center;
+            gap: 6px;
+        }
+
+        .masthead-social-label {
+            font-size: 0.72rem;
+            color: #9ca3af;
+            font-weight: 600;
+            letter-spacing: 0.5px;
+            white-space: nowrap;
+            margin-right: 2px;
+            font-family: 'Noto Sans Bengali', sans-serif;
+        }
+
+        .msd-link {
+            width: 30px;
+            height: 30px;
+            display: inline-flex;
             align-items: center;
             justify-content: center;
-        }
-
-        .logo-text {
-            font-family: 'Noto Serif Bengali', serif;
-            font-size: 3.2rem;
-            font-weight: 900;
-            color: var(--primary);
-            letter-spacing: -1.5px;
-            line-height: 1;
-            margin: 0;
-        }
-
-        .logo-text span {
-            color: var(--accent);
-        }
-
-        .logo-tagline {
+            border-radius: 50%;
             font-size: 0.82rem;
-            color: var(--text-light);
-            font-weight: 600;
-            letter-spacing: 1px;
-            margin-top: 6px;
-            text-transform: uppercase;
+            text-decoration: none;
+            transition: var(--transition);
+            flex-shrink: 0;
         }
 
-        /* Mock Advertisement Banner */
-        .header-ad-frame {
+        .msd-fb  { background: #e7f0fb; color: #1877f2; }
+        .msd-x   { background: #f0f0f0; color: #111827; }
+        .msd-yt  { background: #fdecea; color: #ff0000; }
+        .msd-ig  { background: #fce7f3; color: #e1306c; }
+
+        .msd-link:hover {
+            transform: translateY(-2px);
+            box-shadow: 0 4px 8px rgba(0,0,0,0.12);
+        }
+
+        /* Masthead Search */
+        .masthead-search {
             display: flex;
-            flex-direction: column;
-            align-items: flex-end;
-            justify-content: center;
-            height: 100%;
+            align-items: center;
+            position: relative;
+            flex: 1;
+            max-width: 260px;
+        }
+
+        .masthead-search-input {
+            width: 100%;
+            padding: 7px 36px 7px 14px;
+            border: 1px solid #d1d5db;
+            border-radius: 50px;
+            font-size: 0.83rem;
+            outline: none;
+            background: #f8fafc;
+            color: #111827;
+            font-family: 'Noto Sans Bengali', sans-serif;
+            transition: var(--transition);
+        }
+
+        .masthead-search-input:focus {
+            border-color: var(--accent, #c90000);
+            background: #ffffff;
+            box-shadow: 0 0 0 3px rgba(201,0,0,0.08);
+        }
+
+        .masthead-search-btn {
+            position: absolute;
+            right: 10px;
+            background: none;
+            border: none;
+            padding: 0;
+            color: #9ca3af;
+            cursor: pointer;
+            font-size: 0.85rem;
+            transition: color 0.2s;
+        }
+
+        .masthead-search-btn:hover { color: var(--accent, #c90000); }
+
+        /* COL 3 – Ad */
+        .masthead-col-ad {
+            align-items: stretch;
+            gap: 4px;
         }
 
         .header-ad-label {
             font-size: 0.68rem;
-            color: var(--text-light);
+            color: #9ca3af;
             text-transform: uppercase;
-            margin-bottom: 3px;
             letter-spacing: 1px;
             font-weight: 600;
+            text-align: center;
         }
 
         .header-ad-box {
-            width: 728px;
-            height: 90px;
+            flex: 1;
+            min-height: 80px;
             background: linear-gradient(135deg, #f9fafb 0%, #f3f4f6 100%);
             border: 1px dashed #cbd5e1;
             display: flex;
@@ -302,6 +349,8 @@
             transition: var(--transition);
             position: relative;
             overflow: hidden;
+            text-align: center;
+            line-height: 1.5;
         }
 
         .header-ad-box::before {
@@ -317,9 +366,9 @@
         }
 
         @keyframes shineAd {
-            0% { left: -100px; }
-            15% { left: 100%; }
-            100% { left: 100%; }
+            0%   { left: -100px; }
+            15%  { left: 100%;   }
+            100% { left: 100%;   }
         }
 
         .header-ad-box:hover {
@@ -328,7 +377,29 @@
             border-color: #94a3b8;
         }
 
-        /* Daily Star Signature Clean White Sticky Navigation */
+        /* Logo text fallback */
+        .logo-text {
+            font-family: 'Noto Serif Bengali', serif;
+            font-size: 3.2rem;
+            font-weight: 900;
+            color: var(--primary);
+            letter-spacing: -1.5px;
+            line-height: 1;
+            margin: 0;
+        }
+
+        .logo-text span { color: var(--accent); }
+
+        .logo-tagline {
+            font-size: 0.82rem;
+            color: var(--text-light);
+            font-weight: 600;
+            letter-spacing: 1px;
+            margin-top: 6px;
+            text-transform: uppercase;
+        }
+
+        /* ── Part 2: Sticky Nav Bar ── */
         .nav-bar {
             background-color: #ffffff;
             position: sticky;
@@ -341,9 +412,9 @@
 
         .nav-container {
             display: flex;
-            justify-content: space-between;
             align-items: center;
-            height: 50px;
+            height: 48px;
+            gap: 4px;
         }
 
         .nav-menu {
@@ -353,6 +424,7 @@
             align-items: center;
             margin: 0;
             padding: 0;
+            flex-grow: 1;
         }
 
         .nav-item {
@@ -362,14 +434,15 @@
         .nav-link {
             display: flex;
             align-items: center;
-            padding: 0 13px;
+            padding: 0 11px;
             height: 100%;
             font-weight: 700;
-            font-size: 1.02rem;
+            font-size: 1rem;
             color: #111827;
             transition: var(--transition);
             border-bottom: 3px solid transparent;
             font-family: 'Noto Sans Bengali', sans-serif;
+            white-space: nowrap;
         }
 
         .nav-link:hover, .nav-link.active {
@@ -864,6 +937,22 @@
             }
             .main-header {
                 padding: 12px 0;
+            }
+            /* Collapse masthead grid to single column on mobile */
+            .masthead-grid {
+                grid-template-columns: 1fr;
+                gap: 0;
+            }
+            .masthead-col-logo {
+                align-items: center;
+                text-align: center;
+            }
+            .masthead-col-center,
+            .masthead-col-ad {
+                display: none; /* hidden on mobile; drawer handles these */
+            }
+            .masthead-date-box {
+                display: none; /* replaced by the separate mobile date bar */
             }
             .top-bar-content {
                 flex-direction: column;

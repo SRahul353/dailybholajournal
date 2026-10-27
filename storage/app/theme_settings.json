@@ -1,13 +1,13 @@
 {
     "logo_text": "দৈনিক ভোলা<span>জার্নাল<\/span>",
-    "logo_image": "",
-    "footer_logo_image": "",
-    "primary_color": "#111827",
+    "logo_image": "uploads\/logo_1793099131.png",
+    "footer_logo_image": "uploads\/footer_logo_1793099209.png",
+    "primary_color": "#f8fafc",
     "accent_color": "#c90000",
-    "bg_site": "#f4f5f8",
+    "bg_site": "#ffffff",
     "text_main": "#1f2937",
     "font_family": "'Noto Sans Bengali', 'Outfit', sans-serif",
-    "custom_css": "",
+    "custom_css": null,
     "menu_structure": [
         {
             "id": 2,

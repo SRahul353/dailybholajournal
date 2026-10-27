@@ -11,10 +11,10 @@
             <div class="footer-column-left">
                 <!-- Dynamic Footer Logo Option (Image logo or HTML text logo) -->
                 <div class="footer-logo mb-3">
-                    @if(!empty($themeSettings['footer_logo_image']))
-                        <img src="{{ asset($themeSettings['footer_logo_image']) }}" alt="দৈনিক ভোলা জার্নাল" style="max-height: 52px; display: inline-block;">
-                    @elseif(!empty($themeSettings['logo_image']))
-                        <img src="{{ asset($themeSettings['logo_image']) }}" alt="দৈনিক ভোলা জার্নাল" style="max-height: 52px; display: inline-block;">
+                    @if(!empty($themeSettings['footer_logo_image']) && file_exists(public_path($themeSettings['footer_logo_image'])))
+                        <img src="{{ asset($themeSettings['footer_logo_image']) }}?v={{ filemtime(public_path($themeSettings['footer_logo_image'])) }}" alt="দৈনিক ভোলা জার্নাল" style="max-height: 52px; width: auto; max-width: 100%; object-fit: contain; display: inline-block;">
+                    @elseif(!empty($themeSettings['logo_image']) && file_exists(public_path($themeSettings['logo_image'])))
+                        <img src="{{ asset($themeSettings['logo_image']) }}?v={{ filemtime(public_path($themeSettings['logo_image'])) }}" alt="দৈনিক ভোলা জার্নাল" style="max-height: 52px; width: auto; max-width: 100%; object-fit: contain; display: inline-block;">
                     @else
                         <h2 class="footer-brand-title" style="margin-bottom: 0;">{!! $themeSettings['logo_text'] ?? 'দৈনিক ভোলা<span>জার্নাল</span>' !!}</h2>
                     @endif
@@ -73,14 +73,15 @@
 <script>
     // Set formatted date in Bengali
     document.addEventListener('DOMContentLoaded', function() {
-        const dateSpan = document.getElementById('currentDate');
+        const dateSpans = document.querySelectorAll('#currentDate, .currentDateText');
         const options = { weekday: 'long', year: 'numeric', month: 'long', day: 'numeric' };
         const banglaDateFormatter = new Intl.DateTimeFormat('bn-BD', options);
-        if(dateSpan) dateSpan.textContent = banglaDateFormatter.format(new Date());
+        const formattedDate = banglaDateFormatter.format(new Date());
+        dateSpans.forEach(el => { el.textContent = formattedDate; });
 
         // Premium Bengali Calendar Date display (Revised Bangladeshi Calendar 2019)
-        const banglaDateSpan = document.getElementById('banglaDate');
-        if (banglaDateSpan) {
+        const banglaDateSpans = document.querySelectorAll('#banglaDate, .banglaDateText');
+        if (banglaDateSpans.length > 0) {
             function getBanglaDate(date) {
                 const d = date ? new Date(date) : new Date();
                 const day = d.getDate();
@@ -125,7 +126,8 @@
                 }
                 return `${toBanglaNumber(bnDay)} ${banglaMonths[bnMonth]} ${toBanglaNumber(bnYear)} বঙ্গাব্দ`;
             }
-            banglaDateSpan.textContent = getBanglaDate(new Date());
+            const bnCalendarFormatted = getBanglaDate(new Date());
+            banglaDateSpans.forEach(el => { el.textContent = bnCalendarFormatted; });
         }
 
         // Drawer Toggle Logic
