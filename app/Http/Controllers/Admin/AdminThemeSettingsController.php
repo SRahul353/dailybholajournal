@@ -28,6 +28,7 @@ class AdminThemeSettingsController extends Controller
             'custom_css' => '',
             'menu_structure' => [],
             'homepage_categories' => [],
+            'video_gallery' => [],
             'footer_text' => 'দৈনিক ভোলা জার্নাল জেলার শীর্ষস্থানীয় একটি অনলাইন সংবাদপত্র ও ডিজিটাল ই-পেপার। আমরা অত্যন্ত সততা, নিষ্ঠা ও নিরপেক্ষতার সাথে সব ধরণের স্থানীয় ও জাতীয় সংবাদ প্রকাশ করি।',
             'social_facebook' => '#',
             'social_twitter' => '#',
@@ -36,9 +37,8 @@ class AdminThemeSettingsController extends Controller
             'contact_address' => 'বার্তা ও বাণিজ্যিক কার্যালয়- ভোলা সদর, ভোলা।',
             'contact_phone' => '01716-674375',
             'contact_email' => 'news.dailybholajournal@gmail.com',
-            'editorial_board_president' => '',
-            'editorial_publisher' => 'দৈনিক ভোলা জার্নাল প্রকাশনা পর্ষদ',
-            'editorial_editor' => 'সম্পাদক',
+            'editorial_publisher' => 'সামিয়া তালুকদার',
+            'editorial_executive_editor' => 'ইসমাইল হোসেন আরিফ',
             'copyright_text' => 'দৈনিক ভোলা জার্নাল। সর্বস্বত্ব সংরক্ষিত।'
         ];
 
@@ -72,6 +72,7 @@ class AdminThemeSettingsController extends Controller
             'custom_css' => 'nullable|string',
             'menu_structure' => 'nullable|string',
             'homepage_categories' => 'nullable|string',
+            'video_gallery' => 'nullable|string',
             'footer_text' => 'nullable|string',
             'social_facebook' => 'nullable|string',
             'social_twitter' => 'nullable|string',
@@ -80,8 +81,9 @@ class AdminThemeSettingsController extends Controller
             'contact_address' => 'nullable|string',
             'contact_phone' => 'nullable|string',
             'contact_email' => 'nullable|string',
-            'editorial_board_president' => 'nullable|string',
             'editorial_publisher' => 'nullable|string',
+            'editorial_executive_editor' => 'nullable|string',
+            'editorial_board_president' => 'nullable|string',
             'editorial_editor' => 'nullable|string',
             'copyright_text' => 'nullable|string',
         ]);
@@ -99,6 +101,7 @@ class AdminThemeSettingsController extends Controller
             'custom_css' => '',
             'menu_structure' => [],
             'homepage_categories' => [],
+            'video_gallery' => [],
             'footer_text' => 'দৈনিক ভোলা জার্নাল জেলার শীর্ষস্থানীয় একটি অনলাইন সংবাদপত্র ও ডিজিটাল ই-পেপার। আমরা অত্যন্ত সততা, নিষ্ঠা ও নিরপেক্ষতার সাথে সব ধরণের স্থানীয় ও জাতীয় সংবাদ প্রকাশ করি।',
             'social_facebook' => '#',
             'social_twitter' => '#',
@@ -107,9 +110,8 @@ class AdminThemeSettingsController extends Controller
             'contact_address' => 'বার্তা ও বাণিজ্যিক কার্যালয়- ভোলা সদর, ভোলা।',
             'contact_phone' => '01716-674375',
             'contact_email' => 'news.dailybholajournal@gmail.com',
-            'editorial_board_president' => '',
-            'editorial_publisher' => 'দৈনিক ভোলা জার্নাল প্রকাশনা পর্ষদ',
-            'editorial_editor' => 'সম্পাদক',
+            'editorial_publisher' => 'সামিয়া তালুকদার',
+            'editorial_executive_editor' => 'ইসমাইল হোসেন আরিফ',
             'copyright_text' => 'দৈনিক ভোলা জার্নাল। সর্বস্বত্ব সংরক্ষিত।'
         ];
 
@@ -127,6 +129,7 @@ class AdminThemeSettingsController extends Controller
         $settings['custom_css'] = $request->custom_css;
         $settings['menu_structure'] = $request->filled('menu_structure') ? (json_decode($request->menu_structure, true) ?: []) : [];
         $settings['homepage_categories'] = $request->filled('homepage_categories') ? (json_decode($request->homepage_categories, true) ?: []) : [];
+        $settings['video_gallery'] = $request->filled('video_gallery') ? (json_decode($request->video_gallery, true) ?: []) : ($settings['video_gallery'] ?? []);
         $settings['footer_text'] = $request->footer_text ?? '';
         $settings['social_facebook'] = $request->social_facebook ?? '';
         $settings['social_twitter'] = $request->social_twitter ?? '';
@@ -135,8 +138,9 @@ class AdminThemeSettingsController extends Controller
         $settings['contact_address'] = $request->contact_address ?? '';
         $settings['contact_phone'] = $request->contact_phone ?? '';
         $settings['contact_email'] = $request->contact_email ?? '';
-        $settings['editorial_board_president'] = $request->editorial_board_president ?? '';
         $settings['editorial_publisher'] = $request->editorial_publisher ?? '';
+        $settings['editorial_executive_editor'] = $request->editorial_executive_editor ?? '';
+        $settings['editorial_board_president'] = $request->editorial_board_president ?? '';
         $settings['editorial_editor'] = $request->editorial_editor ?? '';
         $settings['copyright_text'] = $request->copyright_text ?? '';
 

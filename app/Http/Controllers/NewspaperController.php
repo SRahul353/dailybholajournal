@@ -84,11 +84,13 @@ class NewspaperController extends Controller
         $themeSettingsPath = storage_path('app/theme_settings.json');
         $homepageCategoryIds = [];
         $categoryNamesMap = [];
+        $categoryLayoutsMap = [];
         if (file_exists($themeSettingsPath)) {
             $themeSettings = json_decode(file_get_contents($themeSettingsPath), true);
             $homepageCategories = $themeSettings['homepage_categories'] ?? [];
             $homepageCategoryIds = collect($homepageCategories)->pluck('id')->map(fn($id) => (int)$id)->toArray();
             $categoryNamesMap = collect($homepageCategories)->pluck('name', 'id')->toArray();
+            $categoryLayoutsMap = collect($homepageCategories)->pluck('layout', 'id')->toArray();
         }
 
         if (!empty($homepageCategoryIds)) {
@@ -99,9 +101,10 @@ class NewspaperController extends Controller
                         ->limit(6);
                 }])
                 ->get()
-                ->map(function($category) use ($leadPostId, $categoryNamesMap) {
-                    // Attach custom display name from theme settings if defined
+                ->map(function($category) use ($leadPostId, $categoryNamesMap, $categoryLayoutsMap) {
+                    // Attach custom display name and grid layout from theme settings if defined
                     $category->display_name = $categoryNamesMap[$category->id] ?? $category->name;
+                    $category->layout = $categoryLayoutsMap[$category->id] ?? 'style_a';
 
                     // If category has multiple posts, exclude leadPostId to avoid duplicating the lead story
                     if ($category->posts->count() > 1 && $leadPostId) {
@@ -121,10 +124,41 @@ class NewspaperController extends Controller
                         ->limit(5);
                 }])
                 ->limit(8)
-                ->get();
+                ->get()
+                ->map(function($category) {
+                    $category->layout = 'style_a';
+                    return $category;
+                });
         }
 
-        return view('home', compact('leadPost', 'subLeadPosts', 'latestPosts', 'popularPosts', 'categoriesWithPosts'));
+        // 6. YouTube Video Gallery (load from settings, with fallback demo videos)
+        $videoGallery = $themeSettings['video_gallery'] ?? [];
+        if (empty($videoGallery)) {
+            $videoGallery = [
+                [
+                    'title' => 'ভোলা-বরিশাল সেতু নির্মাণ প্রকল্প ও নদীভাঙন রোধে মেঘনার তীরে আধুনিক ব্লক বাঁধ',
+                    'youtube_url' => 'https://www.youtube.com/watch?v=ScMzIvxBSi4',
+                    'video_id' => 'ScMzIvxBSi4'
+                ],
+                [
+                    'title' => 'ইলিশের মৌসুমে ভোলার মেঘনা ও তেঁতুলিয়া নদীতে জেলেদের ব্যস্ততা ও মাছের বাজার',
+                    'youtube_url' => 'https://www.youtube.com/watch?v=kJQP7kiw5Fk',
+                    'video_id' => 'kJQP7kiw5Fk'
+                ],
+                [
+                    'title' => 'উপকূলীয় চরাঞ্চলে আধুনিক কৃষি বিপ্লব ও মহিষের বাথানে খামারিদের সাফল্য',
+                    'youtube_url' => 'https://www.youtube.com/watch?v=9bZkp7q19f0',
+                    'video_id' => '9bZkp7q19f0'
+                ],
+                [
+                    'title' => 'দ্বীপজেলা ভোলার গ্যাস পাইপলাইনের বিস্তার ও স্থানীয় অর্থনীতিতে নতুন সম্ভাবনা',
+                    'youtube_url' => 'https://www.youtube.com/watch?v=JGwWNGJdvx8',
+                    'video_id' => 'JGwWNGJdvx8'
+                ]
+            ];
+        }
+
+        return view('home', compact('leadPost', 'subLeadPosts', 'latestPosts', 'popularPosts', 'categoriesWithPosts', 'videoGallery'));
     }
 
     /**
@@ -160,7 +194,22 @@ class NewspaperController extends Controller
             ->limit(4)
             ->get();
 
-        // Top 5 popular posts for the single post page sidebar
+        // If fewer than 4 related posts, pad with latest news
+        if ($relatedPosts->count() < 4) {
+            $fallbackPosts = Post::where('status', 'publish')
+                ->where('id', '!=', $post->id)
+                ->whereNotIn('id', $relatedPosts->pluck('id'))
+                ->latest()
+                ->limit(4 - $relatedPosts->count())
+                ->get();
+            $relatedPosts = $relatedPosts->merge($fallbackPosts);
+        }
+
+        // Previous and Next Articles for reading flow
+        $prevPost = Post::where('status', 'publish')->where('id', '<', $post->id)->orderBy('id', 'desc')->first();
+        $nextPost = Post::where('status', 'publish')->where('id', '>', $post->id)->orderBy('id', 'asc')->first();
+
+        // Top 5 popular posts for sidebar
         $popularPosts = Post::where('status', 'publish')
             ->where('id', '!=', $post->id)
             ->orderBy('views_count', 'desc')
@@ -168,7 +217,7 @@ class NewspaperController extends Controller
             ->limit(5)
             ->get();
 
-        return view('posts.show', compact('post', 'relatedPosts', 'popularPosts'));
+        return view('posts.show', compact('post', 'relatedPosts', 'popularPosts', 'prevPost', 'nextPost'));
     }
 
     /**
@@ -184,11 +233,14 @@ class NewspaperController extends Controller
                 $query->where('slug', $slug)
                       ->orWhere('slug', $decoded)
                       ->orWhere('slug', $encoded)
-                      ->orWhere('slug', $rawencoded);
+                      ->orWhere('slug', $rawencoded)
+                      ->orWhere('name', $slug)
+                      ->orWhere('name', $decoded);
             })
             ->firstOrFail();
 
         $posts = $category->posts()
+            ->with(['categories', 'user'])
             ->where('status', 'publish')
             ->latest()
             ->paginate(12);
@@ -204,20 +256,61 @@ class NewspaperController extends Controller
     }
 
     /**
+     * Display posts by tag.
+     */
+    public function tag($slug)
+    {
+        $decoded = urldecode($slug);
+        $encoded = urlencode($slug);
+        $rawencoded = rawurlencode($slug);
+
+        $tag = Tag::where(function($query) use ($slug, $decoded, $encoded, $rawencoded) {
+                $query->where('slug', $slug)
+                      ->orWhere('slug', $decoded)
+                      ->orWhere('slug', $encoded)
+                      ->orWhere('slug', $rawencoded)
+                      ->orWhere('name', $slug)
+                      ->orWhere('name', $decoded);
+            })
+            ->firstOrFail();
+
+        $posts = $tag->posts()
+            ->with(['categories', 'user'])
+            ->where('status', 'publish')
+            ->latest()
+            ->paginate(12);
+
+        // Fetch sidebar trending posts
+        $popularPosts = Post::where('status', 'publish')
+            ->orderBy('views_count', 'desc')
+            ->latest()
+            ->limit(5)
+            ->get();
+
+        return view('posts.tag', compact('tag', 'posts', 'popularPosts'));
+    }
+
+    /**
      * Search for news articles.
      */
     public function search(Request $request)
     {
-        $query = $request->input('query');
+        $query = trim($request->input('query') ?: $request->input('q', ''));
         
-        $posts = Post::with('categories')
-            ->where('status', 'publish')
-            ->where(function($q) use ($query) {
+        $postsQuery = Post::with(['categories', 'user'])
+            ->where('status', 'publish');
+
+        if (!empty($query)) {
+            $postsQuery->where(function($q) use ($query) {
                 $q->where('title', 'like', "%{$query}%")
-                  ->orWhere('content', 'like', "%{$query}%");
-            })
-            ->latest()
-            ->paginate(12);
+                  ->orWhere('content', 'like', "%{$query}%")
+                  ->orWhereHas('tags', function($tq) use ($query) {
+                      $tq->where('name', 'like', "%{$query}%");
+                  });
+            });
+        }
+
+        $posts = $postsQuery->latest()->paginate(12);
 
         $popularPosts = Post::where('status', 'publish')
             ->orderBy('views_count', 'desc')
@@ -307,5 +400,71 @@ class NewspaperController extends Controller
         $formattedEPaperHeaderDate = \App\Helpers\BanglaDateHelper::getFormattedEPaperDate($selectedDate);
 
         return view('epaper.show', compact('pagesData', 'selectedDate', 'hasSavedEPaper', 'formattedDate', 'formattedEPaperHeaderDate'));
+    }
+
+    /**
+     * Display the Privacy Policy page (Bilingual: Bangla & English).
+     */
+    public function privacyPolicy()
+    {
+        $themeSettingsPath = storage_path('app/theme_settings.json');
+        $themeSettings = file_exists($themeSettingsPath) ? json_decode(file_get_contents($themeSettingsPath), true) : [];
+
+        return view('pages.privacy-policy', compact('themeSettings'));
+    }
+
+    /**
+     * Display the About Us page (Bilingual: Bangla & English).
+     */
+    public function aboutUs()
+    {
+        $themeSettingsPath = storage_path('app/theme_settings.json');
+        $themeSettings = file_exists($themeSettingsPath) ? json_decode(file_get_contents($themeSettingsPath), true) : [];
+
+        return view('pages.about-us', compact('themeSettings'));
+    }
+
+    /**
+     * Display the Terms of Use / Terms and Conditions page (Bilingual).
+     */
+    public function termsOfUse()
+    {
+        $themeSettingsPath = storage_path('app/theme_settings.json');
+        $themeSettings = file_exists($themeSettingsPath) ? json_decode(file_get_contents($themeSettingsPath), true) : [];
+
+        return view('pages.terms-of-use', compact('themeSettings'));
+    }
+
+    /**
+     * Display the Comment Policy page (Bilingual).
+     */
+    public function commentPolicy()
+    {
+        $themeSettingsPath = storage_path('app/theme_settings.json');
+        $themeSettings = file_exists($themeSettingsPath) ? json_decode(file_get_contents($themeSettingsPath), true) : [];
+
+        return view('pages.comment-policy', compact('themeSettings'));
+    }
+
+    /**
+     * Display the Editorial Policy & Disclaimer page (Bilingual).
+     */
+    public function editorialPolicy()
+    {
+        $themeSettingsPath = storage_path('app/theme_settings.json');
+        $themeSettings = file_exists($themeSettingsPath) ? json_decode(file_get_contents($themeSettingsPath), true) : [];
+
+        return view('pages.editorial-policy', compact('themeSettings'));
+    }
+
+    /**
+     * Display the Contact & Our Family page.
+     */
+    public function contact()
+    {
+        $themeSettingsPath = storage_path('app/theme_settings.json');
+        $themeSettings = file_exists($themeSettingsPath) ? json_decode(file_get_contents($themeSettingsPath), true) : [];
+
+        return view('pages.contact', compact('themeSettings'));
     }
 }

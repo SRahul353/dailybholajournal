@@ -243,19 +243,13 @@
                         </div>
 
                         <div class="row mt-3">
-                            <div class="col-12 form-group">
-                                <label class="form-label" for="editorial_board_president">সম্পাদক মণ্ডলীর সভাপতি (Editorial Board President)</label>
-                                <input type="text" name="editorial_board_president" id="editorial_board_president" class="form-control" value="{{ old('editorial_board_president', $settings['editorial_board_president'] ?? '') }}">
-                            </div>
-                        </div>
-                        <div class="row mt-3">
                             <div class="col-sm-6 form-group">
-                                <label class="form-label" for="editorial_publisher">প্রধান সম্পাদক ও প্রকাশক (Chief Editor & Publisher)</label>
-                                <input type="text" name="editorial_publisher" id="editorial_publisher" class="form-control" value="{{ old('editorial_publisher', $settings['editorial_publisher'] ?? '') }}">
+                                <label class="form-label" for="editorial_publisher">প্রকাশক (Publisher)</label>
+                                <input type="text" name="editorial_publisher" id="editorial_publisher" class="form-control" value="{{ old('editorial_publisher', $settings['editorial_publisher'] ?? 'সামিয়া তালুকদার') }}">
                             </div>
                             <div class="col-sm-6 form-group">
-                                <label class="form-label" for="editorial_editor">ভারপ্রাপ্ত সম্পাদক (Acting Editor)</label>
-                                <input type="text" name="editorial_editor" id="editorial_editor" class="form-control" value="{{ old('editorial_editor', $settings['editorial_editor'] ?? '') }}">
+                                <label class="form-label" for="editorial_executive_editor">নির্বাহী সম্পাদক (Executive Editor)</label>
+                                <input type="text" name="editorial_executive_editor" id="editorial_executive_editor" class="form-control" value="{{ old('editorial_executive_editor', $settings['editorial_executive_editor'] ?? 'ইসমাইল হোসেন আরিফ') }}">
                             </div>
                         </div>
                     </div>
@@ -344,11 +338,19 @@
         <div class="row mt-4">
             <div class="col-12 form-group">
                 <h4 class="mb-3 text-dark pb-2 border-bottom" style="font-size: 1.05rem; border-color: var(--border-color) !important;">
-                    <i class="fa-solid fa-house-laptop text-danger me-2"></i>হোমপেজ ক্যাটাগরি লেআউট কনফিগারেশন (Drag & Drop Category Order)
+                    <i class="fa-solid fa-house-laptop text-danger me-2"></i>হোমপেজ ক্যাটাগরি লেআউট কনফিগারেশন (Homepage Category Blocks & Grid Selector)
                 </h4>
-                <div class="alert alert-info py-2 px-3 d-flex align-items-center mb-3" style="font-size: 0.88rem; background-color: rgba(59, 130, 246, 0.08); border: 1px solid rgba(59, 130, 246, 0.2); color: #1e40af; border-radius: 6px;">
-                    <i class="fa-solid fa-circle-info me-2 fs-6"></i>
-                    <span><strong>কীভাবে কাজ করে:</strong> বাম দিকের তালিকা থেকে ক্যাটাগরি যুক্ত করুন এবং ডানদিকের "হোমপেজ লেআউট" এ ড্র্যাগ করে বা <strong>⬆️ উপরে / ⬇️ নিচে</strong> বাটনে ক্লিক করে ক্রম সাজান। যে ক্যাটাগরিগুলোতে অন্তত ১টি প্রকাশিত সংবাদ রয়েছে, সেগুলোই স্বয়ংক্রিয়ভাবে হোমপেজে এই ক্রমানুসারে দৃশ্যমান হবে।</span>
+                <div class="alert alert-info py-2 px-3 mb-3" style="font-size: 0.88rem; background-color: rgba(59, 130, 246, 0.08); border: 1px solid rgba(59, 130, 246, 0.2); color: #1e40af; border-radius: 6px;">
+                    <div class="d-flex align-items-center mb-1">
+                        <i class="fa-solid fa-circle-info me-2 fs-6"></i>
+                        <strong>কীভাবে সাজাবেন ও ৩টি গ্রিড লেআউট নির্বাচন করবেন:</strong>
+                    </div>
+                    <ul class="mb-0 ps-4" style="font-size: 0.83rem; line-height: 1.6;">
+                        <li>বাম দিকের তালিকা থেকে ক্যাটাগরি যুক্ত করুন এবং ড্র্যাগ বা ⬆️/⬇️ করে ক্রম নির্ধারণ করুন।</li>
+                        <li><strong>লেআউট ১ (১ লিড + ৩ সাইড কার্ড):</strong> ১টি বড় লিড ইমেজ সহ হাইলাইট এবং পাশে ৩টি অনুভূমিক কার্ড (জাতীয়, রাজনীতি, অপরাধের জন্য সেরা)।</li>
+                        <li><strong>লেআউট ২ (৪-কলাম সমমানের গ্রিড):</strong> ৪টি সমমানের রেসপন্সিভ কার্ড পাশাপাশি (খেলাধুলা, বিনোদন, বাণিজ্যের জন্য সেরা)।</li>
+                        <li><strong>লেআউট ৩ (২ ফিচার্ড + ৩ হেডলাইন):</strong> ২টি বড় ফিচার্ড কার্ড এবং নিচে ৩টি কুইক হেডলাইন স্ট্রিপ (আন্তর্জাতিক, তথ্যপ্রযুক্তি, জীবনযাপনের জন্য সেরা)।</li>
+                    </ul>
                 </div>
                 
                 <div class="row">
@@ -364,7 +366,7 @@
                     
                     <!-- Right Column: Home Category Layout Order -->
                     <div class="col-md-8">
-                        <label class="form-label" style="font-weight: 700; color: var(--accent);"><i class="fa-solid fa-layer-group me-1"></i>হোমপেজ লেআউট (Homepage Layout Order)</label>
+                        <label class="form-label" style="font-weight: 700; color: var(--accent);"><i class="fa-solid fa-layer-group me-1"></i>হোমপেজ লেআউট ও গ্রিড স্টাইল (Homepage Layout Order & Grid Style)</label>
                         <div class="p-3" style="background-color: #f8fafc; border: 1px solid var(--border-color); border-radius: var(--radius-md); min-height: 250px;">
                             <ul class="list-unstyled d-flex flex-column gap-2 mb-0" id="homeCategoryList">
                                 <!-- Rendered dynamically by JavaScript -->
@@ -379,6 +381,51 @@
                 
                 <!-- Hidden input to store serialized structure -->
                 <input type="hidden" name="homepage_categories" id="homepageCategoriesInput" value="{{ json_encode($settings['homepage_categories'] ?? []) }}">
+            </div>
+        </div>
+
+        <!-- YouTube Video Gallery Manager -->
+        <div class="row mt-4" id="videoGallerySection">
+            <div class="col-12 form-group">
+                <h4 class="mb-3 text-dark pb-2 border-bottom" style="font-size: 1.05rem; border-color: var(--border-color) !important;">
+                    <i class="fa-brands fa-youtube text-danger me-2"></i>ইউটিউব ভিডিও গ্যালারি ম্যানেজমেন্ট (YouTube Video Gallery Manager)
+                </h4>
+                <div class="alert alert-info py-2 px-3 mb-3" style="font-size: 0.88rem; background-color: rgba(239, 68, 68, 0.08); border: 1px solid rgba(239, 68, 68, 0.2); color: #991b1b; border-radius: 6px;">
+                    <i class="fa-brands fa-youtube me-2 fs-6"></i>
+                    <span><strong>কীভাবে কাজ করে:</strong> হোমপেজের ভিডিও গ্যালারিতে দেখানোর জন্য যেকোনো ইউটিউব ভিডিওর লিংক দিন। লিংক থেকে স্বয়ংক্রিয়ভাবে ভিডিও আইডি ও থাম্বনেইল চলে আসবে। যেকোনো পাঠক ক্লিক করলেই পপআপ প্লেয়ারে ভিডিও দেখতে পারবেন।</span>
+                </div>
+
+                <div class="p-3 mb-3" style="background-color: #f8fafc; border: 1px solid var(--border-color); border-radius: var(--radius-md);">
+                    <div class="row g-2 align-items-end">
+                        <div class="col-md-5">
+                            <label class="form-label small fw-bold mb-1">ভিডিওর শিরোনাম (Video Title)</label>
+                            <input type="text" id="newVideoTitle" class="form-control form-control-sm" placeholder="যেমন: ভোলা-বরিশাল সেতু নির্মাণ প্রকল্পের অগ্রগতি">
+                        </div>
+                        <div class="col-md-5">
+                            <label class="form-label small fw-bold mb-1">ইউটিউব লিংক (YouTube URL or ID)</label>
+                            <input type="text" id="newVideoUrl" class="form-control form-control-sm" placeholder="যেমন: https://www.youtube.com/watch?v=... বা https://youtu.be/...">
+                        </div>
+                        <div class="col-md-2">
+                            <button type="button" class="btn btn-danger btn-sm w-100 fw-bold" onclick="addYouTubeVideo()">
+                                <i class="fa-solid fa-plus me-1"></i>ভিডিও যুক্ত করুন
+                            </button>
+                        </div>
+                    </div>
+                </div>
+
+                <!-- Video List Table / Cards -->
+                <div class="p-3" style="background-color: #ffffff; border: 1px solid var(--border-color); border-radius: var(--radius-md); min-height: 150px;">
+                    <div id="videoGalleryList" class="d-flex flex-column gap-2">
+                        <!-- Rendered by JavaScript -->
+                    </div>
+                    <div id="emptyVideoMsg" class="text-center text-muted py-4 d-none">
+                        <i class="fa-brands fa-youtube d-block mb-2 text-danger" style="font-size: 2.2rem; opacity: 0.5;"></i>
+                        বর্তমানে কোনো ভিডিও যুক্ত করা নেই। ওপরের ফর্ম থেকে ইউটিউব ভিডিও যুক্ত করুন।
+                    </div>
+                </div>
+
+                <!-- Hidden input to store serialized structure -->
+                <input type="hidden" name="video_gallery" id="videoGalleryInput" value="{{ json_encode($settings['video_gallery'] ?? []) }}">
             </div>
         </div>
 
@@ -554,6 +601,12 @@
         let homeCategories = @json($settings['homepage_categories'] ?? []);
         if (!Array.isArray(homeCategories)) {
             homeCategories = [];
+        } else {
+            homeCategories = homeCategories.map(item => ({
+                id: item.id,
+                name: item.name,
+                layout: item.layout || 'style_a'
+            }));
         }
 
         const availableHomeContainer = document.getElementById('availableHomeCategories');
@@ -606,15 +659,26 @@
 
                     const catObj = allCategories.find(c => parseInt(c.id) === parseInt(item.id));
                     const postCount = catObj && catObj.posts_count !== undefined ? catObj.posts_count : 0;
+                    const currentLayout = item.layout || 'style_a';
 
                     li.innerHTML = `
                         <div class="drag-handle" title="ড্র্যাগ করে সরান"><i class="fa-solid fa-grip-vertical"></i></div>
-                        <div class="menu-item-title">
+                        <div class="menu-item-title flex-grow-1">
                             <span class="text-muted me-2" style="font-size: 0.85rem; font-weight: 700;">#${index + 1}</span>
                             <span>${item.name}</span>
                             <span class="badge ${postCount > 0 ? 'bg-success' : 'bg-warning text-dark'} ms-2" style="font-size: 0.68rem;">
                                 ${postCount > 0 ? postCount + 'টি সংবাদ' : 'কোনো পোস্ট নেই'}
                             </span>
+                        </div>
+                        <div class="d-flex align-items-center me-2 ms-auto">
+                            <span class="badge bg-light text-secondary border me-2 d-none d-lg-inline-block" style="font-size: 0.72rem;">
+                                <i class="fa-solid fa-table-cells me-1"></i>গ্রিড:
+                            </span>
+                            <select class="form-select form-select-sm" onchange="changeHomeCategoryLayout(${index}, this.value)" style="width: auto; min-width: 175px; font-size: 0.8rem; font-weight: 600; padding: 4px 8px; border-radius: 4px; border: 1px solid #cbd5e1; background-color: #ffffff; color: #1e293b;" title="গ্রিড লেআউট নির্বাচন করুন">
+                                <option value="style_a" ${currentLayout === 'style_a' ? 'selected' : ''}>লেআউট ১ (১ লিড + ৩ সাইড)</option>
+                                <option value="style_b" ${currentLayout === 'style_b' ? 'selected' : ''}>লেআউট ২ (৪-কলাম গ্রিড)</option>
+                                <option value="style_c" ${currentLayout === 'style_c' ? 'selected' : ''}>লেআউট ৩ (২ ফিচার্ড + ৩ হেডলাইন)</option>
+                            </select>
                         </div>
                         <div class="menu-item-actions">
                             <button type="button" class="menu-btn" title="উপরে তুলুন" onclick="moveHomeCategory(${index}, -1)" ${index === 0 ? 'disabled style="opacity: 0.3; cursor: not-allowed;"' : ''}>
@@ -638,8 +702,15 @@
         window.addHomeCategory = function (id) {
             const cat = allCategories.find(c => parseInt(c.id) === parseInt(id));
             if (cat) {
-                homeCategories.push({ id: cat.id, name: cat.name });
+                homeCategories.push({ id: cat.id, name: cat.name, layout: 'style_a' });
                 renderHomeCategoriesBuilder();
+            }
+        };
+
+        window.changeHomeCategoryLayout = function (index, layout) {
+            if (homeCategories[index]) {
+                homeCategories[index].layout = layout;
+                updateHomeCategoriesInput();
             }
         };
 
@@ -681,17 +752,147 @@
             });
         }
 
+        // ==========================================
+        // Video Gallery Builder Logic
+        // ==========================================
+        const videoGalleryList = document.getElementById('videoGalleryList');
+        const emptyVideoMsg = document.getElementById('emptyVideoMsg');
+        const videoGalleryInput = document.getElementById('videoGalleryInput');
+        let videoList = [];
+
+        try {
+            videoList = JSON.parse(videoGalleryInput ? (videoGalleryInput.value || '[]') : '[]');
+            if (!Array.isArray(videoList)) videoList = [];
+        } catch(e) {
+            videoList = [];
+        }
+
+        function extractYouTubeID(url) {
+            if (!url) return '';
+            url = url.trim();
+            if (/^[a-zA-Z0-9_-]{11}$/.test(url)) return url;
+            const regExp = /(?:youtu\.be\/|youtube\.com\/(?:embed\/|v\/|watch\?v=|watch\?.+&v=))([\w-]{11})/;
+            const match = url.match(regExp);
+            return (match && match[1]) ? match[1] : '';
+        }
+
+        function escapeHtml(text) {
+            if (!text) return '';
+            const div = document.createElement('div');
+            div.textContent = text;
+            return div.innerHTML;
+        }
+
+        window.renderVideoGallery = function() {
+            if (!videoGalleryList) return;
+            videoGalleryList.innerHTML = '';
+            
+            if (videoList.length === 0) {
+                if (emptyVideoMsg) emptyVideoMsg.classList.remove('d-none');
+            } else {
+                if (emptyVideoMsg) emptyVideoMsg.classList.add('d-none');
+                videoList.forEach((vid, index) => {
+                    const videoId = vid.video_id || extractYouTubeID(vid.youtube_url || '');
+                    const thumbUrl = vid.thumbnail || (videoId ? `https://img.youtube.com/vi/${videoId}/hqdefault.jpg` : '');
+                    
+                    const item = document.createElement('div');
+                    item.className = 'p-2 border rounded d-flex align-items-center justify-content-between gap-3 bg-light';
+                    item.setAttribute('data-index', index);
+                    item.innerHTML = `
+                        <div class="d-flex align-items-center gap-3 flex-grow-1" style="min-width: 0;">
+                            <div style="width: 100px; height: 56px; border-radius: 4px; overflow: hidden; background: #000; flex-shrink: 0; position: relative;">
+                                ${videoId ? `<img src="${thumbUrl}" alt="Thumbnail" style="width: 100%; height: 100%; object-fit: cover;">` : `<div class="d-flex align-items-center justify-content-center h-100 text-white"><i class="fa-brands fa-youtube"></i></div>`}
+                                <span class="position-absolute bottom-0 end-0 bg-dark text-white px-1 font-monospace" style="font-size: 10px; opacity: 0.85;">YouTube</span>
+                            </div>
+                            <div class="flex-grow-1" style="min-width: 0;">
+                                <div class="fw-bold text-dark text-truncate mb-1" title="${escapeHtml(vid.title || '')}">${escapeHtml(vid.title || 'শিরোনামহীন ভিডিও')}</div>
+                                <div class="small text-muted font-monospace text-truncate" style="font-size: 0.8rem;">
+                                    <i class="fa-solid fa-link me-1"></i>${escapeHtml(vid.youtube_url || ('https://youtu.be/' + videoId))}
+                                </div>
+                            </div>
+                        </div>
+                        <div class="d-flex align-items-center gap-1 flex-shrink-0">
+                            <button type="button" class="btn btn-sm btn-outline-secondary py-1 px-2" title="উপরে তুলুন" onclick="moveVideo(${index}, -1)" ${index === 0 ? 'disabled' : ''}>
+                                <i class="fa-solid fa-arrow-up"></i>
+                            </button>
+                            <button type="button" class="btn btn-sm btn-outline-secondary py-1 px-2" title="নিচে নামান" onclick="moveVideo(${index}, 1)" ${index === videoList.length - 1 ? 'disabled' : ''}>
+                                <i class="fa-solid fa-arrow-down"></i>
+                            </button>
+                            <button type="button" class="btn btn-sm btn-outline-danger py-1 px-2 ms-2" title="মুছে ফেলুন" onclick="removeVideo(${index})">
+                                <i class="fa-solid fa-trash-can"></i>
+                            </button>
+                        </div>
+                    `;
+                    videoGalleryList.appendChild(item);
+                });
+            }
+            updateVideoGalleryInput();
+        };
+
+        window.addYouTubeVideo = function() {
+            const titleInput = document.getElementById('newVideoTitle');
+            const urlInput = document.getElementById('newVideoUrl');
+            const title = titleInput.value.trim();
+            const url = urlInput.value.trim();
+
+            if (!url) {
+                alert('অনুগ্রহ করে ইউটিউব ভিডিওর লিংক বা আইডি প্রদান করুন।');
+                return;
+            }
+
+            const videoId = extractYouTubeID(url);
+            if (!videoId) {
+                alert('সঠিক ইউটিউব ভিডিও লিংক বা আইডি দিন (যেমন: https://www.youtube.com/watch?v=... বা https://youtu.be/...)');
+                return;
+            }
+
+            videoList.push({
+                title: title || 'ভিডিও সংবাদ',
+                video_id: videoId,
+                youtube_url: url.startsWith('http') ? url : `https://www.youtube.com/watch?v=${videoId}`,
+                thumbnail: `https://img.youtube.com/vi/${videoId}/hqdefault.jpg`
+            });
+
+            titleInput.value = '';
+            urlInput.value = '';
+            renderVideoGallery();
+        };
+
+        window.removeVideo = function(index) {
+            if (confirm('আপনি কি এই ভিডিওটি গ্যালারি থেকে মুছে ফেলতে চান?')) {
+                videoList.splice(index, 1);
+                renderVideoGallery();
+            }
+        };
+
+        window.moveVideo = function(index, direction) {
+            const target = index + direction;
+            if (target < 0 || target >= videoList.length) return;
+            const temp = videoList[index];
+            videoList[index] = videoList[target];
+            videoList[target] = temp;
+            renderVideoGallery();
+        };
+
+        function updateVideoGalleryInput() {
+            if (videoGalleryInput) {
+                videoGalleryInput.value = JSON.stringify(videoList);
+            }
+        }
+
         // Ensure form submission always grabs the serialized arrays
         const themeForm = document.querySelector('form');
         if (themeForm) {
             themeForm.addEventListener('submit', function() {
                 updateSerializedInput();
                 updateHomeCategoriesInput();
+                updateVideoGalleryInput();
             });
         }
 
-        // Initialize Home Categories builder
+        // Initialize builders
         renderHomeCategoriesBuilder();
+        renderVideoGallery();
     });
 </script>
 @endsection

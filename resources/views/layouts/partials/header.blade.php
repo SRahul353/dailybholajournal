@@ -164,7 +164,6 @@
                 {{-- Social icons + Search row --}}
                 <div class="masthead-social-search">
                     <div class="masthead-social">
-                        <span class="masthead-social-label">যুক্ত থাকুন</span>
                         <a href="{{ $themeSettings['social_facebook'] ?? '#' }}" target="_blank" title="Facebook" class="msd-link msd-fb"><i class="fa-brands fa-facebook-f"></i></a>
                         <a href="{{ $themeSettings['social_twitter'] ?? '#' }}" target="_blank" title="Twitter / X" class="msd-link msd-x"><i class="fa-brands fa-x-twitter"></i></a>
                         <a href="{{ $themeSettings['social_youtube'] ?? '#' }}" target="_blank" title="YouTube" class="msd-link msd-yt"><i class="fa-brands fa-youtube"></i></a>

@@ -7,7 +7,17 @@ Route::get('/', [NewspaperController::class, 'index'])->name('home');
 Route::get('/epaper', [NewspaperController::class, 'epaper'])->name('epaper');
 Route::get('/post/{slug}', [NewspaperController::class, 'show'])->name('post');
 Route::get('/category/{slug}', [NewspaperController::class, 'category'])->name('category');
+Route::get('/tag/{slug}', [NewspaperController::class, 'tag'])->name('tag');
 Route::get('/search', [NewspaperController::class, 'search'])->name('search');
+Route::get('/privacy-policy', [NewspaperController::class, 'privacyPolicy'])->name('privacy.policy');
+Route::get('/about-us', [NewspaperController::class, 'aboutUs'])->name('about.us');
+Route::get('/about', [NewspaperController::class, 'aboutUs'])->name('about');
+Route::get('/terms-of-use', [NewspaperController::class, 'termsOfUse'])->name('terms.of.use');
+Route::get('/terms', [NewspaperController::class, 'termsOfUse'])->name('terms');
+Route::get('/comment-policy', [NewspaperController::class, 'commentPolicy'])->name('comment.policy');
+Route::get('/editorial-policy', [NewspaperController::class, 'editorialPolicy'])->name('editorial.policy');
+Route::get('/contact', [NewspaperController::class, 'contact'])->name('contact');
+Route::get('/our-family', [NewspaperController::class, 'contact'])->name('our.family');
 
 // Admin Panel Routes
 Route::prefix('admin')->name('admin.')->group(function () {

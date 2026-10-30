@@ -18,9 +18,8 @@
         'contact_address' => 'বার্তা ও বাণিজ্যিক কার্যালয়- ভোলা সদর, ভোলা।',
         'contact_phone' => '01716-674375',
         'contact_email' => 'news.dailybholajournal@gmail.com',
-        'editorial_board_president' => '',
-        'editorial_publisher' => 'দৈনিক ভোলা জার্নাল প্রকাশনা পর্ষদ',
-        'editorial_editor' => 'সম্পাদক',
+        'editorial_publisher' => 'সামিয়া তালুকদার',
+        'editorial_executive_editor' => 'ইসমাইল হোসেন আরিফ',
         'copyright_text' => 'দৈনিক ভোলা জার্নাল। সর্বস্বত্ব সংরক্ষিত।'
     ];
     if (file_exists($themeSettingsPath)) {
@@ -134,7 +133,7 @@
         /* 3-column CSS Grid layout for desktop */
         .masthead-grid {
             display: grid;
-            grid-template-columns: 220px 1fr 300px;
+            grid-template-columns: 350px 1fr 300px;
             gap: 24px;
             align-items: center;
         }
@@ -155,7 +154,7 @@
         }
 
         .masthead-logo-img {
-            max-height: 70px;
+            max-height: 75px;
             width: auto;
             max-width: 100%;
             object-fit: contain;
@@ -174,10 +173,11 @@
             padding-top: 4px;
         }
 
-        /* COL 2 – Quick links, social, search */
+        /* COL 2 – Quick links, social, search (Aligned to right) */
         .masthead-col-center {
             gap: 10px;
             justify-content: center;
+            align-items: flex-end;
             border-left: 1px solid #e5e7eb;
             border-right: 1px solid #e5e7eb;
             padding: 0 20px;
@@ -187,8 +187,10 @@
         .masthead-quicklinks {
             display: flex;
             align-items: center;
+            justify-content: flex-end;
             gap: 4px;
             flex-wrap: wrap;
+            width: 100%;
         }
 
         .mql-item {
@@ -233,8 +235,9 @@
         .masthead-social-search {
             display: flex;
             align-items: center;
-            justify-content: space-between;
+            justify-content: flex-end;
             gap: 12px;
+            width: 100%;
         }
 
         .masthead-social {
@@ -675,168 +678,128 @@
             color: var(--accent);
         }
 
-        /* High-End Dark Footer */
-        .main-footer {
-            background-color: #111827;
-            color: #cbd5e1;
-            padding: 56px 0 20px 0;
-            border-top: 4px solid var(--accent);
+        /* Kalbela-Style Modern Clean Footer */
+        .kalbela-footer {
+            background-color: #f8fafc;
+            color: #334155;
+            border-top: 3px solid var(--accent, #c90000);
             font-family: 'Noto Sans Bengali', sans-serif;
+            font-size: 0.90rem;
         }
 
-        .footer-grid {
-            display: grid;
-            grid-template-columns: 1fr;
-            gap: 32px;
-            margin-bottom: 40px;
-        }
-
-        @media (min-width: 768px) {
-            .footer-grid {
-                grid-template-columns: 35fr 65fr;
-            }
-        }
-
-        .footer-brand-title {
-            font-size: 2.2rem;
-            font-weight: 800;
-            color: #ffffff;
-            margin-bottom: 16px;
+        .k-footer-brand .k-footer-title {
             font-family: 'Noto Serif Bengali', serif;
+            font-size: 1.85rem;
+            font-weight: 800;
+            color: #0f172a;
         }
 
-        .footer-brand-title span {
-            color: var(--accent);
+        .k-footer-brand .k-footer-title a {
+            color: #0f172a;
+            text-decoration: none;
         }
 
-        .footer-text {
+        .k-footer-brand .k-footer-title span {
+            color: var(--accent, #c90000);
+        }
+
+        .k-footer-tagline {
+            font-size: 0.84rem;
+            color: #64748b;
+            font-weight: 500;
+        }
+
+        .k-footer-nav .k-nav-row a {
+            color: #1e293b;
             font-size: 0.92rem;
-            color: #94a3b8;
+            font-weight: 600;
+            text-decoration: none;
+            transition: color 0.2s ease;
+        }
+
+        .k-footer-nav .k-nav-row a:hover {
+            color: var(--accent, #c90000);
+            text-decoration: underline;
+        }
+
+        .k-footer-nav .sep {
+            margin: 0 8px;
+            color: #cbd5e1;
+            font-size: 0.8rem;
+        }
+
+        .k-footer-nav .k-nav-secondary a {
+            color: #64748b;
+            font-size: 0.86rem;
+            font-weight: 500;
+        }
+
+        .k-footer-nav .k-nav-secondary a:hover {
+            color: var(--accent, #c90000);
+        }
+
+        .k-editorial-box, .k-contact-box {
+            font-size: 0.90rem;
+        }
+
+        .k-editorial-line {
             line-height: 1.6;
-            margin-bottom: 24px;
-            max-width: 460px;
+            color: #334155;
         }
 
-        .footer-social-icons {
-            display: flex;
-            gap: 12px;
-        }
-
-        .footer-social-btn {
-            display: flex;
-            justify-content: center;
-            align-items: center;
-            width: 36px;
-            height: 36px;
-            background-color: #1e293b;
-            border-radius: 50%;
-            color: #ffffff;
-            font-size: 1rem;
-            transition: var(--transition);
-            border: 1px solid rgba(255, 255, 255, 0.05);
-        }
-
-        .footer-social-btn:hover {
-            background-color: var(--accent);
-            transform: translateY(-2px);
-            box-shadow: 0 4px 8px rgba(227, 28, 37, 0.3);
-        }
-
-        .footer-sec-title {
-            font-size: 1.15rem;
+        .k-label {
             font-weight: 700;
-            color: #ffffff;
-            margin-bottom: 16px;
-            position: relative;
-            padding-bottom: 6px;
-            border-bottom: 1px solid rgba(255, 255, 255, 0.08);
+            color: #0f172a;
+            margin-right: 4px;
         }
 
-        .footer-sec-title::after {
-            content: '';
-            position: absolute;
-            bottom: -1px;
-            left: 0;
-            width: 40px;
-            height: 2px;
-            background-color: var(--accent);
+        .k-val {
+            color: #475569;
         }
 
-        .footer-links {
-            list-style: none;
+        .k-val:hover {
+            color: var(--accent, #c90000);
+        }
+
+        .k-social-buttons {
             display: flex;
-            flex-direction: column;
-            gap: 10px;
-            margin: 0;
-            padding: 0;
-        }
-
-        .footer-link {
-            font-size: 0.92rem;
-            color: #94a3b8;
-            transition: var(--transition);
-            display: inline-block;
-        }
-
-        .footer-link:hover {
-            color: #ffffff;
-            padding-left: 4px;
-        }
-
-        .footer-contact {
-            list-style: none;
-            display: flex;
-            flex-direction: column;
-            gap: 10px;
-            font-size: 0.92rem;
-            color: #94a3b8;
-            margin: 0;
-            padding: 0;
-        }
-
-        .footer-contact li {
-            display: flex;
-            gap: 8px;
-            align-items: flex-start;
-        }
-
-        .footer-contact i {
-            color: var(--accent);
-            margin-top: 4px;
-        }
-
-        .footer-editorial {
-            margin-top: 16px;
-            padding-top: 12px;
-            border-top: 1px dashed rgba(255, 255, 255, 0.1);
-        }
-
-        .footer-editorial p {
-            font-size: 0.85rem;
-            margin-bottom: 4px;
-            color: #94a3b8;
-        }
-
-        .footer-editorial strong {
-            color: #e2e8f0;
-        }
-
-        .footer-bottom {
-            border-top: 1px solid rgba(255, 255, 255, 0.05);
-            padding-top: 16px;
-            display: flex;
-            flex-direction: column;
-            gap: 12px;
             align-items: center;
-            justify-content: space-between;
-            font-size: 0.85rem;
+            gap: 8px;
+        }
+
+        .k-social-btn {
+            display: inline-flex;
+            align-items: center;
+            justify-content: center;
+            width: 34px;
+            height: 34px;
+            border-radius: 50%;
+            color: #ffffff !important;
+            font-size: 0.90rem;
+            text-decoration: none;
+            transition: transform 0.2s ease, box-shadow 0.2s ease;
+        }
+
+        .k-social-btn:hover {
+            transform: translateY(-2px);
+            box-shadow: 0 4px 10px rgba(0, 0, 0, 0.2);
+            color: #ffffff !important;
+        }
+
+        .k-social-btn.fb { background-color: #1877f2; }
+        .k-social-btn.yt { background-color: #ff0000; }
+        .k-social-btn.tw { background-color: #000000; }
+        .k-social-btn.ig { background: radial-gradient(circle at 30% 107%, #fdf497 0%, #fdf497 5%, #fd5949 45%, #d6249f 60%, #285AEB 90%); }
+        .k-social-btn.wa { background-color: #25d366; }
+
+        .k-copyright {
+            font-size: 0.84rem;
             color: #64748b;
         }
 
-        @media (min-width: 768px) {
-            .footer-bottom {
-                flex-direction: row;
-            }
+        .k-warning {
+            font-size: 0.82rem;
+            color: #94a3b8;
         }
 
         /* Mobile Drawer Drawer Style */

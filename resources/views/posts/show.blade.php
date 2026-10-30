@@ -1,314 +1,166 @@
 @extends('layouts.app')
- 
+
 @section('title', $post->title . ' | দৈনিক ভোলা জার্নাল')
-@section('meta_description', mb_substr(strip_tags($post->content), 0, 150) . '...')
+@section('meta_description', mb_substr(strip_tags($post->excerpt ?: $post->content), 0, 160))
 @section('meta_keywords', implode(', ', $post->tags->pluck('name')->toArray()) ?: 'দৈনিক ভোলা জার্নাল, ' . $post->title)
 @section('og_title', $post->title)
-@section('og_description', mb_substr(strip_tags($post->excerpt ?: $post->content), 0, 150) . '...')
+@section('og_description', mb_substr(strip_tags($post->excerpt ?: $post->content), 0, 160))
 @section('og_image', $post->featured_image_url)
 @section('og_type', 'article')
- 
+
 @section('styles')
 <style>
-    /* Single Article Page Layout */
-    .article-container {
-        display: grid;
-        grid-template-columns: 1fr;
-        gap: 36px;
-    }
- 
-    @media (min-width: 1024px) {
-        .article-container {
-            grid-template-columns: 2.3fr 1fr;
-        }
-    }
- 
-    /* Main Article Card */
-    .article-card {
-        background-color: var(--bg-card);
-        border-radius: var(--radius-lg);
-        border: 1px solid var(--border-color);
-        padding: 24px;
-        box-shadow: var(--shadow-sm);
-        overflow: hidden;
-    }
- 
-    @media (min-width: 768px) {
-        .article-card {
-            padding: 44px;
-            box-shadow: var(--shadow-md);
-        }
-    }
- 
-    /* Premium Category Badges */
-    .article-cats {
-        display: flex;
-        flex-wrap: wrap;
-        gap: 8px;
-        margin-bottom: 20px;
-    }
- 
-    .article-cat-badge {
-        background-color: rgba(227, 28, 37, 0.07);
-        color: var(--accent);
-        font-weight: 700;
-        padding: 5px 14px;
-        border-radius: var(--radius-sm);
-        font-size: 0.88rem;
-        transition: var(--transition);
-        font-family: 'Noto Sans Bengali', sans-serif;
-    }
- 
-    .article-cat-badge:hover {
-        background-color: var(--accent);
-        color: #ffffff;
-        box-shadow: 0 4px 10px rgba(227, 28, 37, 0.2);
-    }
- 
-    /* Article Header */
-    .article-title {
-        font-family: 'Noto Serif Bengali', serif;
-        font-size: 2.3rem;
-        font-weight: 800;
-        color: var(--text-dark);
-        line-height: 1.4;
-        margin-bottom: 24px;
-        letter-spacing: -0.5px;
-    }
- 
-    @media (max-width: 768px) {
-        .article-title {
-            font-size: 1.85rem;
-        }
-    }
- 
-    /* Elegant Meta Data Layout */
-    .article-meta {
-        display: flex;
-        flex-wrap: wrap;
-        align-items: center;
-        gap: 16px 24px;
-        padding: 16px 0;
-        border-top: 1px solid var(--border-color);
-        border-bottom: 1px solid var(--border-color);
-        margin-bottom: 32px;
-        font-size: 0.88rem;
-        color: var(--text-light);
-        font-family: 'Noto Sans Bengali', sans-serif;
-    }
- 
-    .article-meta span {
-        display: flex;
-        align-items: center;
-        gap: 8px;
-    }
- 
-    .article-meta i {
-        color: var(--accent);
-        font-size: 0.95rem;
-    }
- 
-    .article-meta-divider {
-        width: 1px;
-        height: 14px;
-        background-color: #cbd5e1;
-        display: none;
-    }
- 
-    @media (min-width: 640px) {
-        .article-meta-divider {
-            display: inline-block;
-        }
-    }
- 
-    /* Featured Image Box Showcase */
-    .article-img-wrapper {
-        border-radius: var(--radius-md);
-        overflow: hidden;
-        margin-bottom: 36px;
-        border: 1px solid var(--border-color);
-        box-shadow: var(--shadow-sm);
-        background-color: #f1f5f9;
-        transition: var(--transition);
-        position: relative;
-    }
- 
-    .article-img-wrapper::after {
-        content: '';
-        position: absolute;
+    /* Top Slim Reading Progress Bar */
+    .reading-progress-bar {
+        position: fixed;
         top: 0;
         left: 0;
-        width: 100%;
-        height: 100%;
-        box-shadow: inset 0 0 40px rgba(0, 0, 0, 0.02);
-        pointer-events: none;
-    }
- 
-    .article-img {
-        width: 100%;
-        height: auto;
-        object-fit: cover;
-        display: block;
-        transition: var(--transition);
-    }
- 
-    .article-img-wrapper:hover .article-img {
-        transform: scale(1.01);
-    }
- 
-    /* Article Body Content & Typography */
-    .article-body {
-        font-size: 1.22rem;
-        color: var(--text-main);
-        line-height: 1.95;
-        font-family: 'Noto Sans Bengali', sans-serif;
-        font-weight: 500;
-    }
- 
-    .article-body p {
-        margin-bottom: 26px;
-        text-align: justify;
+        height: 3px;
+        background: linear-gradient(90deg, #ef4444, #dc2626);
+        z-index: 9999;
+        transition: width 0.1s ease;
     }
 
-    .article-body > p:first-of-type::first-letter {
+    /* Single News Main Stream & Sidebar Columns */
+    @media (min-width: 992px) {
+        .single-main-col {
+            flex: 0 0 70% !important;
+            max-width: 70% !important;
+        }
+        .single-sidebar-col {
+            flex: 0 0 30% !important;
+            max-width: 30% !important;
+        }
+    }
+
+    /* Main Article Wrapper */
+    .single-article-wrapper {
+        background: #ffffff;
+        border: 1px solid #e2e8f0;
+        border-radius: 12px;
+        padding: 24px 20px;
+        box-shadow: 0 2px 10px rgba(0, 0, 0, 0.03);
+    }
+    @media (min-width: 768px) {
+        .single-article-wrapper {
+            padding: 36px 38px;
+        }
+    }
+
+    /* Headline Typography */
+    .single-article-headline {
         font-family: 'Noto Serif Bengali', serif;
-        font-size: 3.5rem;
+        font-size: 2.15rem;
         font-weight: 800;
-        float: left;
-        line-height: 1;
-        margin-right: 10px;
-        margin-top: 4px;
-        color: var(--accent);
+        color: #0f172a;
+        line-height: 1.38;
+        margin-bottom: 20px;
+        letter-spacing: -0.3px;
     }
- 
-    .article-body h2, .article-body h3, .article-body h4 {
-        font-family: 'Noto Serif Bengali', serif;
-        color: var(--primary);
-        margin: 44px 0 20px 0;
-        font-weight: 800;
-        line-height: 1.4;
-        position: relative;
-        padding-left: 14px;
+    @media (min-width: 768px) {
+        .single-article-headline {
+            font-size: 2.65rem;
+        }
     }
- 
-    .article-body h2::before, .article-body h3::before {
-        content: '';
-        position: absolute;
-        left: 0;
-        top: 6px;
-        bottom: 6px;
-        width: 4px;
-        background-color: var(--accent);
-        border-radius: 2px;
+
+    /* Meta Bar & Action Tools */
+    .article-meta-bar {
+        border-top: 1px solid #e2e8f0;
+        border-bottom: 1px solid #e2e8f0;
+        padding: 14px 0;
+        margin-bottom: 26px;
+        display: flex;
+        flex-direction: column;
+        gap: 12px;
+        font-family: 'Noto Sans Bengali', sans-serif;
     }
- 
-    .article-body h2 { font-size: 1.7rem; }
-    .article-body h3 { font-size: 1.45rem; }
- 
-    .article-body img {
-        max-width: 100%;
-        height: auto;
-        border-radius: var(--radius-md);
-        margin: 32px auto;
-        display: block;
-        border: 1px solid var(--border-color);
-        box-shadow: var(--shadow-sm);
+    @media (min-width: 768px) {
+        .article-meta-bar {
+            flex-direction: row;
+            align-items: center;
+            justify-content: space-between;
+        }
     }
- 
-    /* High-End Blockquote Quotation */
-    .article-body blockquote {
-        border-left: 4px solid var(--accent);
-        padding: 20px 24px;
-        font-style: italic;
-        color: var(--text-light);
-        margin: 36px 0;
-        font-size: 1.25rem;
-        background: linear-gradient(to right, #f8fafc, #f1f5f9);
-        border-radius: 0 var(--radius-md) var(--radius-md) 0;
-        position: relative;
-        box-shadow: inset 0 1px 3px rgba(0,0,0,0.02);
-    }
- 
-    .article-body blockquote::before {
-        content: "\f10d";
-        font-family: "Font Awesome 6 Free";
-        font-weight: 900;
-        position: absolute;
-        top: 12px;
-        right: 20px;
-        font-size: 2.2rem;
-        color: #e2e8f0;
-        opacity: 0.8;
-        pointer-events: none;
-    }
- 
-    /* Share bar section */
-    .share-bar {
+    .article-meta-left {
         display: flex;
         flex-wrap: wrap;
         align-items: center;
-        gap: 12px;
-        margin-top: 48px;
-        padding-top: 24px;
-        border-top: 1px solid var(--border-color);
-        font-family: 'Noto Sans Bengali', sans-serif;
+        gap: 14px 18px;
+        font-size: 0.86rem;
+        color: #475569;
     }
- 
-    .share-title {
-        font-weight: 700;
-        font-size: 0.95rem;
-        color: var(--primary);
-    }
- 
-    .share-btn {
+    .article-meta-left span {
         display: inline-flex;
-        justify-content: center;
         align-items: center;
-        width: 38px;
-        height: 38px;
-        border-radius: 50%;
-        color: #ffffff;
-        font-size: 0.98rem;
-        transition: var(--transition);
+        gap: 6px;
+    }
+    .article-meta-right {
+        display: flex;
+        align-items: center;
+        gap: 8px;
+        flex-shrink: 0;
+    }
+
+    /* Font Resizer & Print Controls */
+    .reader-tool-btn {
+        background: #f1f5f9;
+        border: 1px solid #cbd5e1;
+        border-radius: 4px;
+        color: #334155;
+        font-size: 0.82rem;
+        font-weight: 700;
+        padding: 4px 10px;
         cursor: pointer;
+        transition: all 0.2s ease;
+        display: inline-flex;
+        align-items: center;
+        gap: 4px;
+        text-decoration: none;
+    }
+    .reader-tool-btn:hover {
+        background: #e2e8f0;
+        color: #0f172a;
+    }
+
+    /* Social Share Buttons */
+    .share-pill-btn {
+        width: 32px;
+        height: 32px;
+        border-radius: 50%;
+        display: inline-flex;
+        align-items: center;
+        justify-content: center;
+        color: #ffffff !important;
+        font-size: 0.85rem;
+        text-decoration: none;
+        transition: transform 0.2s ease, box-shadow 0.2s ease;
         border: none;
-        outline: none;
+        cursor: pointer;
     }
- 
-    .share-btn:hover {
-        transform: translateY(-3px);
-        opacity: 0.95;
-        box-shadow: 0 4px 10px rgba(10, 17, 40, 0.15);
+    .share-pill-btn:hover {
+        transform: translateY(-2px);
+        box-shadow: 0 4px 8px rgba(0, 0, 0, 0.15);
     }
- 
-    .share-fb { background-color: #1877f2; }
-    .share-tw { background-color: #1da1f2; }
-    .share-wa { background-color: #25d366; }
-    .share-copy { 
-        background-color: var(--primary); 
-        color: #ffffff; 
-        position: relative;
-    }
-    .share-copy:hover {
-        background-color: var(--accent);
-    }
- 
-    /* Tooltip styling for Copied alert */
+    .share-pill-btn.fb { background: #1877f2; }
+    .share-pill-btn.wa { background: #25d366; }
+    .share-pill-btn.tw { background: #000000; }
+    .share-pill-btn.copy { background: #475569; position: relative; }
+
     .copy-tooltip {
         position: absolute;
-        bottom: 48px;
+        bottom: 42px;
         background-color: #0f172a;
         color: #ffffff;
         padding: 4px 10px;
-        border-radius: var(--radius-sm);
+        border-radius: 4px;
         font-size: 0.75rem;
         font-weight: 700;
         white-space: nowrap;
         opacity: 0;
         visibility: hidden;
-        transition: var(--transition);
+        transition: all 0.2s ease;
         transform: translateY(6px);
-        box-shadow: var(--shadow-md);
+        box-shadow: 0 4px 12px rgba(0,0,0,0.2);
     }
     .copy-tooltip::after {
         content: '';
@@ -324,256 +176,482 @@
         visibility: visible;
         transform: translateY(0);
     }
- 
-    /* Related News Section Redesign */
-    .related-section {
-        margin-top: 56px;
+
+    /* Featured Image Box */
+    .article-featured-box {
+        margin-bottom: 30px;
+        border-radius: 8px;
+        overflow: hidden;
+        border: 1px solid #e2e8f0;
+        background: #000;
+    }
+    .article-featured-img {
+        width: 100%;
+        height: auto;
+        max-height: 520px;
+        object-fit: cover;
+        display: block;
+    }
+    .article-img-caption {
+        background: #f8fafc;
+        border-top: 1px solid #e2e8f0;
+        padding: 8px 14px;
+        font-size: 0.80rem;
+        color: #64748b;
         font-family: 'Noto Sans Bengali', sans-serif;
     }
- 
-    .related-header {
-        border-bottom: 2px solid var(--primary);
-        margin-bottom: 24px;
-        display: flex;
-        align-items: center;
+
+    /* Main Article Content & Typography */
+    .single-article-content {
+        font-family: 'Noto Sans Bengali', sans-serif;
+        font-size: 1.22rem;
+        line-height: 2.05;
+        color: #1e293b;
+        font-weight: 400;
+        transition: font-size 0.2s ease;
     }
- 
-    .related-title {
-        font-size: 1.25rem;
+    .single-article-content p {
+        margin-bottom: 22px;
+        text-align: justify;
+    }
+    .single-article-content p:first-of-type::first-letter {
+        font-family: 'Noto Serif Bengali', serif;
+        font-size: 3.4rem;
         font-weight: 800;
-        color: var(--primary);
-        margin: 0;
-        position: relative;
-        padding-bottom: 6px;
+        float: left;
+        line-height: 1;
+        margin-right: 12px;
+        margin-top: 4px;
+        color: var(--accent, #c90000);
     }
- 
-    .related-title::after {
+    .single-article-content h2, 
+    .single-article-content h3, 
+    .single-article-content h4 {
+        font-family: 'Noto Serif Bengali', serif;
+        color: #0f172a;
+        margin: 36px 0 16px 0;
+        font-weight: 800;
+        line-height: 1.4;
+        position: relative;
+        padding-left: 14px;
+    }
+    .single-article-content h2::before,
+    .single-article-content h3::before {
+        content: '';
+        position: absolute;
+        left: 0;
+        top: 6px;
+        bottom: 6px;
+        width: 4px;
+        background-color: var(--accent, #c90000);
+        border-radius: 2px;
+    }
+    .single-article-content img {
+        max-width: 100%;
+        height: auto;
+        border-radius: 8px;
+        margin: 24px auto;
+        display: block;
+        border: 1px solid #e2e8f0;
+    }
+    .single-article-content blockquote {
+        border-left: 4px solid var(--accent, #c90000);
+        padding: 18px 24px;
+        font-style: italic;
+        color: #334155;
+        margin: 30px 0;
+        font-size: 1.20rem;
+        background: #f8fafc;
+        border-radius: 0 8px 8px 0;
+        position: relative;
+    }
+
+    /* Tags Row */
+    .article-tags-wrapper {
+        margin-top: 36px;
+        padding-top: 20px;
+        border-top: 1px dashed #cbd5e1;
+        display: flex;
+        flex-wrap: wrap;
+        align-items: center;
+        gap: 8px;
+    }
+    .article-tag-pill {
+        background-color: #f1f5f9;
+        color: #475569;
+        font-size: 0.84rem;
+        padding: 4px 12px;
+        border-radius: 20px;
+        text-decoration: none;
+        transition: all 0.2s ease;
+        font-family: 'Noto Sans Bengali', sans-serif;
+    }
+    .article-tag-pill:hover {
+        background-color: var(--accent, #c90000);
+        color: #ffffff;
+    }
+
+    /* Bottom Share Strip */
+    .article-bottom-share-strip {
+        background-color: #f8fafc;
+        border: 1px solid #e2e8f0;
+        border-radius: 8px;
+        padding: 16px 20px;
+        margin-top: 28px;
+        display: flex;
+        flex-wrap: wrap;
+        align-items: center;
+        justify-content: space-between;
+        gap: 12px;
+    }
+
+    /* Legal Disclaimer Box */
+    .article-disclaimer-box {
+        background-color: #fef2f2;
+        border: 1px solid #fee2e2;
+        border-left: 4px solid #ef4444;
+        border-radius: 6px;
+        padding: 14px 18px;
+        margin-top: 24px;
+        font-size: 0.85rem;
+        color: #7f1d1d;
+        line-height: 1.6;
+        font-family: 'Noto Sans Bengali', sans-serif;
+    }
+
+    /* Facebook Comments Section */
+    .article-comments-section {
+        margin-top: 32px;
+        padding-top: 24px;
+        border-top: 1px dashed #cbd5e1;
+    }
+    .fb-comments, .fb-comments iframe[style], .fb-comments > span {
+        width: 100% !important;
+    }
+
+    /* Related News Grid (4 Columns, 3-Line Headlines) */
+    .related-news-section {
+        margin-top: 48px;
+    }
+    .related-sec-head {
+        border-bottom: 2px solid #e2e8f0;
+        padding-bottom: 10px;
+        margin-bottom: 20px;
+        position: relative;
+    }
+    .related-sec-head::after {
         content: '';
         position: absolute;
         bottom: -2px;
         left: 0;
-        width: 50px;
+        width: 60px;
         height: 2px;
-        background-color: var(--accent);
+        background-color: var(--accent, #c90000);
     }
- 
-    .related-grid {
+    .related-sec-title {
+        font-family: 'Noto Serif Bengali', serif;
+        font-size: 1.35rem;
+        font-weight: 800;
+        color: #0f172a;
+        margin: 0;
+    }
+    .related-news-grid {
         display: grid;
         grid-template-columns: 1fr;
-        gap: 20px;
+        gap: 18px;
     }
- 
-    @media (min-width: 640px) {
-        .related-grid {
+    @media (min-width: 576px) {
+        .related-news-grid {
             grid-template-columns: repeat(2, 1fr);
         }
     }
- 
-    @media (min-width: 1024px) {
-        .related-grid {
+    @media (min-width: 992px) {
+        .related-news-grid {
             grid-template-columns: repeat(4, 1fr);
         }
     }
- 
-    /* Premium Cards for Related posts */
-    .related-news-card {
-        background-color: var(--bg-card);
-        border: 1px solid var(--border-color);
-        border-radius: var(--radius-md);
+    .related-card-item {
+        background: #ffffff;
+        border: 1px solid #e2e8f0;
+        border-radius: 8px;
         overflow: hidden;
         display: flex;
         flex-direction: column;
-        height: 100%;
-        transition: var(--transition);
-        box-shadow: var(--shadow-sm);
+        transition: all 0.25s ease;
+        text-decoration: none;
     }
- 
-    .related-news-card:hover {
+    .related-card-item:hover {
         transform: translateY(-3px);
-        box-shadow: var(--shadow-md);
-        border-color: var(--accent);
+        box-shadow: 0 6px 16px rgba(0, 0, 0, 0.08);
+        border-color: var(--accent, #c90000);
     }
- 
-    .related-img-wrapper {
+    .related-thumb-box {
         position: relative;
-        height: 135px;
-        overflow: hidden;
+        width: 100%;
+        padding-top: 58%;
         background-color: #cbd5e1;
+        overflow: hidden;
     }
- 
-    .related-card-img {
+    .related-thumb-img {
+        position: absolute;
+        top: 0;
+        left: 0;
         width: 100%;
         height: 100%;
         object-fit: cover;
-        transition: var(--transition);
+        transition: transform 0.35s ease;
     }
- 
-    .related-news-card:hover .related-card-img {
-        transform: scale(1.04);
+    .related-card-item:hover .related-thumb-img {
+        transform: scale(1.06);
     }
- 
-    .related-card-content {
-        padding: 12px 14px;
+    .related-content-box {
+        padding: 12px;
+        flex-grow: 1;
         display: flex;
         flex-direction: column;
         justify-content: space-between;
-        flex-grow: 1;
     }
- 
     .related-card-title {
         font-size: 0.94rem;
         font-weight: 700;
         line-height: 1.45;
-        color: var(--text-dark);
-        margin-bottom: 8px;
+        color: #1e293b;
+        margin: 0;
         display: -webkit-box;
         -webkit-line-clamp: 3;
         -webkit-box-orient: vertical;
         overflow: hidden;
+        transition: color 0.2s ease;
     }
- 
-    .related-card-title a:hover {
-        color: var(--accent);
+    .related-card-item:hover .related-card-title {
+        color: var(--accent, #c90000);
     }
- 
-    .related-card-meta {
-        font-size: 0.78rem;
-        color: var(--text-light);
-        border-top: 1px solid #f1f5f9;
-        padding-top: 8px;
-        margin-top: 4px;
-        display: flex;
-        align-items: center;
-        gap: 4px;
+
+    /* Print Stylesheet */
+    @media print {
+        header, footer, .article-meta-right, 
+        .article-bottom-share-strip, .article-nav-strip, .related-news-section, 
+        .single-sidebar-col, .reading-progress-bar {
+            display: none !important;
+        }
+        .single-main-col {
+            flex: 0 0 100% !important;
+            max-width: 100% !important;
+        }
+        .single-article-wrapper {
+            border: none !important;
+            box-shadow: none !important;
+            padding: 0 !important;
+        }
+        .single-article-content {
+            font-size: 12pt !important;
+            line-height: 1.8 !important;
+            color: #000000 !important;
+        }
+        .single-article-headline {
+            font-size: 20pt !important;
+            color: #000000 !important;
+        }
     }
 </style>
 @endsection
- 
+
 @section('content')
- 
-    <!-- Reading Progress Bar -->
-    <div class="reading-progress" id="readingProgress" style="width: 0%;"></div>
- 
-    <div class="article-container">
-        <!-- Main Article Column -->
-        <div>
-            <article class="article-card">
-                <!-- Categories -->
-                <div class="article-cats">
-                    @foreach($post->categories as $cat)
-                        <a href="{{ route('category', $cat->slug) }}" class="article-cat-badge">{{ $cat->name }}</a>
-                    @endforeach
-                </div>
- 
-                <!-- Title -->
-                <h1 class="article-title">{{ $post->title }}</h1>
- 
-                <!-- Meta data -->
-                <div class="article-meta">
-                    <span><i class="fa-solid fa-user"></i> {{ $post->user ? $post->user->name : 'অনলাইন ডেস্ক' }}</span>
-                    <span class="article-meta-divider"></span>
-                    <span><i class="fa-solid fa-calendar-days"></i> {{ $post->created_at->format('l, d F, Y') }}</span>
-                    <span class="article-meta-divider"></span>
-                    <span><i class="fa-solid fa-clock"></i> পড়ার সময়: {{ $post->read_time }} মিনিট</span>
-                    <span class="article-meta-divider"></span>
-                    <span><i class="fa-solid fa-eye"></i> {{ $post->views_count }} বার পঠিত</span>
-                </div>
- 
+
+    <!-- Slim Top Reading Progress Bar -->
+    <div class="reading-progress-bar" id="readingProgressBar" style="width: 0%;"></div>
+
+    <!-- Main Container: 70% Left Stream + 30% Right Sidebar -->
+    <div class="row g-4 mt-1">
+        <div class="col-lg-8 single-main-col">
+            <article class="single-article-wrapper">
+                <!-- Article Headline -->
+                <h1 class="single-article-headline">{{ $post->title }}</h1>
+
                 <!-- Featured Image -->
                 @if($post->featured_image)
-                    <div class="article-img-wrapper">
-                        <img src="{{ $post->featured_image_url }}" alt="{{ $post->title }}" class="article-img" onerror="this.src='https://images.unsplash.com/photo-1504711434969-e33886168f5c?auto=format&fit=crop&q=80&w=800'">
-                    </div>
+                    <figure class="article-featured-box">
+                        <img src="{{ $post->featured_image_url }}" alt="{{ $post->title }}" class="article-featured-img" onerror="this.src='https://images.unsplash.com/photo-1504711434969-e33886168f5c?auto=format&fit=crop&q=80&w=900'" loading="eager">
+                        <figcaption class="article-img-caption">
+                            <i class="fa-solid fa-camera me-1"></i>ছবি: দৈনিক ভোলা জার্নাল
+                        </figcaption>
+                    </figure>
                 @endif
- 
+
+                <!-- Metadata & Quick Action Tools Bar (Positioned Below Image) -->
+                <div class="article-meta-bar">
+                    <div class="article-meta-left">
+                        <span>
+                            <i class="fa-solid fa-user-pen text-danger"></i>
+                            <strong>{{ $post->user ? $post->user->name : 'অনলাইন ডেস্ক' }}</strong>
+                        </span>
+                        <span>
+                            <i class="fa-regular fa-clock text-danger"></i>
+                            প্রকাশ: {{ $post->created_at->diffForHumans() }} ({{ $post->created_at->format('d/m/Y') }})
+                        </span>
+                        <span>
+                            <i class="fa-regular fa-eye text-danger"></i>
+                            {{ $post->views_count }} বার পঠিত
+                        </span>
+                    </div>
+
+                    <div class="article-meta-right">
+                        <!-- Font Size Controls -->
+                        <div class="btn-group" role="group" aria-label="Font Controls">
+                            <button type="button" class="reader-tool-btn" onclick="changeFontSize(-1)" title="ফন্ট ছোট করুন">অ-</button>
+                            <button type="button" class="reader-tool-btn" onclick="resetFontSize()" title="স্বাভাবিক ফন্ট">অ</button>
+                            <button type="button" class="reader-tool-btn" onclick="changeFontSize(1)" title="ফন্ট বড় করুন">অ+</button>
+                        </div>
+
+                        <!-- Print Button -->
+                        <button type="button" class="reader-tool-btn" onclick="window.print()" title="প্রিন্ট করুন">
+                            <i class="fa-solid fa-print"></i>
+                        </button>
+
+                        <!-- Share Pills -->
+                        <a href="https://www.facebook.com/sharer/sharer.php?u={{ urlencode(request()->fullUrl()) }}" target="_blank" class="share-pill-btn fb" title="ফেসবুকে শেয়ার করুন">
+                            <i class="fa-brands fa-facebook-f"></i>
+                        </a>
+                        <a href="https://api.whatsapp.com/send?text={{ urlencode($post->title . ' ' . request()->fullUrl()) }}" target="_blank" class="share-pill-btn wa" title="হোয়াটসঅ্যাপে শেয়ার করুন">
+                            <i class="fa-brands fa-whatsapp"></i>
+                        </a>
+                        <a href="https://twitter.com/intent/tweet?url={{ urlencode(request()->fullUrl()) }}&text={{ urlencode($post->title) }}" target="_blank" class="share-pill-btn tw" title="X / Twitter-এ শেয়ার করুন">
+                            <i class="fa-brands fa-x-twitter"></i>
+                        </a>
+                        <button type="button" class="share-pill-btn copy" onclick="copyLinkUrl(this)" title="লিংক কপি করুন">
+                            <i class="fa-solid fa-link"></i>
+                            <span class="copy-tooltip" id="topCopyTooltip">কপি হয়েছে!</span>
+                        </button>
+                    </div>
+                </div>
+
                 <!-- Article Body Content -->
-                <div class="article-body">
+                <div class="single-article-content" id="articleBodyContent">
                     {!! $post->content !!}
                 </div>
- 
-                <!-- Sharing Toolbar -->
-                <div class="share-bar">
-                    <span class="share-title">শেয়ার করুন:</span>
-                    <a href="https://www.facebook.com/sharer/sharer.php?u={{ urlencode(request()->fullUrl()) }}" target="_blank" class="share-btn share-fb" title="ফেসবুকে শেয়ার করুন">
-                        <i class="fa-brands fa-facebook-f"></i>
-                    </a>
-                    <a href="https://twitter.com/intent/tweet?url={{ urlencode(request()->fullUrl()) }}&text={{ urlencode($post->title) }}" target="_blank" class="share-btn share-tw" title="টুইটারে শেয়ার করুন">
-                        <i class="fa-brands fa-twitter"></i>
-                    </a>
-                    <a href="https://api.whatsapp.com/send?text={{ urlencode($post->title . ' ' . request()->fullUrl()) }}" target="_blank" class="share-btn share-wa" title="হোয়াটসঅ্যাপে শেয়ার করুন">
-                        <i class="fa-brands fa-whatsapp"></i>
-                    </a>
-                    
-                    <!-- Copy Clipboard Widget Button -->
-                    <button type="button" class="share-btn share-copy" onclick="copyArticleLink(this)" title="লিংক কপি করুন">
-                        <i class="fa-solid fa-link"></i>
-                        <span class="copy-tooltip" id="copyTooltip">লিংক কপি করা হয়েছে!</span>
-                    </button>
-                </div>
-            </article>
- 
-            <!-- Related Posts Section -->
-            @if($relatedPosts->count() > 0)
-                <div class="related-section reveal">
-                    <div class="related-header">
-                        <h3 class="related-title">সম্পর্কিত খবর</h3>
-                    </div>
-                    <div class="related-grid">
-                        @foreach($relatedPosts as $rPost)
-                            <article class="related-news-card">
-                                <div class="related-img-wrapper">
-                                    <img src="{{ $rPost->featured_image_url }}" alt="{{ $rPost->title }}" class="related-card-img" onerror="this.src='https://images.unsplash.com/photo-1504711434969-e33886168f5c?auto=format&fit=crop&q=80&w=400'">
-                                </div>
-                                <div class="related-card-content">
-                                    <h4 class="related-card-title">
-                                        <a href="{{ route('post', $rPost->slug) }}">{{ $rPost->title }}</a>
-                                    </h4>
-                                    <div class="related-card-meta">
-                                        <i class="fa-regular fa-clock"></i>
-                                        <span>{{ $rPost->created_at->format('d M, Y') }}</span>
-                                    </div>
-                                </div>
-                            </article>
+
+                <!-- Tags Section -->
+                @if($post->tags && $post->tags->count() > 0)
+                    <div class="article-tags-wrapper">
+                        <span class="fw-bold text-dark me-2" style="font-size: 0.88rem;"><i class="fa-solid fa-tags text-danger me-1"></i>বিষয় / ট্যাগ:</span>
+                        @foreach($post->tags as $tag)
+                            <a href="{{ route('tag', $tag->slug) }}" class="article-tag-pill">#{{ $tag->name }}</a>
                         @endforeach
                     </div>
+                @endif
+
+                <!-- Bottom Social Share Bar -->
+                <div class="article-bottom-share-strip">
+                    <div class="d-flex align-items-center gap-2">
+                        <i class="fa-solid fa-share-nodes text-danger fs-5"></i>
+                        <span class="fw-bold text-dark" style="font-size: 0.95rem;">সংবাদটি আপনার পরিচিতদের সাথে শেয়ার করুন:</span>
+                    </div>
+                    <div class="d-flex align-items-center gap-2">
+                        <a href="https://www.facebook.com/sharer/sharer.php?u={{ urlencode(request()->fullUrl()) }}" target="_blank" class="share-pill-btn fb" title="Facebook">
+                            <i class="fa-brands fa-facebook-f"></i>
+                        </a>
+                        <a href="https://api.whatsapp.com/send?text={{ urlencode($post->title . ' ' . request()->fullUrl()) }}" target="_blank" class="share-pill-btn wa" title="WhatsApp">
+                            <i class="fa-brands fa-whatsapp"></i>
+                        </a>
+                        <a href="https://twitter.com/intent/tweet?url={{ urlencode(request()->fullUrl()) }}&text={{ urlencode($post->title) }}" target="_blank" class="share-pill-btn tw" title="X / Twitter">
+                            <i class="fa-brands fa-x-twitter"></i>
+                        </a>
+                        <button type="button" class="share-pill-btn copy" onclick="copyLinkUrl(this)" title="লিংক কপি">
+                            <i class="fa-solid fa-link"></i>
+                            <span class="copy-tooltip" id="bottomCopyTooltip">কপি হয়েছে!</span>
+                        </button>
+                    </div>
                 </div>
+
+                <!-- Legal Disclaimer Box -->
+                <div class="article-disclaimer-box">
+                    <i class="fa-solid fa-shield-halved me-1"></i>
+                    <strong>আইনগত সতর্কতা:</strong> দৈনিক ভোলা জার্নাল-এ প্রকাশিত সংবাদের কোনো অংশ অনুমতি ছাড়া কপি, পুনর্মুদ্রণ বা যেকোনো ডিজিটাল মাধ্যমে প্রচার কপিরাইট আইনের আওতায় আইনত দণ্ডনীয় অপরাধ।
+                </div>
+
+                <!-- Facebook Comments Section -->
+                <div class="article-comments-section">
+                    <div class="d-flex align-items-center justify-content-between mb-3 flex-wrap gap-2">
+                        <h3 class="m-0 text-dark fw-bold" style="font-size: 1.25rem; font-family: 'Noto Serif Bengali', serif;">
+                            <i class="fa-brands fa-facebook text-primary me-2"></i>মন্তব্যসমূহ (Facebook Comments)
+                        </h3>
+                        <a href="{{ route('comment.policy') }}" class="small text-muted text-decoration-none">
+                            <i class="fa-solid fa-circle-info me-1"></i>মন্তব্য নীতিমালা
+                        </a>
+                    </div>
+                    <div class="p-3 bg-light rounded border mb-3" style="font-size: 0.84rem; color: #64748b; line-height: 1.6;">
+                        ফেসবুক অ্যাকাউন্টের মাধ্যমে আপনি সরাসরি মন্তব্য করতে পারেন। কোনো ধরনের আক্রমণাত্মক, আপত্তিকর বা বিভ্রান্তিকর বক্তব্য প্রকাশ আইনত নিষিদ্ধ ও দণ্ডনীয় অপরাধ।
+                    </div>
+
+                    <!-- Facebook Comments Plugin -->
+                    <div id="fb-root"></div>
+                    <div class="fb-comments-wrapper" style="min-height: 180px; width: 100%; overflow-x: auto;">
+                        <div class="fb-comments" 
+                             data-href="{{ request()->url() }}" 
+                             data-width="100%" 
+                             data-numposts="5" 
+                             data-order-by="reverse_time">
+                        </div>
+                    </div>
+                </div>
+            </article>
+
+            <!-- Related Posts Section (4-column grid, 3-line headlines) -->
+            @if(isset($relatedPosts) && $relatedPosts->count() > 0)
+                <section class="related-news-section" aria-label="সম্পর্কিত খবর">
+                    <div class="related-sec-head d-flex justify-content-between align-items-center">
+                        <h3 class="related-sec-title">
+                            <i class="fa-solid fa-newspaper text-danger me-2"></i>সম্পর্কিত খবর
+                        </h3>
+                        @if($post->categories->first())
+                            <a href="{{ route('category', $post->categories->first()->slug) }}" class="text-decoration-none fw-bold text-danger small">
+                                আরও খবর <i class="fa-solid fa-angle-right ms-1"></i>
+                            </a>
+                        @endif
+                    </div>
+
+                    <div class="related-news-grid">
+                        @foreach($relatedPosts->take(4) as $rPost)
+                            <a href="{{ route('post', $rPost->slug) }}" class="related-card-item">
+                                <div class="related-thumb-box">
+                                    <img src="{{ $rPost->featured_image_url }}" alt="{{ $rPost->title }}" class="related-thumb-img" onerror="this.src='https://images.unsplash.com/photo-1504711434969-e33886168f5c?auto=format&fit=crop&q=80&w=400'" loading="lazy">
+                                </div>
+                                <div class="related-content-box">
+                                    <h4 class="related-card-title">{{ $rPost->title }}</h4>
+                                </div>
+                            </a>
+                        @endforeach
+                    </div>
+                </section>
             @endif
         </div>
- 
-        <!-- Sidebar Column -->
-        <div>
+
+        <!-- Right Persistent Rail / Sidebar (30% Width) -->
+        <div class="col-lg-4 single-sidebar-col">
             @include('layouts.partials.sidebar')
         </div>
     </div>
- 
+
 @endsection
- 
+
 @section('scripts')
 <script>
     // Copy Article Link to Clipboard with UI feedback tooltip
-    function copyArticleLink(button) {
+    function copyLinkUrl(button) {
         const link = window.location.href;
-        
         navigator.clipboard.writeText(link).then(() => {
-            // Find and show tooltip
-            const tooltip = document.getElementById('copyTooltip');
+            const tooltip = button.querySelector('.copy-tooltip');
             if (tooltip) {
                 tooltip.classList.add('show');
-                
-                // Change icon temporarily
                 const icon = button.querySelector('i');
                 const originalClass = icon.className;
                 icon.className = 'fa-solid fa-check';
-                
-                // Reset after 2 seconds
                 setTimeout(() => {
                     tooltip.classList.remove('show');
                     icon.className = originalClass;
                 }, 2000);
             }
         }).catch(err => {
-            console.error('Failed to copy text: ', err);
-            // Fallback for older browsers
             const textArea = document.createElement("textarea");
             textArea.value = link;
             document.body.appendChild(textArea);
@@ -581,31 +659,54 @@
             textArea.select();
             try {
                 document.execCommand('copy');
-                const tooltip = document.getElementById('copyTooltip');
+                const tooltip = button.querySelector('.copy-tooltip');
                 if (tooltip) {
                     tooltip.classList.add('show');
                     setTimeout(() => tooltip.classList.remove('show'), 2000);
                 }
             } catch (err2) {
-                console.error('Fallback copy failed: ', err2);
+                console.error('Copy fallback failed: ', err2);
             }
             document.body.removeChild(textArea);
         });
     }
 
-    // Reading Progress Bar
-    const progressBar = document.getElementById('readingProgress');
-    if (progressBar) {
-        window.addEventListener('scroll', function() {
-            const article = document.querySelector('.article-card');
-            if (!article) return;
-            const articleTop = article.offsetTop;
-            const articleHeight = article.offsetHeight;
-            const windowHeight = window.innerHeight;
-            const scrolled = window.scrollY - articleTop + windowHeight * 0.3;
-            const progress = Math.min(Math.max((scrolled / articleHeight) * 100, 0), 100);
-            progressBar.style.width = progress + '%';
-        });
+    // Interactive Font Resizer for Reading Comfort
+    let currentFontSizeRem = 1.22;
+    const defaultFontSizeRem = 1.22;
+    const articleBody = document.getElementById('articleBodyContent');
+
+    function changeFontSize(step) {
+        if (!articleBody) return;
+        currentFontSizeRem += (step * 0.1);
+        if (currentFontSizeRem < 1.0) currentFontSizeRem = 1.0;
+        if (currentFontSizeRem > 1.6) currentFontSizeRem = 1.6;
+        articleBody.style.fontSize = currentFontSizeRem + 'rem';
     }
+
+    function resetFontSize() {
+        if (!articleBody) return;
+        currentFontSizeRem = defaultFontSizeRem;
+        articleBody.style.fontSize = defaultFontSizeRem + 'rem';
+    }
+
+    // Slim Reading Progress Bar Indicator
+    window.addEventListener('scroll', function() {
+        const progressBar = document.getElementById('readingProgressBar');
+        if (!progressBar) return;
+        const totalHeight = document.documentElement.scrollHeight - document.documentElement.clientHeight;
+        if (totalHeight <= 0) return;
+        const scrolled = (window.scrollY / totalHeight) * 100;
+        progressBar.style.width = Math.min(Math.max(scrolled, 0), 100) + '%';
+    });
+
+    // Recalibrate Facebook comments on window resize
+    window.addEventListener('resize', function() {
+        if (typeof FB !== 'undefined' && FB.XFBML) {
+            FB.XFBML.parse();
+        }
+    });
 </script>
+<!-- Facebook Comments SDK -->
+<script async defer crossorigin="anonymous" src="https://connect.facebook.net/bn_IN/sdk.js#xfbml=1&version=v19.0"></script>
 @endsection

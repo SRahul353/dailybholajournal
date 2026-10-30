@@ -8,170 +8,104 @@
     "text_main": "#1f2937",
     "font_family": "'Noto Sans Bengali', 'Outfit', sans-serif",
     "custom_css": null,
-    "menu_structure": [
-        {
-            "id": 2,
-            "name": "বাংলাদেশ",
-            "depth": 0
-        },
+    "menu_structure": [],
+    "homepage_categories": [
         {
             "id": 8,
-            "name": "ভোলা জেলা",
-            "depth": 0
+            "name": "ভোলার খবর",
+            "layout": "style_a"
         },
         {
-            "id": 3,
-            "name": "ভোলা সদর",
-            "depth": 1
-        },
-        {
-            "id": 18,
-            "name": "চরফ্যাশন",
-            "depth": 1
-        },
-        {
-            "id": 21,
-            "name": "লালমোহন",
-            "depth": 1
-        },
-        {
-            "id": 20,
-            "name": "বোরহানউদ্দিন",
-            "depth": 1
-        },
-        {
-            "id": 19,
-            "name": "তজুমদ্দিন",
-            "depth": 1
-        },
-        {
-            "id": 16,
-            "name": "দৌলতখান",
-            "depth": 1
-        },
-        {
-            "id": 17,
-            "name": "মনপুরা",
-            "depth": 1
-        },
-        {
-            "id": 4,
-            "name": "আন্তর্জাতিক",
-            "depth": 0
+            "id": 2,
+            "name": "জাতীয়",
+            "layout": "style_a"
         },
         {
             "id": 6,
             "name": "রাজনীতি",
-            "depth": 0
+            "layout": "style_c"
         },
         {
             "id": 9,
-            "name": "বাণিজ্য",
-            "depth": 0
+            "name": "বাণিজ্য ও অর্থনীতি",
+            "layout": "style_b"
         },
         {
-            "id": 15,
-            "name": "মতামত",
-            "depth": 0
+            "id": 4,
+            "name": "আন্তর্জাতিক",
+            "layout": "style_c"
         },
         {
             "id": 10,
             "name": "খেলা",
-            "depth": 0
+            "layout": "style_b"
         },
         {
             "id": 11,
             "name": "বিনোদন",
-            "depth": 0
+            "layout": "style_b"
+        },
+        {
+            "id": 15,
+            "name": "মতামত ও কলাম",
+            "layout": "style_c"
         },
         {
             "id": 12,
             "name": "জীবনযাপন",
-            "depth": 0
+            "layout": "style_b"
         },
         {
             "id": 14,
             "name": "প্রযুক্তি",
-            "depth": 0
+            "layout": "style_a"
         },
         {
-            "id": 25,
-            "name": "শিক্ষা",
-            "depth": 0
-        },
-        {
-            "id": 5,
-            "name": "অপরাধ",
-            "depth": 0
+            "id": 24,
+            "name": "কৃষি",
+            "layout": "style_c"
         },
         {
             "id": 26,
             "name": "মৎস্য",
-            "depth": 0
-        }
-    ],
-    "homepage_categories": [
-        {
-            "id": 8,
-            "name": "ভোলার খবর"
-        },
-        {
-            "id": 2,
-            "name": "জাতীয়"
-        },
-        {
-            "id": 6,
-            "name": "রাজনীতি"
-        },
-        {
-            "id": 9,
-            "name": "বাণিজ্য ও অর্থনীতি"
-        },
-        {
-            "id": 4,
-            "name": "আন্তর্জাতিক"
-        },
-        {
-            "id": 10,
-            "name": "খেলা"
-        },
-        {
-            "id": 11,
-            "name": "বিনোদন"
-        },
-        {
-            "id": 15,
-            "name": "মতামত ও কলাম"
-        },
-        {
-            "id": 12,
-            "name": "জীবনযাপন"
-        },
-        {
-            "id": 14,
-            "name": "প্রযুক্তি"
-        },
-        {
-            "id": 24,
-            "name": "কৃষি"
-        },
-        {
-            "id": 26,
-            "name": "মৎস্য"
+            "layout": "style_b"
         }
     ],
     "footer_text": "দৈনিক ভোলা জার্নাল জেলার শীর্ষস্থানীয় একটি অনলাইন সংবাদপত্র ও ডিজিটাল ই-পেপার। আমরা অত্যন্ত সততা, নিষ্ঠা ও নিরপেক্ষতার সাথে সব ধরণের স্থানীয় ও জাতীয় সংবাদ সবার আগে প্রকাশ করি।",
     "social_facebook": "#",
-    "social_twitter": "",
-    "social_youtube": "",
-    "social_instagram": "",
-    "contact_address": "ভোলা",
+    "social_twitter": "#",
+    "social_youtube": "#",
+    "social_instagram": "#",
+    "contact_address": "ভোলা সদর, ভোলা, বাংলাদেশ।",
     "contact_phone": "01716-674375",
     "contact_email": "news.dailybholajournal@gmail.com",
+    "editorial_publisher": "সামিয়া তালুকদার",
+    "editorial_executive_editor": "ইসমাইল হোসেন আরিফ",
     "editorial_board_president": "",
-    "editorial_publisher": "প্রকাশক",
-    "editorial_editor": "সম্পাদক",
-    "copyright_text": "কপিরাইট",
+    "editorial_editor": "",
+    "copyright_text": "দৈনিক ভোলা জার্নাল। সর্বস্বত্ব সংরক্ষিত।",
+    "video_gallery": [
+        {
+            "title": "ভোলা-বরিশাল সেতু নির্মাণ প্রকল্প ও নদীভাঙন রোধে মেঘনার তীরে আধুনিক ব্লক বাঁধ",
+            "youtube_url": "https://www.youtube.com/watch?v=ScMzIvxBSi4",
+            "video_id": "ScMzIvxBSi4"
+        },
+        {
+            "title": "ইলিশের মৌসুমে ভোলার মেঘনা ও তেঁতুলিয়া নদীতে জেলেদের ব্যস্ততা ও মাছের বাজার",
+            "youtube_url": "https://www.youtube.com/watch?v=kJQP7kiw5Fk",
+            "video_id": "kJQP7kiw5Fk"
+        },
+        {
+            "title": "উপকূলীয় চরাঞ্চলে আধুনিক কৃষি বিপ্লব ও মহিষের বাথানে খামারিদের সাফল্য",
+            "youtube_url": "https://www.youtube.com/watch?v=9bZkp7q19f0",
+            "video_id": "9bZkp7q19f0"
+        },
+        {
+            "title": "দ্বীপজেলা ভোলার গ্যাস পাইপলাইনের বিস্তার ও স্থানীয় অর্থনীতিতে নতুন সম্ভাবনা",
+            "youtube_url": "https://www.youtube.com/watch?v=JGwWNGJdvx8",
+            "video_id": "JGwWNGJdvx8"
+        }
+    ],
     "menu_categories": [
         "2",
         "8",

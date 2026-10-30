@@ -566,6 +566,12 @@
                     </a>
                 </li>
                 <li class="menu-item">
+                    <a href="{{ route('admin.theme.settings') }}#videoGallerySection" class="menu-link">
+                        <i class="fa-brands fa-youtube" style="color: #ef4444;"></i>
+                        <span>ভিডিও গ্যালারি</span>
+                    </a>
+                </li>
+                <li class="menu-item">
                     <a href="{{ route('admin.users.index') }}" class="menu-link {{ request()->routeIs('admin.users.index') || request()->routeIs('admin.users.create') || request()->routeIs('admin.users.edit') ? 'active' : '' }}">
                         <i class="fa-solid fa-users-gear"></i>
                         <span>ইউজার লিস্ট</span>

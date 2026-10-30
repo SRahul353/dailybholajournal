@@ -507,7 +507,7 @@
                                     {!! $themeSettings['logo_text'] !!}
                                 </h1>
                                 <div style="font-family: 'Noto Sans Bengali', sans-serif; font-size: 0.75rem; font-weight: bold; width: 150px; text-align: right; line-height: 1.4;">
-                                    প্রকাশক: সামস্-উল-আলম মিঠু<br>
+                                    প্রকাশক: সামিয়া তালুকদার<br>
                                     facebook.com/dailybholajournal
                                 </div>
                             </div>
@@ -539,7 +539,7 @@
                         
                         <!-- Declaration Footer Page 1 -->
                         <div class="broadsheet-footer-brand">
-                            <span>সম্পাদক মণ্ডলীর সভাপতি: {{ $themeSettings['editorial_board_president'] ?? 'সামস্-উল-আলম মিঠু' }}, প্রধান সম্পাদক ও প্রকাশক: {{ $themeSettings['editorial_publisher'] ?? 'মোঃ আলী জিন্নাহ (রাজিব)' }}, ভারপ্রাপ্ত সম্পাদক: {{ $themeSettings['editorial_editor'] ?? 'মোঃ হেলাল উদ্দিন' }}</span>
+                            <span>প্রকাশক: {{ $themeSettings['editorial_publisher'] ?? 'সামিয়া তালুকদার' }}, নির্বাহী সম্পাদক: {{ $themeSettings['editorial_executive_editor'] ?? 'ইসমাইল হোসেন আরিফ' }}</span>
                             <span>দৈনিক ভোলা জার্নাল | পৃষ্ঠা ১</span>
                         </div>
                     </div>
@@ -613,7 +613,7 @@
 
                         <!-- Declaration Footer Page 2 -->
                         <div class="broadsheet-footer-brand">
-                            <span>ভারপ্রাপ্ত সম্পাদক: {{ $themeSettings['editorial_editor'] ?? 'মোঃ হেলাল উদ্দিন' }}</span>
+                            <span>নির্বাহী সম্পাদক: {{ $themeSettings['editorial_executive_editor'] ?? 'ইসমাইল হোসেন আরিফ' }}</span>
                             <span>দৈনিক ভোলা জার্নাল | পৃষ্ঠা ২</span>
                         </div>
                     </div>
