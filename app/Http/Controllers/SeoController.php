@@ -111,4 +111,62 @@ class SeoController extends Controller
             'Content-Type' => 'text/plain; charset=utf-8',
         ]);
     }
+
+    /**
+     * Generate standard RSS 2.0 feed for news readers, aggregators, and Google News.
+     */
+    public function rss()
+    {
+        $posts = Post::with(['categories', 'user'])
+            ->where('status', 'publish')
+            ->orderBy('created_at', 'desc')
+            ->limit(50)
+            ->get();
+
+        $themeSettingsPath = storage_path('app/theme_settings.json');
+        $siteTitle = 'দৈনিক ভোলা জার্নাল';
+        $siteDesc = 'সত্য ও তথ্যের সমন্বয়ে উপকূলের দিনলিপি';
+        if (file_exists($themeSettingsPath)) {
+            $settings = json_decode(file_get_contents($themeSettingsPath), true);
+            $siteDesc = $settings['footer_text'] ?? $siteDesc;
+        }
+
+        $xml = '<?xml version="1.0" encoding="UTF-8"?>' . "\n";
+        $xml .= '<rss version="2.0" xmlns:content="http://purl.org/rss/1.0/modules/content/" xmlns:dc="http://purl.org/dc/elements/1.1/" xmlns:atom="http://www.w3.org/2005/Atom">' . "\n";
+        $xml .= '  <channel>' . "\n";
+        $xml .= '    <title>' . htmlspecialchars($siteTitle) . '</title>' . "\n";
+        $xml .= '    <link>' . route('home') . '</link>' . "\n";
+        $xml .= '    <description>' . htmlspecialchars($siteDesc) . '</description>' . "\n";
+        $xml .= '    <language>bn</language>' . "\n";
+        $xml .= '    <atom:link href="' . route('seo.rss') . '" rel="self" type="application/rss+xml" />' . "\n";
+        $xml .= '    <lastBuildDate>' . now()->toRfc2822String() . '</lastBuildDate>' . "\n";
+
+        foreach ($posts as $post) {
+            $postUrl = route('post', $post->slug);
+            $pubDate = ($post->created_at ?? now())->toRfc2822String();
+            $author = $post->user ? $post->user->name : 'দৈনিক ভোলা জার্নাল ডেস্ক';
+            $category = $post->categories->first() ? $post->categories->first()->name : 'জাতীয়';
+            $excerpt = htmlspecialchars(strip_tags($post->excerpt ?: mb_substr($post->content, 0, 250)));
+
+            $xml .= "    <item>\n";
+            $xml .= "      <title>" . htmlspecialchars($post->title) . "</title>\n";
+            $xml .= "      <link>" . htmlspecialchars($postUrl) . "</link>\n";
+            $xml .= "      <guid isPermaLink=\"true\">" . htmlspecialchars($postUrl) . "</guid>\n";
+            $xml .= "      <pubDate>" . $pubDate . "</pubDate>\n";
+            $xml .= "      <dc:creator><![CDATA[" . $author . "]]></dc:creator>\n";
+            $xml .= "      <category><![CDATA[" . $category . "]]></category>\n";
+            $xml .= "      <description><![CDATA[" . $excerpt . "]]></description>\n";
+            if ($post->featured_image_url) {
+                $xml .= "      <enclosure url=\"" . htmlspecialchars($post->featured_image_url) . "\" type=\"image/jpeg\" />\n";
+            }
+            $xml .= "    </item>\n";
+        }
+
+        $xml .= '  </channel>' . "\n";
+        $xml .= '</rss>';
+
+        return response($xml, 200, [
+            'Content-Type' => 'application/rss+xml; charset=utf-8',
+        ]);
+    }
 }

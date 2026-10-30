@@ -8,6 +8,7 @@ use App\Models\Post;
 use Carbon\Carbon;
 use Illuminate\Http\Request;
 use Illuminate\Support\Facades\Http;
+use Illuminate\Support\Facades\Gate;
 
 class AdminEPaperController extends Controller
 {
@@ -16,6 +17,7 @@ class AdminEPaperController extends Controller
      */
     public function index()
     {
+        Gate::authorize('admin-or-super');
         $selectedDate = Carbon::today();
         
         $days = ['Sunday'=>'রবিবার','Monday'=>'সোমবার','Tuesday'=>'মঙ্গলবার','Wednesday'=>'বুধবার','Thursday'=>'বৃহস্পতিবার','Friday'=>'শুক্রবার','Saturday'=>'শনিবার'];
@@ -39,6 +41,8 @@ class AdminEPaperController extends Controller
      */
     public function loadDateData(Request $request)
     {
+        Gate::authorize('admin-or-super');
+
         $request->validate([
             'date' => 'required|date_format:Y-m-d'
         ]);
@@ -110,6 +114,8 @@ class AdminEPaperController extends Controller
      */
     public function store(Request $request)
     {
+        Gate::authorize('admin-or-super');
+
         $request->validate([
             'date' => 'required|date_format:Y-m-d',
             'layout' => 'required|array', // Now expects the 4-page json
@@ -139,52 +145,114 @@ class AdminEPaperController extends Controller
     }
 
     /**
-     * Proxy WordPress REST API to fetch posts and avoid CORS issues.
+     * Fetch news posts for E-Paper layout builder.
+     * Prioritizes local native Laravel posts, with fallback to WP API if configured.
      */
     public function proxyWPPosts(Request $request)
     {
-        $siteUrl = config('services.wordpress.site_url', env('WP_SITE_URL', config('app.url', 'http://dailybholajournal.test')));
-        
-        $perPage = $request->input('per_page', 50);
-        $search = $request->input('search', '');
-        $date = $request->input('date', ''); // optional exact date
+        $perPage = (int) $request->input('per_page', 50);
+        $search = trim($request->input('search', ''));
+        $date = $request->input('date', ''); // optional date string (Y-m-d)
 
-        $query = [
-            'per_page' => $perPage,
-            '_embed' => '1',
-            'status' => 'publish'
-        ];
+        // 1. Fetch from local Laravel database first
+        $localQuery = Post::with(['categories', 'tags'])->where('status', 'publish');
 
         if (!empty($search)) {
-            $query['search'] = $search;
+            $localQuery->where(function($q) use ($search) {
+                $q->where('title', 'like', "%{$search}%")
+                  ->orWhere('content', 'like', "%{$search}%");
+            });
         }
 
         if (!empty($date)) {
-            $carbonDate = Carbon::parse($date);
-            $query['after'] = $carbonDate->startOfDay()->toIso8601String();
-            $query['before'] = $carbonDate->endOfDay()->toIso8601String();
+            try {
+                $carbonDate = Carbon::parse($date)->format('Y-m-d');
+                $localQuery->whereDate('created_at', $carbonDate);
+            } catch (\Exception $e) {}
         }
 
-        try {
-            $response = Http::withoutVerifying()->timeout(15)->get($siteUrl . '/wp-json/wp/v2/posts', $query);
-            
-            if ($response->successful()) {
-                return response()->json([
-                    'success' => true,
-                    'posts' => $response->json()
-                ]);
-            }
-        } catch (\Exception $e) {
+        $localPosts = $localQuery->latest()->limit($perPage)->get();
+
+        // If specific date had no posts, fallback to latest published posts (so builder is not empty)
+        if ($localPosts->isEmpty() && !empty($date) && empty($search)) {
+            $localPosts = Post::with(['categories', 'tags'])
+                ->where('status', 'publish')
+                ->latest()
+                ->limit($perPage)
+                ->get();
+        }
+
+        if ($localPosts->isNotEmpty()) {
+            $formatted = $localPosts->map(function($post) {
+                $imgUrl = $post->featured_image_url;
+                return [
+                    'id' => $post->id,
+                    'date' => $post->created_at ? $post->created_at->toIso8601String() : now()->toIso8601String(),
+                    'title' => [
+                        'rendered' => $post->title,
+                    ],
+                    'content' => [
+                        'rendered' => $post->content,
+                    ],
+                    'excerpt' => [
+                        'rendered' => $post->excerpt ?: strip_tags(mb_substr($post->content, 0, 200)),
+                    ],
+                    'image' => $imgUrl,
+                    '_embedded' => [
+                        'wp:featuredmedia' => $imgUrl ? [
+                            ['source_url' => $imgUrl]
+                        ] : []
+                    ]
+                ];
+            });
+
             return response()->json([
-                'success' => false,
-                'message' => 'Failed to fetch from WP API: ' . $e->getMessage(),
-                'posts' => []
+                'success' => true,
+                'source' => 'local_laravel',
+                'posts' => $formatted
             ]);
         }
 
+        // 2. Fallback to WordPress REST API if local has no posts and WP_SITE_URL is defined
+        $siteUrl = config('services.wordpress.site_url', env('WP_SITE_URL', ''));
+        
+        if (!empty($siteUrl) && $siteUrl !== config('app.url')) {
+            $query = [
+                'per_page' => $perPage,
+                '_embed' => '1',
+                'status' => 'publish'
+            ];
+
+            if (!empty($search)) {
+                $query['search'] = $search;
+            }
+
+            if (!empty($date)) {
+                try {
+                    $carbonDate = Carbon::parse($date);
+                    $query['after'] = $carbonDate->startOfDay()->toIso8601String();
+                    $query['before'] = $carbonDate->endOfDay()->toIso8601String();
+                } catch (\Exception $e) {}
+            }
+
+            try {
+                $response = Http::withoutVerifying()->timeout(10)->get($siteUrl . '/wp-json/wp/v2/posts', $query);
+                
+                if ($response->successful()) {
+                    return response()->json([
+                        'success' => true,
+                        'source' => 'wordpress_api',
+                        'posts' => $response->json()
+                    ]);
+                }
+            } catch (\Exception $e) {
+                // fall through to empty response
+            }
+        }
+
         return response()->json([
-            'success' => false,
-            'message' => 'Failed to fetch from WP API',
+            'success' => true,
+            'source' => 'local_laravel',
             'posts' => []
         ]);
     }

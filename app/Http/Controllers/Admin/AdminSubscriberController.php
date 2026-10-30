@@ -5,6 +5,7 @@ namespace App\Http\Controllers\Admin;
 use App\Http\Controllers\Controller;
 use App\Models\Subscriber;
 use Illuminate\Http\Request;
+use Illuminate\Support\Facades\Gate;
 
 class AdminSubscriberController extends Controller
 {
@@ -13,6 +14,7 @@ class AdminSubscriberController extends Controller
      */
     public function index(Request $request)
     {
+        Gate::authorize('admin-or-super');
         $search = $request->query('search', '');
 
         $query = Subscriber::latest();
@@ -32,6 +34,8 @@ class AdminSubscriberController extends Controller
      */
     public function destroy($id)
     {
+        Gate::authorize('admin-or-super');
+
         $subscriber = Subscriber::findOrFail($id);
         $subscriber->delete();
 

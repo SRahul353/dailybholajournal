@@ -1,7 +1,7 @@
 @php
     $themeSettingsPath = storage_path('app/theme_settings.json');
     $themeSettings = [
-        'logo_text' => 'দৈনিক ভোলা<span>টাইমস্</span>',
+        'logo_text' => 'দৈনিক ভোলা<span>জার্নাল</span>',
         'logo_image' => '',
     ];
     if (file_exists($themeSettingsPath)) {
@@ -697,7 +697,7 @@
         <div class="brand-section">
             <h1 class="brand-logo">
                 <i class="fa-solid fa-file-invoice text-primary me-1"></i>
-                {!! $themeSettings['logo_text'] ?? 'দৈনিক ভোলা<span>টাইমস্</span>' !!}
+                {!! $themeSettings['logo_text'] ?? 'দৈনিক ভোলা<span>জার্নাল</span>' !!}
                 <small class="text-muted fs-6 fw-normal ms-2">| ই-পেপার বিল্ডার</small>
             </h1>
             <span id="saveStatusBadge" class="badge bg-success px-2.5 py-1.5 ms-2" style="font-family: 'Noto Sans Bengali', sans-serif;">
@@ -736,7 +736,7 @@
         <!-- Left Sidebar: WordPress news list -->
         <aside class="sidebar sidebar-left">
             <div class="sidebar-header">
-                <h5><i class="fa-brands fa-wordpress text-primary"></i> WP News Feed</h5>
+                <h5><i class="fa-solid fa-newspaper text-danger"></i> সংবাদ তালিকা (News Feed)</h5>
                 <div class="d-flex gap-2 mt-3 mb-2">
                     <input type="date" id="wpDate" class="form-control form-control-dark" value="{{ date('Y-m-d') }}">
                     <button class="btn btn-sm btn-outline-secondary border-secondary text-white" onclick="fetchWPPosts()"><i class="fa-solid fa-sync-alt"></i></button>
@@ -793,7 +793,7 @@
                                         @if(!empty($themeSettings['logo_image']))
                                             <img src="{{ asset($themeSettings['logo_image']) }}" alt="Logo" style="max-height: 120px; max-width: 100%; object-fit: contain;">
                                         @else
-                                            <h1 style="font-size: 5rem; font-weight: 900; margin: 0; letter-spacing: -2px; color: #111111;">{!! $themeSettings['logo_text'] ?? 'দৈনিক ভোলা<span style="color: #dc2626;">টাইমস্</span>' !!}</h1>
+                                            <h1 style="font-size: 5rem; font-weight: 900; margin: 0; letter-spacing: -2px; color: #111111;">{!! $themeSettings['logo_text'] ?? 'দৈনিক ভোলা<span style="color: #dc2626;">জার্নাল</span>' !!}</h1>
                                         @endif
                                     </div>
                                     <!-- Right: Balance spacer -->
@@ -834,7 +834,7 @@
                                     @if(!empty($themeSettings['logo_image']))
                                         <img src="{{ asset($themeSettings['logo_image']) }}" alt="Logo" style="height: 35px; object-fit: contain;">
                                     @else
-                                        <span style="font-size: 1.5rem; font-weight: bold; font-family: serif; line-height: 1;">দৈনিক ভোলা<span style="color:#ff0000;">টাইমস্</span></span>
+                                        <span style="font-size: 1.5rem; font-weight: bold; font-family: serif; line-height: 1;">দৈনিক ভোলা<span style="color:#ff0000;">জার্নাল</span></span>
                                     @endif
                                 </div>
                                 <div style="text-align: right; font-size: 0.85rem; line-height: 1.3; color: #ffffff;">
@@ -901,7 +901,7 @@
                                     @if(!empty($themeSettings['logo_image']))
                                         <img src="{{ asset($themeSettings['logo_image']) }}" alt="Logo" style="height: 35px; object-fit: contain;">
                                     @else
-                                        <span style="font-size: 1.5rem; font-weight: bold; font-family: serif; line-height: 1;">দৈনিক ভোলা<span style="color:#ff0000;">টাইমস্</span></span>
+                                        <span style="font-size: 1.5rem; font-weight: bold; font-family: serif; line-height: 1;">দৈনিক ভোলা<span style="color:#ff0000;">জার্নাল</span></span>
                                     @endif
                                 </div>
                                 <div style="text-align: right; font-size: 0.85rem; line-height: 1.3; color: #ffffff;">
@@ -1343,7 +1343,7 @@
         // ─── WP API Fetching ───
         function fetchWPPosts() {
             const dateStr = document.getElementById('wpDate').value;
-            document.getElementById('wpPostsList').innerHTML = '<div class="text-center mt-4 text-muted"><i class="fa-solid fa-spinner fa-spin"></i> WP পোস্ট লোড হচ্ছে...</div>';
+            document.getElementById('wpPostsList').innerHTML = '<div class="text-center mt-4 text-muted"><i class="fa-solid fa-spinner fa-spin"></i> সংবাদ লোড হচ্ছে...</div>';
 
             fetch(`{{ route('admin.epaper.wp_posts') }}?date=${dateStr}`)
                 .then(res => res.json())

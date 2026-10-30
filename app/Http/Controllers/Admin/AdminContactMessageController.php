@@ -5,6 +5,7 @@ namespace App\Http\Controllers\Admin;
 use App\Http\Controllers\Controller;
 use App\Models\ContactMessage;
 use Illuminate\Http\Request;
+use Illuminate\Support\Facades\Gate;
 
 class AdminContactMessageController extends Controller
 {
@@ -13,6 +14,7 @@ class AdminContactMessageController extends Controller
      */
     public function index(Request $request)
     {
+        Gate::authorize('admin-or-super');
         $search = $request->query('search', '');
         $status = $request->query('status', 'all');
 
@@ -45,6 +47,8 @@ class AdminContactMessageController extends Controller
      */
     public function show($id)
     {
+        Gate::authorize('admin-or-super');
+
         $message = ContactMessage::findOrFail($id);
 
         if (!$message->is_read) {
@@ -59,6 +63,8 @@ class AdminContactMessageController extends Controller
      */
     public function destroy($id)
     {
+        Gate::authorize('admin-or-super');
+
         $message = ContactMessage::findOrFail($id);
         $message->delete();
 

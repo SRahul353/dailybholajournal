@@ -122,7 +122,7 @@
                 <div class="form-group">
                     <label class="form-label" for="logo_text">লোগো এইচটিএমএল টেক্সট (Logo HTML Text)</label>
                     <input type="text" name="logo_text" id="logo_text" class="form-control" value="{{ old('logo_text', $settings['logo_text']) }}" required>
-                    <span class="form-text">লোগো ইমেজ আপলোড করা না থাকলে এই টেক্সটটি প্রদর্শিত হবে। আপনি এইচটিএমএল ট্যাগ ব্যবহার করতে পারেন, যেমন: <code>দৈনিক ভোলা&lt;span&gt;টাইমস্&lt;/span&gt;</code>।</span>
+                    <span class="form-text">লোগো ইমেজ আপলোড করা না থাকলে এই টেক্সটটি প্রদর্শিত হবে। আপনি এইচটিএমএল ট্যাগ ব্যবহার করতে পারেন, যেমন: <code>দৈনিক ভোলা&lt;span&gt;জার্নাল&lt;/span&gt;</code>।</span>
                 </div>
 
                 <div class="form-group mt-4">

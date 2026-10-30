@@ -6,6 +6,7 @@ use App\Http\Controllers\Controller;
 use App\Models\Tag;
 use Illuminate\Http\Request;
 use Illuminate\Support\Str;
+use Illuminate\Support\Facades\Gate;
 
 class AdminTagController extends Controller
 {
@@ -14,6 +15,7 @@ class AdminTagController extends Controller
      */
     public function index(Request $request)
     {
+        Gate::authorize('admin-or-super');
         $search = $request->query('search', '');
         
         $query = Tag::withCount('posts')->orderBy('name', 'asc');
@@ -35,6 +37,7 @@ class AdminTagController extends Controller
      */
     public function store(Request $request)
     {
+        Gate::authorize('admin-or-super');
         $request->validate([
             'name' => 'required|string|max:150|unique:tags,name',
             'slug' => 'nullable|string|max:150|unique:tags,slug',
@@ -67,6 +70,7 @@ class AdminTagController extends Controller
      */
     public function update(Request $request, $id)
     {
+        Gate::authorize('admin-or-super');
         $tag = Tag::findOrFail($id);
 
         $request->validate([
@@ -92,6 +96,7 @@ class AdminTagController extends Controller
      */
     public function destroy($id)
     {
+        Gate::authorize('admin-or-super');
         $tag = Tag::findOrFail($id);
 
         // Detach pivot relations first

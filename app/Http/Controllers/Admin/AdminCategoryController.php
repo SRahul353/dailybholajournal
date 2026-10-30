@@ -6,6 +6,7 @@ use App\Http\Controllers\Controller;
 use App\Models\Category;
 use Illuminate\Http\Request;
 use Illuminate\Support\Str;
+use Illuminate\Support\Facades\Gate;
 
 class AdminCategoryController extends Controller
 {
@@ -14,6 +15,8 @@ class AdminCategoryController extends Controller
      */
     public function index()
     {
+        Gate::authorize('admin-or-super');
+
         $categories = Category::withCount('posts')
             ->orderBy('name', 'asc')
             ->get();
@@ -26,6 +29,7 @@ class AdminCategoryController extends Controller
      */
     public function store(Request $request)
     {
+        Gate::authorize('admin-or-super');
         $request->validate([
             'name' => 'required|unique:categories,name',
             'description' => 'nullable|string|max:500',
@@ -58,6 +62,8 @@ class AdminCategoryController extends Controller
      */
     public function update(Request $request, $id)
     {
+        Gate::authorize('admin-or-super');
+
         $category = Category::findOrFail($id);
 
         $request->validate([
@@ -85,6 +91,8 @@ class AdminCategoryController extends Controller
      */
     public function destroy($id)
     {
+        Gate::authorize('admin-or-super');
+
         $category = Category::findOrFail($id);
 
         // Detach pivot relations first

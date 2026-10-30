@@ -55,6 +55,13 @@
     <meta name="twitter:description" content="@yield('og_description', $themeSettings['footer_text'] ?? 'দৈনিক ভোলা জার্নাল - ভোলা জেলার শীর্ষস্থানীয় একটি অনলাইন সংবাদপত্র।')">
     <meta name="twitter:image" content="@yield('og_image', asset($themeSettings['logo_image'] ?? 'https://images.unsplash.com/photo-1504711434969-e33886168f5c?auto=format&fit=crop&q=80&w=800'))">
     
+    <!-- RSS & Discovery Feeds -->
+    <link rel="alternate" type="application/rss+xml" title="দৈনিক ভোলা জার্নাল RSS Feed" href="{{ route('seo.rss') }}">
+    <link rel="sitemap" type="application/xml" title="Sitemap" href="{{ route('seo.sitemap') }}">
+
+    <!-- Schema.org Structured Data -->
+    @yield('schema_json')
+    
     <!-- Premium Google Fonts -->
     <link rel="preconnect" href="https://fonts.googleapis.com">
     <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>

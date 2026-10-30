@@ -5,6 +5,7 @@ namespace App\Http\Controllers\Admin;
 use App\Http\Controllers\Controller;
 use App\Models\Poll;
 use Illuminate\Http\Request;
+use Illuminate\Support\Facades\Gate;
 
 class AdminPollController extends Controller
 {
@@ -13,6 +14,8 @@ class AdminPollController extends Controller
      */
     public function index()
     {
+        Gate::authorize('admin-or-super');
+
         $polls = Poll::withCount('votes')->latest()->paginate(15);
 
         return view('admin.polls.index', compact('polls'));
@@ -23,6 +26,7 @@ class AdminPollController extends Controller
      */
     public function store(Request $request)
     {
+        Gate::authorize('admin-or-super');
         $request->validate([
             'question' => 'required|string|max:500',
             'is_active' => 'nullable|boolean',
@@ -53,6 +57,8 @@ class AdminPollController extends Controller
      */
     public function toggle($id)
     {
+        Gate::authorize('admin-or-super');
+
         $poll = Poll::findOrFail($id);
         
         if (!$poll->is_active) {
@@ -73,6 +79,8 @@ class AdminPollController extends Controller
      */
     public function resetVotes($id)
     {
+        Gate::authorize('admin-or-super');
+
         $poll = Poll::findOrFail($id);
         
         $poll->update([
@@ -91,6 +99,8 @@ class AdminPollController extends Controller
      */
     public function destroy($id)
     {
+        Gate::authorize('admin-or-super');
+
         $poll = Poll::findOrFail($id);
         $poll->votes()->delete();
         $poll->delete();

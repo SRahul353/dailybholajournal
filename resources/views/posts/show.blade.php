@@ -8,6 +8,42 @@
 @section('og_image', $post->featured_image_url)
 @section('og_type', 'article')
 
+@section('schema_json')
+@php
+    $schemaData = [
+        '@context' => 'https://schema.org',
+        '@type' => 'NewsArticle',
+        'mainEntityOfPage' => [
+            '@type' => 'WebPage',
+            '@id' => request()->url(),
+        ],
+        'headline' => $post->title,
+        'description' => mb_substr(strip_tags($post->excerpt ?: $post->content), 0, 160),
+        'image' => [
+            $post->featured_image_url
+        ],
+        'datePublished' => ($post->created_at ?? now())->toIso8601String(),
+        'dateModified' => ($post->updated_at ?? $post->created_at ?? now())->toIso8601String(),
+        'author' => [
+            '@type' => 'Person',
+            'name' => $post->user ? $post->user->name : 'দৈনিক ভোলা জার্নাল ডেস্ক',
+        ],
+        'publisher' => [
+            '@type' => 'Organization',
+            'name' => 'দৈনিক ভোলা জার্নাল',
+            'logo' => [
+                '@type' => 'ImageObject',
+                'url' => asset($themeSettings['logo_image'] ?? 'uploads/logo.png'),
+            ]
+        ],
+        'articleSection' => $post->categories->first() ? $post->categories->first()->name : 'সংবাদ',
+    ];
+@endphp
+<script type="application/ld+json">
+{!! json_encode($schemaData, JSON_UNESCAPED_UNICODE | JSON_UNESCAPED_SLASHES | JSON_PRETTY_PRINT) !!}
+</script>
+@endsection
+
 @section('styles')
 <style>
     /* Top Slim Reading Progress Bar */

@@ -20,28 +20,31 @@ Route::get('/editorial-policy', [NewspaperController::class, 'editorialPolicy'])
 Route::get('/contact', [NewspaperController::class, 'contact'])->name('contact');
 Route::get('/our-family', [NewspaperController::class, 'contact'])->name('our.family');
 
-// Contact Form Submission
-Route::post('/contact', [NewspaperController::class, 'submitContact'])->name('contact.submit');
+// Contact Form Submission (throttled to 6 submissions per minute per IP)
+Route::post('/contact', [NewspaperController::class, 'submitContact'])->middleware('throttle:6,1')->name('contact.submit');
 
-// Opinion & Column Submission Routes
+// Opinion & Column Submission Routes (throttled to 6 submissions per minute per IP)
 Route::get('/opinion/submit', [App\Http\Controllers\OpinionController::class, 'create'])->name('opinion.submit');
-Route::post('/opinion/submit', [App\Http\Controllers\OpinionController::class, 'store'])->name('opinion.store');
+Route::post('/opinion/submit', [App\Http\Controllers\OpinionController::class, 'store'])->middleware('throttle:6,1')->name('opinion.store');
 
-// Interactive Poll Voting
-Route::post('/poll/vote', [NewspaperController::class, 'votePoll'])->name('poll.vote');
+// Interactive Poll Voting (throttled to 15 requests per minute per IP)
+Route::post('/poll/vote', [NewspaperController::class, 'votePoll'])->middleware('throttle:15,1')->name('poll.vote');
 
-// Newsletter Subscription
-Route::post('/newsletter/subscribe', [NewspaperController::class, 'subscribeNewsletter'])->name('newsletter.subscribe');
+// Newsletter Subscription (throttled to 10 requests per minute per IP)
+Route::post('/newsletter/subscribe', [NewspaperController::class, 'subscribeNewsletter'])->middleware('throttle:10,1')->name('newsletter.subscribe');
 
-// Dynamic SEO Sitemap & Robots.txt
+// Dynamic SEO Sitemap, Robots.txt & RSS Feed
 Route::get('/sitemap.xml', [App\Http\Controllers\SeoController::class, 'sitemap'])->name('seo.sitemap');
 Route::get('/robots.txt', [App\Http\Controllers\SeoController::class, 'robots'])->name('seo.robots');
+Route::get('/rss', [App\Http\Controllers\SeoController::class, 'rss'])->name('seo.rss');
+Route::get('/feed', [App\Http\Controllers\SeoController::class, 'rss'])->name('seo.feed');
+Route::get('/rss.xml', [App\Http\Controllers\SeoController::class, 'rss'])->name('seo.rss.xml');
 
 // Admin Panel Routes
 Route::prefix('admin')->name('admin.')->group(function () {
     // Unprotected Auth Routes
     Route::get('/login', [App\Http\Controllers\Admin\AdminLoginController::class, 'showLoginForm'])->name('login');
-    Route::post('/login', [App\Http\Controllers\Admin\AdminLoginController::class, 'login'])->name('login.submit');
+    Route::post('/login', [App\Http\Controllers\Admin\AdminLoginController::class, 'login'])->middleware('throttle:5,1')->name('login.submit');
 
     // Protected Admin Panel Routes
     Route::middleware(['auth'])->group(function () {
@@ -96,8 +99,9 @@ Route::prefix('admin')->name('admin.')->group(function () {
         Route::get('/epaper/wp-posts', [App\Http\Controllers\Admin\AdminEPaperController::class, 'proxyWPPosts'])->name('epaper.wp_posts');
         Route::get('/epaper/proxy-image', [App\Http\Controllers\Admin\AdminEPaperController::class, 'proxyImage'])->name('epaper.proxy_image');
         
-        // Secure Live Deployment Helper Routes
+        // Secure Live Deployment Helper Routes (Super Admin Only)
         Route::get('/epaper/migrate', function () {
+            \Illuminate\Support\Facades\Gate::authorize('super-admin-only');
             try {
                 \Illuminate\Support\Facades\Artisan::call('migrate', ['--force' => true]);
                 return response()->json([
@@ -111,6 +115,7 @@ Route::prefix('admin')->name('admin.')->group(function () {
         })->name('epaper.migrate');
 
         Route::get('/epaper/clear-cache', function () {
+            \Illuminate\Support\Facades\Gate::authorize('super-admin-only');
             try {
                 \Illuminate\Support\Facades\Artisan::call('view:clear');
                 \Illuminate\Support\Facades\Artisan::call('cache:clear');

@@ -10,6 +10,7 @@ use App\Models\Tag;
 use Illuminate\Http\Request;
 use Illuminate\Support\Facades\Auth;
 use Illuminate\Support\Str;
+use Illuminate\Support\Facades\Gate;
 
 class AdminOpinionController extends Controller
 {
@@ -69,6 +70,8 @@ class AdminOpinionController extends Controller
      */
     public function approve(Request $request, $id)
     {
+        Gate::authorize('admin-or-super');
+
         $submission = OpinionSubmission::findOrFail($id);
 
         // Find or create 'মতামত' Category
@@ -144,6 +147,8 @@ class AdminOpinionController extends Controller
      */
     public function reject(Request $request, $id)
     {
+        Gate::authorize('admin-or-super');
+
         $submission = OpinionSubmission::findOrFail($id);
 
         $submission->update([
@@ -160,6 +165,8 @@ class AdminOpinionController extends Controller
      */
     public function destroy($id)
     {
+        Gate::authorize('admin-or-super');
+
         $submission = OpinionSubmission::findOrFail($id);
 
         // Delete uploaded files if any
