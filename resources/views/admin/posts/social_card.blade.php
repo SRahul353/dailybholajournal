@@ -332,6 +332,50 @@
         color: #dc2626;
     }
 
+    /* Card Color Theme Presets */
+    .card-theme-grid {
+        display: grid;
+        grid-template-columns: 1fr 1fr;
+        gap: 8px;
+    }
+
+    .btn-theme-preset {
+        display: flex;
+        align-items: center;
+        gap: 8px;
+        background: #ffffff;
+        border: 1px solid #cbd5e1;
+        padding: 7px 10px;
+        border-radius: 6px;
+        font-size: 0.76rem;
+        font-weight: 700;
+        color: #334155;
+        cursor: pointer;
+        transition: all 0.2s ease;
+        font-family: 'Noto Sans Bengali', sans-serif;
+    }
+
+    .btn-theme-preset:hover {
+        border-color: #dc2626;
+        background: #fff5f5;
+        color: #dc2626;
+    }
+
+    .btn-theme-preset.active {
+        border-color: #dc2626;
+        background: #fef2f2;
+        color: #dc2626;
+        box-shadow: 0 0 0 2px rgba(220, 38, 38, 0.2);
+    }
+
+    .theme-dot {
+        width: 14px;
+        height: 14px;
+        border-radius: 50%;
+        flex-shrink: 0;
+        box-shadow: 0 1px 3px rgba(0,0,0,0.2);
+    }
+
     /* Drag and Drop BG Button */
     .bg-upload-zone {
         border: 1.5px dashed #cbd5e1;
@@ -583,12 +627,13 @@
     .bottom-content-wrapper { 
         flex: 0 0 332px; 
         width: 1080px; 
-        background: linear-gradient(160deg, #1e293b 0%, #0a0f1d 100%); 
+        background: linear-gradient(160deg, #990000 0%, #3a0000 100%); /* Brand Signature Journal Crimson Red */
         display: flex; 
         flex-direction: column; 
         padding: 20px 60px 15px 60px;
         z-index: 2; 
         overflow: hidden;
+        transition: background 0.3s ease;
     }
 
     .meta-row {
@@ -603,8 +648,9 @@
     .news-date { 
         font-family: 'Noto Sans Bengali', sans-serif !important;
         font-size: 24px; 
-        color: #f39c12; 
-        font-weight: 500; 
+        color: #ffd700; /* Rich Gold */
+        font-weight: 600; 
+        transition: color 0.2s ease;
     }
     
     .meta-logo img { 
@@ -635,11 +681,12 @@
     .details-hint { 
         font-family: 'Noto Sans Bengali', sans-serif !important;
         font-size: 22px; 
-        color: #ecf0f1; 
+        color: #fef08a; /* Soft Gold/Cream */
         margin-top: 15px; 
         font-weight: 500; 
         display: inline-block;
         background: transparent; 
+        transition: color 0.2s ease;
     }
 
     .full-width-ad-bar {
@@ -651,7 +698,8 @@
         align-items: center;
         z-index: 3;
         overflow: hidden;
-        border-top: 3px solid #ef4444;
+        border-top: 3px solid #ffd700; /* Matching Gold Accent Border */
+        transition: border-color 0.2s ease;
     }
     
     .full-width-ad-bar img { 
@@ -830,7 +878,75 @@
                 </div>
             </div>
 
-            <!-- Section 3: ব্যাকগ্রাউন্ড ও ব্যানার -->
+            <!-- Section 3: কার্ড কালার ও থিম (Card Color Themes) -->
+            <div class="inspector-section">
+                <span class="section-title">
+                    <i class="fa-solid fa-palette"></i> কার্ড কালার ও থিম
+                </span>
+
+                <div>
+                    <label class="studio-label"><i class="fa-solid fa-swatchbook text-danger me-1"></i> ব্যাকগ্রাউন্ড কালার থিম</label>
+                    <div class="card-theme-grid">
+                        <button type="button" class="btn-theme-preset active" data-theme="crimson" onclick="applyCardTheme('crimson')">
+                            <span class="theme-dot" style="background: linear-gradient(135deg, #990000, #3a0000);"></span>
+                            <span>জার্নাল রেড</span>
+                        </button>
+                        <button type="button" class="btn-theme-preset" data-theme="midnight" onclick="applyCardTheme('midnight')">
+                            <span class="theme-dot" style="background: linear-gradient(135deg, #18181b, #09090b);"></span>
+                            <span>মিডনাইট ব্ল্যাক</span>
+                        </button>
+                        <button type="button" class="btn-theme-preset" data-theme="navy" onclick="applyCardTheme('navy')">
+                            <span class="theme-dot" style="background: linear-gradient(135deg, #1e293b, #0a0f1d);"></span>
+                            <span>নেভি ব্লু</span>
+                        </button>
+                        <button type="button" class="btn-theme-preset" data-theme="royal" onclick="applyCardTheme('royal')">
+                            <span class="theme-dot" style="background: linear-gradient(135deg, #1e3a8a, #0f172a);"></span>
+                            <span>রয়েল ব্লু</span>
+                        </button>
+                        <button type="button" class="btn-theme-preset" data-theme="emerald" onclick="applyCardTheme('emerald')">
+                            <span class="theme-dot" style="background: linear-gradient(135deg, #064e3b, #022c22);"></span>
+                            <span>গাঢ় সবুজ</span>
+                        </button>
+                        <button type="button" class="btn-theme-preset" data-theme="maroon" onclick="applyCardTheme('maroon')">
+                            <span class="theme-dot" style="background: linear-gradient(135deg, #581c87, #2e1065);"></span>
+                            <span>ডিপ মেরুন</span>
+                        </button>
+                    </div>
+                </div>
+
+                <div class="mt-3">
+                    <label class="studio-label">কাস্টম ব্যাকগ্রাউন্ড কালার</label>
+                    <div class="d-flex align-items-center gap-2">
+                        <input type="color" class="color-picker-studio" id="customBgColor" value="#990000" oninput="setCustomCardBg(this.value)">
+                        <input type="text" class="studio-input py-1 px-2" id="customBgHex" value="#990000" style="font-size: 0.8rem; height: 32px;" onchange="setCustomCardBg(this.value)">
+                    </div>
+                </div>
+
+                <div class="mt-3">
+                    <label class="studio-label">তারিখ ও ডিটেইলস কালার</label>
+                    <div class="color-swatch-wrapper">
+                        <div class="color-swatch" style="background: #ffd700;" onclick="setCardDateColor('#ffd700')" title="সোনালী"></div>
+                        <div class="color-swatch" style="background: #ffffff;" onclick="setCardDateColor('#ffffff')" title="সাদা"></div>
+                        <div class="color-swatch" style="background: #ef4444;" onclick="setCardDateColor('#ef4444')" title="লাল"></div>
+                        <div class="color-swatch" style="background: #38bdf8;" onclick="setCardDateColor('#38bdf8')" title="আকাশী"></div>
+                        <div class="color-swatch" style="background: #34d399;" onclick="setCardDateColor('#34d399')" title="হালকা সবুজ"></div>
+                        <input type="color" class="color-picker-studio" id="dateColorPicker" oninput="setCardDateColor(this.value)" value="#ffd700" title="কাস্টম কালার">
+                    </div>
+                </div>
+
+                <div class="mt-3">
+                    <label class="studio-label">ডিভাইডার বর্ডার কালার</label>
+                    <div class="color-swatch-wrapper">
+                        <div class="color-swatch" style="background: #ffd700;" onclick="setCardBorderColor('#ffd700')" title="সোনালী"></div>
+                        <div class="color-swatch" style="background: #ef4444;" onclick="setCardBorderColor('#ef4444')" title="লাল"></div>
+                        <div class="color-swatch" style="background: #ffffff;" onclick="setCardBorderColor('#ffffff')" title="সাদা"></div>
+                        <div class="color-swatch" style="background: #0ea5e9;" onclick="setCardBorderColor('#0ea5e9')" title="নীল"></div>
+                        <input type="color" class="color-picker-studio" id="borderColorPicker" oninput="setCardBorderColor(this.value)" value="#ffd700" title="কাস্টম কালার">
+                    </div>
+                </div>
+            </div>
+
+            <!-- Section 4: ব্যাকগ্রাউন্ড ও ব্যানার -->
             <div class="inspector-section">
                 <span class="section-title">
                     <i class="fa-regular fa-image"></i> ব্যাকগ্রাউন্ড ও বিজ্ঞাপন
@@ -860,7 +976,7 @@
                 </div>
             </div>
 
-            <!-- Section 4: কুইক ডাউনলোড ও ফেসবুক পোস্ট -->
+            <!-- Section 5: কুইক ডাউনলোড ও ফেসবুক পোস্ট -->
             <div class="inspector-section" style="background: transparent; border: none; padding: 0;">
                 <button type="button" onclick="download_SocialCard(event)" class="download-gradient-btn">
                     <i class="fa-solid fa-download" style="font-size: 1.1rem;"></i>  কার্ডটি সেভ করুন
@@ -912,7 +1028,7 @@
                 </div>
 
                 <!-- Bottom Content Section -->
-                <div class="bottom-content-wrapper">
+                <div class="bottom-content-wrapper" id="bottomContentWrapper">
                     <div class="meta-row">
                         <div class="news-date" id="cardDatePreview" contenteditable="true" spellcheck="false">
                             তারিখ...
@@ -1064,6 +1180,115 @@
     // Base line height logic (for back-compatibility)
     function changeLineHeight(val) {
         updateLineHeight(val);
+    }
+
+    // Card Theme Color Presets & Management
+    const cardThemes = {
+        crimson: {
+            bg: 'linear-gradient(160deg, #990000 0%, #3a0000 100%)',
+            dateColor: '#ffd700',
+            borderColor: '#ffd700',
+            headlineColor: '#ffffff'
+        },
+        midnight: {
+            bg: 'linear-gradient(160deg, #18181b 0%, #09090b 100%)',
+            dateColor: '#ef4444',
+            borderColor: '#dc2626',
+            headlineColor: '#ffffff'
+        },
+        navy: {
+            bg: 'linear-gradient(160deg, #1e293b 0%, #0a0f1d 100%)',
+            dateColor: '#f59e0b',
+            borderColor: '#ef4444',
+            headlineColor: '#ffffff'
+        },
+        royal: {
+            bg: 'linear-gradient(160deg, #1e3a8a 0%, #0f172a 100%)',
+            dateColor: '#38bdf8',
+            borderColor: '#38bdf8',
+            headlineColor: '#ffffff'
+        },
+        emerald: {
+            bg: 'linear-gradient(160deg, #064e3b 0%, #022c22 100%)',
+            dateColor: '#34d399',
+            borderColor: '#10b981',
+            headlineColor: '#ffffff'
+        },
+        maroon: {
+            bg: 'linear-gradient(160deg, #581c87 0%, #2e1065 100%)',
+            dateColor: '#f472b6',
+            borderColor: '#e11d48',
+            headlineColor: '#ffffff'
+        }
+    };
+
+    function applyCardTheme(themeKey) {
+        const theme = cardThemes[themeKey];
+        if (!theme) return;
+
+        const bottomWrapper = document.getElementById('bottomContentWrapper');
+        if (bottomWrapper) {
+            bottomWrapper.style.background = theme.bg;
+        }
+
+        setCardDateColor(theme.dateColor);
+        setCardBorderColor(theme.borderColor);
+
+        // Update active button state
+        document.querySelectorAll('.btn-theme-preset').forEach(btn => {
+            btn.classList.toggle('active', btn.getAttribute('data-theme') === themeKey);
+        });
+
+        // Update color inputs
+        const bgPicker = document.getElementById('customBgColor');
+        const bgHex = document.getElementById('customBgHex');
+        const defaultHexes = {
+            crimson: '#990000',
+            midnight: '#18181b',
+            navy: '#1e293b',
+            royal: '#1e3a8a',
+            emerald: '#064e3b',
+            maroon: '#581c87'
+        };
+        if (defaultHexes[themeKey]) {
+            if (bgPicker) bgPicker.value = defaultHexes[themeKey];
+            if (bgHex) bgHex.value = defaultHexes[themeKey];
+        }
+    }
+
+    function setCustomCardBg(color) {
+        if (!color) return;
+        const bottomWrapper = document.getElementById('bottomContentWrapper');
+        if (bottomWrapper) {
+            bottomWrapper.style.background = color;
+        }
+        const bgPicker = document.getElementById('customBgColor');
+        const bgHex = document.getElementById('customBgHex');
+        if (bgPicker && bgPicker.value !== color && color.startsWith('#')) bgPicker.value = color;
+        if (bgHex && bgHex.value !== color) bgHex.value = color;
+
+        // remove active class from presets
+        document.querySelectorAll('.btn-theme-preset').forEach(btn => btn.classList.remove('active'));
+    }
+
+    function setCardDateColor(color) {
+        if (!color) return;
+        const dateEl = document.getElementById('cardDatePreview');
+        const hintEl = document.querySelector('.details-hint');
+        if (dateEl) dateEl.style.color = color;
+        if (hintEl) hintEl.style.color = color;
+
+        const datePicker = document.getElementById('dateColorPicker');
+        if (datePicker && color.startsWith('#')) datePicker.value = color;
+    }
+
+    function setCardBorderColor(color) {
+        if (!color) return;
+        const adBar = document.getElementById('main_ad_bar');
+        if (adBar) adBar.style.borderTopColor = color;
+
+        const borderPicker = document.getElementById('borderColorPicker');
+        if (borderPicker && color.startsWith('#')) borderPicker.value = color;
     }
 
     // Ad Preset Management

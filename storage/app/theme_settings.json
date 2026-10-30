@@ -1,7 +1,7 @@
 {
     "logo_text": "দৈনিক ভোলা<span>জার্নাল<\/span>",
-    "logo_image": "uploads\/logo_1793099131.png",
-    "footer_logo_image": "uploads\/footer_logo_1793099209.png",
+    "logo_image": "uploads\/logo_1793394868.png",
+    "footer_logo_image": "uploads\/footer_logo_1793394868.png",
     "primary_color": "#f8fafc",
     "accent_color": "#c90000",
     "bg_site": "#ffffff",
@@ -71,6 +71,28 @@
             "layout": "style_b"
         }
     ],
+    "video_gallery": [
+        {
+            "title": "ভোলা-বরিশাল সেতু নির্মাণ প্রকল্প ও নদীভাঙন রোধে মেঘনার তীরে আধুনিক ব্লক বাঁধ",
+            "youtube_url": "https:\/\/www.youtube.com\/watch?v=ScMzIvxBSi4",
+            "video_id": "ScMzIvxBSi4"
+        },
+        {
+            "title": "ইলিশের মৌসুমে ভোলার মেঘনা ও তেঁতুলিয়া নদীতে জেলেদের ব্যস্ততা ও মাছের বাজার",
+            "youtube_url": "https:\/\/www.youtube.com\/watch?v=kJQP7kiw5Fk",
+            "video_id": "kJQP7kiw5Fk"
+        },
+        {
+            "title": "উপকূলীয় চরাঞ্চলে আধুনিক কৃষি বিপ্লব ও মহিষের বাথানে খামারিদের সাফল্য",
+            "youtube_url": "https:\/\/www.youtube.com\/watch?v=9bZkp7q19f0",
+            "video_id": "9bZkp7q19f0"
+        },
+        {
+            "title": "দ্বীপজেলা ভোলার গ্যাস পাইপলাইনের বিস্তার ও স্থানীয় অর্থনীতিতে নতুন সম্ভাবনা",
+            "youtube_url": "https:\/\/www.youtube.com\/watch?v=JGwWNGJdvx8",
+            "video_id": "JGwWNGJdvx8"
+        }
+    ],
     "footer_text": "দৈনিক ভোলা জার্নাল জেলার শীর্ষস্থানীয় একটি অনলাইন সংবাদপত্র ও ডিজিটাল ই-পেপার। আমরা অত্যন্ত সততা, নিষ্ঠা ও নিরপেক্ষতার সাথে সব ধরণের স্থানীয় ও জাতীয় সংবাদ সবার আগে প্রকাশ করি।",
     "social_facebook": "#",
     "social_twitter": "#",
@@ -81,31 +103,9 @@
     "contact_email": "news.dailybholajournal@gmail.com",
     "editorial_publisher": "সামিয়া তালুকদার",
     "editorial_executive_editor": "ইসমাইল হোসেন আরিফ",
+    "copyright_text": "দৈনিক ভোলা জার্নাল। সর্বস্বত্ব সংরক্ষিত।",
     "editorial_board_president": "",
     "editorial_editor": "",
-    "copyright_text": "দৈনিক ভোলা জার্নাল। সর্বস্বত্ব সংরক্ষিত।",
-    "video_gallery": [
-        {
-            "title": "ভোলা-বরিশাল সেতু নির্মাণ প্রকল্প ও নদীভাঙন রোধে মেঘনার তীরে আধুনিক ব্লক বাঁধ",
-            "youtube_url": "https://www.youtube.com/watch?v=ScMzIvxBSi4",
-            "video_id": "ScMzIvxBSi4"
-        },
-        {
-            "title": "ইলিশের মৌসুমে ভোলার মেঘনা ও তেঁতুলিয়া নদীতে জেলেদের ব্যস্ততা ও মাছের বাজার",
-            "youtube_url": "https://www.youtube.com/watch?v=kJQP7kiw5Fk",
-            "video_id": "kJQP7kiw5Fk"
-        },
-        {
-            "title": "উপকূলীয় চরাঞ্চলে আধুনিক কৃষি বিপ্লব ও মহিষের বাথানে খামারিদের সাফল্য",
-            "youtube_url": "https://www.youtube.com/watch?v=9bZkp7q19f0",
-            "video_id": "9bZkp7q19f0"
-        },
-        {
-            "title": "দ্বীপজেলা ভোলার গ্যাস পাইপলাইনের বিস্তার ও স্থানীয় অর্থনীতিতে নতুন সম্ভাবনা",
-            "youtube_url": "https://www.youtube.com/watch?v=JGwWNGJdvx8",
-            "video_id": "JGwWNGJdvx8"
-        }
-    ],
     "menu_categories": [
         "2",
         "8",
