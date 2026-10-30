@@ -54,6 +54,33 @@ class AdminCategoryController extends Controller
     }
 
     /**
+     * Update the specified resource in storage.
+     */
+    public function update(Request $request, $id)
+    {
+        $category = Category::findOrFail($id);
+
+        $request->validate([
+            'name' => 'required|string|max:255|unique:categories,name,' . $category->id,
+            'slug' => 'nullable|string|max:255|unique:categories,slug,' . $category->id,
+            'description' => 'nullable|string|max:500',
+        ]);
+
+        $slug = $request->filled('slug') ? Str::slug($request->slug) : Str::slug($request->name);
+        if (empty($slug)) {
+            $slug = $category->slug ?: 'category-' . $category->id;
+        }
+
+        $category->update([
+            'name' => $request->name,
+            'slug' => $slug,
+            'description' => $request->description,
+        ]);
+
+        return redirect()->route('admin.categories.index')->with('success', 'ক্যাটাগরিটি সফলভাবে হালনাগাদ করা হয়েছে।');
+    }
+
+    /**
      * Remove the specified resource from storage.
      */
     public function destroy($id)

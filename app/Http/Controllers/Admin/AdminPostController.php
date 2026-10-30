@@ -6,6 +6,8 @@ use App\Http\Controllers\Controller;
 use App\Models\Category;
 use App\Models\Post;
 use App\Models\Tag;
+use App\Services\ImageOptimizer;
+use Carbon\Carbon;
 use Illuminate\Http\Request;
 use Illuminate\Support\Str;
 use Illuminate\Support\Facades\Auth;
@@ -66,21 +68,25 @@ class AdminPostController extends Controller
             $slug = $originalSlug . '-' . $count++;
         }
 
-        // Image Handling
+        // Image Handling with Automatic WebP Optimization
         $featuredImagePath = null;
         if ($request->hasFile('featured_image')) {
-            $file = $request->file('featured_image');
-            $filename = time() . '_' . preg_replace('/[^a-zA-Z0-9._-]/', '', $file->getClientOriginalName());
-            $file->move(public_path('uploads'), $filename);
-            $featuredImagePath = 'uploads/' . $filename;
+            $featuredImagePath = ImageOptimizer::uploadAndConvertToWebP($request->file('featured_image'), 'uploads');
         }
 
         $socialCardImagePath = null;
         if ($request->hasFile('social_card_image')) {
-            $file = $request->file('social_card_image');
-            $filename = time() . '_card_' . preg_replace('/[^a-zA-Z0-9._-]/', '', $file->getClientOriginalName());
-            $file->move(public_path('uploads'), $filename);
-            $socialCardImagePath = 'uploads/' . $filename;
+            $socialCardImagePath = ImageOptimizer::uploadAndConvertToWebP($request->file('social_card_image'), 'uploads');
+        }
+
+        // Custom Publication Date Handling
+        $publishedAt = now();
+        if ($request->filled('published_at')) {
+            try {
+                $publishedAt = Carbon::parse($request->published_at);
+            } catch (\Exception $e) {
+                $publishedAt = now();
+            }
         }
 
         // Create Post
@@ -94,6 +100,7 @@ class AdminPostController extends Controller
             'status' => $request->status,
             'user_id' => Auth::id(),
             'views_count' => 0,
+            'created_at' => $publishedAt,
         ]);
 
         // Sync Relations
@@ -171,18 +178,14 @@ class AdminPostController extends Controller
             }
         }
 
-        // Image Handling
+        // Image Handling with Automatic WebP Optimization
         $featuredImagePath = $post->featured_image;
         if ($request->hasFile('featured_image')) {
             // Delete old file if it exists in uploads directory
             if ($post->featured_image && file_exists(public_path($post->featured_image))) {
                 @unlink(public_path($post->featured_image));
             }
-
-            $file = $request->file('featured_image');
-            $filename = time() . '_' . preg_replace('/[^a-zA-Z0-9._-]/', '', $file->getClientOriginalName());
-            $file->move(public_path('uploads'), $filename);
-            $featuredImagePath = 'uploads/' . $filename;
+            $featuredImagePath = ImageOptimizer::uploadAndConvertToWebP($request->file('featured_image'), 'uploads');
         }
 
         $socialCardImagePath = $post->social_card_image;
@@ -191,15 +194,11 @@ class AdminPostController extends Controller
             if ($post->social_card_image && file_exists(public_path($post->social_card_image))) {
                 @unlink(public_path($post->social_card_image));
             }
-
-            $file = $request->file('social_card_image');
-            $filename = time() . '_card_' . preg_replace('/[^a-zA-Z0-9._-]/', '', $file->getClientOriginalName());
-            $file->move(public_path('uploads'), $filename);
-            $socialCardImagePath = 'uploads/' . $filename;
+            $socialCardImagePath = ImageOptimizer::uploadAndConvertToWebP($request->file('social_card_image'), 'uploads');
         }
 
-        // Update Post
-        $post->update([
+        // Update Post Data
+        $updateData = [
             'title' => $request->title,
             'slug' => $slug,
             'content' => $request->content,
@@ -207,7 +206,15 @@ class AdminPostController extends Controller
             'featured_image' => $featuredImagePath,
             'social_card_image' => $socialCardImagePath,
             'status' => $request->status,
-        ]);
+        ];
+
+        if ($request->filled('published_at')) {
+            try {
+                $updateData['created_at'] = Carbon::parse($request->published_at);
+            } catch (\Exception $e) {}
+        }
+
+        $post->update($updateData);
 
         // Sync Relations
         if ($request->has('categories')) {
@@ -273,7 +280,7 @@ class AdminPostController extends Controller
         $themeSettingsPath = storage_path('app/theme_settings.json');
         $themeSettings = [
             'logo_image' => '',
-            'logo_text' => 'Times<span>Panel</span>'
+            'logo_text' => 'দৈনিক ভোলা<span>জার্নাল</span>'
         ];
         if (file_exists($themeSettingsPath)) {
             $themeSettings = array_merge($themeSettings, json_decode(file_get_contents($themeSettingsPath), true));

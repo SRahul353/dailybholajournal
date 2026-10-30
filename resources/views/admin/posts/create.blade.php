@@ -162,6 +162,19 @@
                         </select>
                     </div>
 
+                    <!-- Publish Date & Time -->
+                    <div class="form-group" style="margin-top: 14px;">
+                        <label for="published_at" class="form-label">
+                            <i class="fa-regular fa-calendar-days text-danger me-1"></i> প্রকাশের তারিখ ও সময়
+                        </label>
+                        <input type="datetime-local" 
+                               name="published_at" 
+                               id="published_at" 
+                               class="form-control" 
+                               value="{{ old('published_at', now()->format('Y-m-d\TH:i')) }}">
+                        <span class="form-text">সংবাদ প্রকাশের পেছনের বা বর্তমান তারিখ ও সময় পরিবর্তন করতে পারেন।</span>
+                    </div>
+
                     <div style="display: flex; gap: 12px; margin-top: 24px;">
                         <button type="submit" class="btn btn-primary" style="flex-grow: 1; justify-content: center;">
                             <i class="fa-solid fa-floppy-disk"></i>

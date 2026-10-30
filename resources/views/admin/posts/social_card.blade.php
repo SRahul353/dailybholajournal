@@ -921,7 +921,7 @@
                             @if(!empty($themeSettings['logo_image']))
                                 <img src="{{ asset($themeSettings['logo_image']) }}" alt="Logo" crossorigin="anonymous">
                             @else
-                                <h3 style="color:#fff; font-family:'Noto Sans Bengali',sans-serif; margin:0; font-size: 30px; font-weight: 900;">দৈনিক ভোলা<span>টাইমস্</span></h3>
+                                <h3 style="color:#fff; font-family:'Noto Sans Bengali',sans-serif; margin:0; font-size: 30px; font-weight: 900;">{!! $themeSettings['logo_text'] ?? 'দৈনিক ভোলা<span>জার্নাল</span>' !!}</h3>
                             @endif
                         </div>
                     </div>

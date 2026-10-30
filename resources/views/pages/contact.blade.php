@@ -311,57 +311,61 @@
                 </h3>
                 <p class="small text-muted mb-4">যেকোনো সংবাদ, মতামত, বিজ্ঞাপন বা অভিযোগ জানাতে নিচের ফর্মটি পূরণ করে পাঠান।</p>
 
-                <form onsubmit="handleContactSubmit(event)">
+                @if(session('success'))
+                    <div class="alert alert-success d-flex align-items-center mb-4">
+                        <i class="fa-solid fa-circle-check me-2 fs-5"></i>
+                        <div>{{ session('success') }}</div>
+                    </div>
+                @endif
+
+                @if($errors->any())
+                    <div class="alert alert-danger mb-4">
+                        <ul class="mb-0 ps-3">
+                            @foreach($errors->all() as $error)
+                                <li>{{ $error }}</li>
+                            @endforeach
+                        </ul>
+                    </div>
+                @endif
+
+                <form action="{{ route('contact.submit') }}" method="POST" id="contactForm">
+                    @csrf
                     <div class="row g-3">
                         <div class="col-md-6">
                             <label class="form-label small fw-bold">আপনার নাম <span class="text-danger">*</span></label>
-                            <input type="text" class="form-control" placeholder="আপনার পূর্ণ নাম" required>
+                            <input type="text" name="name" class="form-control" placeholder="আপনার পূর্ণ নাম" required value="{{ old('name') }}">
                         </div>
                         <div class="col-md-6">
                             <label class="form-label small fw-bold">মোবাইল নম্বর <span class="text-danger">*</span></label>
-                            <input type="tel" class="form-control" placeholder="০১XXXXXXXXX" required>
+                            <input type="tel" name="phone" class="form-control" placeholder="০১XXXXXXXXX" required value="{{ old('phone') }}">
                         </div>
                         <div class="col-md-12">
                             <label class="form-label small fw-bold">ইমেইল ঠিকানা</label>
-                            <input type="email" class="form-control" placeholder="example@gmail.com">
+                            <input type="email" name="email" class="form-control" placeholder="example@gmail.com" value="{{ old('email') }}">
                         </div>
                         <div class="col-md-12">
                             <label class="form-label small fw-bold">বিষয় <span class="text-danger">*</span></label>
-                            <select class="form-select">
-                                <option value="news">সংবাদ সংক্রান্ত</option>
-                                <option value="ad">বিজ্ঞাপন ও প্রচার</option>
-                                <option value="opinion">মতামত ও কলাম</option>
-                                <option value="complaint">অভিযোগ বা পরামর্শ</option>
-                                <option value="other">অন্যান্য</option>
+                            <select name="subject" class="form-select" required>
+                                <option value="সংবাদ সংক্রান্ত" {{ old('subject') == 'সংবাদ সংক্রান্ত' ? 'selected' : '' }}>সংবাদ সংক্রান্ত</option>
+                                <option value="বিজ্ঞাপন ও প্রচার" {{ old('subject') == 'বিজ্ঞাপন ও প্রচার' ? 'selected' : '' }}>বিজ্ঞাপন ও প্রচার</option>
+                                <option value="মতামত ও কলাম" {{ old('subject') == 'মতামত ও কলাম' ? 'selected' : '' }}>মতামত ও কলাম</option>
+                                <option value="অভিযোগ বা পরামর্শ" {{ old('subject') == 'অভিযোগ বা পরামর্শ' ? 'selected' : '' }}>অভিযোগ বা পরামর্শ</option>
+                                <option value="অন্যান্য" {{ old('subject') == 'অন্যান্য' ? 'selected' : '' }}>অন্যান্য</option>
                             </select>
                         </div>
                         <div class="col-md-12">
                             <label class="form-label small fw-bold">আপনার বার্তা <span class="text-danger">*</span></label>
-                            <textarea class="form-control" rows="5" placeholder="বিস্তারিত লিখুন..." required></textarea>
+                            <textarea name="message" class="form-control" rows="5" placeholder="বিস্তারিত লিখুন..." required>{{ old('message') }}</textarea>
                         </div>
                         <div class="col-md-12">
-                            <button type="submit" class="btn btn-danger px-4 py-2 fw-bold">
+                            <button type="submit" class="btn btn-danger px-4 py-2 fw-bold" id="contactSubmitBtn">
                                 <i class="fa-solid fa-paper-plane me-1"></i> বার্তা পাঠান
                             </button>
                         </div>
                     </div>
                 </form>
-                <div id="contactSuccessMsg" class="alert alert-success mt-3" style="display: none;">
-                    <i class="fa-solid fa-circle-check me-2"></i>আপনার বার্তাটি সফলভাবে পাঠানো হয়েছে। আমাদের প্রতিনিধি দ্রুত আপনার সাথে যোগাযোগ করবেন।
-                </div>
             </div>
         </div>
     </div>
 </div>
-
-<script>
-    function handleContactSubmit(e) {
-        e.preventDefault();
-        const msg = document.getElementById('contactSuccessMsg');
-        if (msg) {
-            msg.style.display = 'block';
-            e.target.reset();
-        }
-    }
-</script>
 @endsection

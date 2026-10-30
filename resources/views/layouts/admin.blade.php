@@ -538,6 +538,16 @@
             </li>
             @can('all-admin-users')
                 <li class="menu-item">
+                    <a href="{{ route('admin.opinions.index') }}" class="menu-link {{ request()->routeIs('admin.opinions.*') ? 'active' : '' }}">
+                        <i class="fa-solid fa-pen-nib"></i>
+                        <span>মতামত ও কলাম</span>
+                        @php $pendingOpinionsCount = \App\Models\OpinionSubmission::where('status', 'pending')->count(); @endphp
+                        @if($pendingOpinionsCount > 0)
+                            <span class="badge" style="background-color: #ef4444; color: #ffffff; margin-left: auto; border-radius: 10px; padding: 2px 8px; font-size: 0.72rem; font-weight: 700;">{{ $pendingOpinionsCount }}</span>
+                        @endif
+                    </a>
+                </li>
+                <li class="menu-item">
                     <a href="{{ route('admin.social-card') }}" class="menu-link {{ request()->routeIs('admin.social-card') || request()->routeIs('admin.posts.social-card') ? 'active' : '' }}">
                         <i class="fa-solid fa-share-nodes"></i>
                         <span>সোশ্যাল মিডিয়া কার্ড জেনারেটর</span>
@@ -546,9 +556,37 @@
             @endcan
             @can('admin-or-super')
                 <li class="menu-item">
-                    <a href="{{ route('admin.categories.index') }}" class="menu-link {{ request()->routeIs('admin.categories.index') ? 'active' : '' }}">
+                    <a href="{{ route('admin.categories.index') }}" class="menu-link {{ request()->routeIs('admin.categories.*') ? 'active' : '' }}">
                         <i class="fa-solid fa-folder-open"></i>
                         <span>ক্যাটাগরি সমূহ</span>
+                    </a>
+                </li>
+                <li class="menu-item">
+                    <a href="{{ route('admin.tags.index') }}" class="menu-link {{ request()->routeIs('admin.tags.*') ? 'active' : '' }}">
+                        <i class="fa-solid fa-tags"></i>
+                        <span>ট্যাগ সমূহ</span>
+                    </a>
+                </li>
+                <li class="menu-item">
+                    <a href="{{ route('admin.messages.index') }}" class="menu-link {{ request()->routeIs('admin.messages.*') ? 'active' : '' }}">
+                        <i class="fa-solid fa-inbox"></i>
+                        <span>বার্তা ইনবক্স</span>
+                        @php $unreadMsgsCount = \App\Models\ContactMessage::unread()->count(); @endphp
+                        @if($unreadMsgsCount > 0)
+                            <span class="badge" style="background-color: #ef4444; color: #ffffff; margin-left: auto; border-radius: 10px; padding: 2px 8px; font-size: 0.72rem; font-weight: 700;">{{ $unreadMsgsCount }}</span>
+                        @endif
+                    </a>
+                </li>
+                <li class="menu-item">
+                    <a href="{{ route('admin.polls.index') }}" class="menu-link {{ request()->routeIs('admin.polls.*') ? 'active' : '' }}">
+                        <i class="fa-solid fa-square-poll-vertical"></i>
+                        <span>অনলাইন জরিপ</span>
+                    </a>
+                </li>
+                <li class="menu-item">
+                    <a href="{{ route('admin.subscribers.index') }}" class="menu-link {{ request()->routeIs('admin.subscribers.*') ? 'active' : '' }}">
+                        <i class="fa-solid fa-envelope-open-text"></i>
+                        <span>সাবস্ক্রাইবারগণ</span>
                     </a>
                 </li>
                 <li class="menu-item">

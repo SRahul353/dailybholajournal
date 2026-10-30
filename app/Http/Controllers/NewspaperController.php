@@ -3,9 +3,13 @@
 namespace App\Http\Controllers;
 
 use App\Models\Category;
-use App\Models\Post;
-use App\Models\Tag;
+use App\Models\ContactMessage;
 use App\Models\EPaper;
+use App\Models\Poll;
+use App\Models\PollVote;
+use App\Models\Post;
+use App\Models\Subscriber;
+use App\Models\Tag;
 use Carbon\Carbon;
 use Illuminate\Http\Request;
 
@@ -466,5 +470,149 @@ class NewspaperController extends Controller
         $themeSettings = file_exists($themeSettingsPath) ? json_decode(file_get_contents($themeSettingsPath), true) : [];
 
         return view('pages.contact', compact('themeSettings'));
+    }
+
+    /**
+     * Handle Contact Form Submission.
+     */
+    public function submitContact(Request $request)
+    {
+        $validated = $request->validate([
+            'name' => 'required|string|max:150',
+            'phone' => 'required|string|max:30',
+            'email' => 'nullable|email|max:150',
+            'subject' => 'required|string|max:200',
+            'message' => 'required|string|max:5000',
+        ], [
+            'name.required' => 'আপনার নাম প্রদান করুন।',
+            'phone.required' => 'আপনার মোবাইল নম্বর প্রদান করুন।',
+            'subject.required' => 'বার্তা পাঠানোর বিষয়টি নির্বাচন করুন।',
+            'message.required' => 'আপনার বার্তা বা অভিযোগের বিস্তারিত লিখুন।',
+        ]);
+
+        $contactMessage = ContactMessage::create([
+            'name' => $validated['name'],
+            'phone' => $validated['phone'],
+            'email' => $validated['email'] ?? null,
+            'subject' => $validated['subject'],
+            'message' => $validated['message'],
+            'ip_address' => $request->ip(),
+            'is_read' => false,
+        ]);
+
+        $successText = 'আপনার বার্তাটি সফলভাবে পাঠানো হয়েছে। আমাদের প্রতিনিধি দ্রুত আপনার সাথে যোগাযোগ করবেন।';
+
+        if ($request->expectsJson() || $request->ajax()) {
+            return response()->json([
+                'success' => true,
+                'message' => $successText,
+            ]);
+        }
+
+        return redirect()->back()->with('success', $successText);
+    }
+
+    /**
+     * Handle Public Poll Vote Submission.
+     */
+    public function votePoll(Request $request)
+    {
+        $request->validate([
+            'poll_id' => 'required|exists:polls,id',
+            'vote' => 'required|in:yes,no,neutral',
+        ]);
+
+        $poll = Poll::findOrFail($request->poll_id);
+
+        if (!$poll->is_active) {
+            return response()->json([
+                'success' => false,
+                'message' => 'এই জরিপটি বর্তমানে বন্ধ রয়েছে।',
+            ], 403);
+        }
+
+        $ip = $request->ip();
+
+        // Check if this IP voted in the last 24 hours for this poll
+        $alreadyVoted = PollVote::where('poll_id', $poll->id)
+            ->where('ip_address', $ip)
+            ->where('created_at', '>=', Carbon::now()->subHours(24))
+            ->exists();
+
+        if ($alreadyVoted) {
+            return response()->json([
+                'success' => false,
+                'already_voted' => true,
+                'message' => 'আপনি ইতিমধ্যে এই জরিপে ভোট প্রদান করেছেন। মতামত প্রদানের জন্য ধন্যবাদ!',
+                'poll' => [
+                    'total_votes' => $poll->total_votes,
+                    'yes_votes' => $poll->yes_votes,
+                    'no_votes' => $poll->no_votes,
+                    'neutral_votes' => $poll->neutral_votes,
+                    'yes_percent' => $poll->yes_percent,
+                    'no_percent' => $poll->no_percent,
+                    'neutral_percent' => $poll->neutral_percent,
+                ]
+            ]);
+        }
+
+        // Increment vote count on poll
+        if ($request->vote === 'yes') {
+            $poll->increment('yes_votes');
+        } elseif ($request->vote === 'no') {
+            $poll->increment('no_votes');
+        } else {
+            $poll->increment('neutral_votes');
+        }
+
+        // Record vote entry
+        PollVote::create([
+            'poll_id' => $poll->id,
+            'ip_address' => $ip,
+            'selected_option' => $request->vote,
+            'user_agent' => substr($request->userAgent() ?? '', 0, 255),
+        ]);
+
+        $poll->refresh();
+
+        return response()->json([
+            'success' => true,
+            'message' => 'আপনার মূল্যবান ভোটটি সফলভাবে গৃহীত হয়েছে।',
+            'poll' => [
+                'total_votes' => $poll->total_votes,
+                'yes_votes' => $poll->yes_votes,
+                'no_votes' => $poll->no_votes,
+                'neutral_votes' => $poll->neutral_votes,
+                'yes_percent' => $poll->yes_percent,
+                'no_percent' => $poll->no_percent,
+                'neutral_percent' => $poll->neutral_percent,
+            ]
+        ]);
+    }
+
+    /**
+     * Handle Newsletter Subscription.
+     */
+    public function subscribeNewsletter(Request $request)
+    {
+        $request->validate([
+            'email' => 'required|email|max:191',
+        ], [
+            'email.required' => 'অনুগ্রহ করে আপনার ইমেইল প্রদান করুন।',
+            'email.email' => 'সঠিক ইমেইল ঠিকানা প্রদান করুন।',
+        ]);
+
+        $subscriber = Subscriber::firstOrCreate(
+            ['email' => strtolower(trim($request->email))],
+            [
+                'ip_address' => $request->ip(),
+                'is_active' => true,
+            ]
+        );
+
+        return response()->json([
+            'success' => true,
+            'message' => 'ধন্যবাদ! আমাদের নিউজলেটার তালিকায় আপনার ইমেইল সফলভাবে যুক্ত করা হয়েছে।',
+        ]);
     }
 }

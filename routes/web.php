@@ -3,6 +3,7 @@
 use App\Http\Controllers\NewspaperController;
 use Illuminate\Support\Facades\Route;
 
+// Public Front-end Routes
 Route::get('/', [NewspaperController::class, 'index'])->name('home');
 Route::get('/epaper', [NewspaperController::class, 'epaper'])->name('epaper');
 Route::get('/post/{slug}', [NewspaperController::class, 'show'])->name('post');
@@ -18,6 +19,23 @@ Route::get('/comment-policy', [NewspaperController::class, 'commentPolicy'])->na
 Route::get('/editorial-policy', [NewspaperController::class, 'editorialPolicy'])->name('editorial.policy');
 Route::get('/contact', [NewspaperController::class, 'contact'])->name('contact');
 Route::get('/our-family', [NewspaperController::class, 'contact'])->name('our.family');
+
+// Contact Form Submission
+Route::post('/contact', [NewspaperController::class, 'submitContact'])->name('contact.submit');
+
+// Opinion & Column Submission Routes
+Route::get('/opinion/submit', [App\Http\Controllers\OpinionController::class, 'create'])->name('opinion.submit');
+Route::post('/opinion/submit', [App\Http\Controllers\OpinionController::class, 'store'])->name('opinion.store');
+
+// Interactive Poll Voting
+Route::post('/poll/vote', [NewspaperController::class, 'votePoll'])->name('poll.vote');
+
+// Newsletter Subscription
+Route::post('/newsletter/subscribe', [NewspaperController::class, 'subscribeNewsletter'])->name('newsletter.subscribe');
+
+// Dynamic SEO Sitemap & Robots.txt
+Route::get('/sitemap.xml', [App\Http\Controllers\SeoController::class, 'sitemap'])->name('seo.sitemap');
+Route::get('/robots.txt', [App\Http\Controllers\SeoController::class, 'robots'])->name('seo.robots');
 
 // Admin Panel Routes
 Route::prefix('admin')->name('admin.')->group(function () {
@@ -36,7 +54,33 @@ Route::prefix('admin')->name('admin.')->group(function () {
         Route::get('/social-card', [App\Http\Controllers\Admin\AdminPostController::class, 'socialCardIndex'])->name('social-card');
         
         // Category CRUD Resource
-        Route::resource('categories', App\Http\Controllers\Admin\AdminCategoryController::class)->only(['index', 'store', 'destroy']);
+        Route::resource('categories', App\Http\Controllers\Admin\AdminCategoryController::class)->only(['index', 'store', 'update', 'destroy']);
+
+        // Tag CRUD Resource
+        Route::resource('tags', App\Http\Controllers\Admin\AdminTagController::class)->except(['show', 'create', 'edit']);
+
+        // Opinion Submissions & Approval Resource
+        Route::get('/opinions', [App\Http\Controllers\Admin\AdminOpinionController::class, 'index'])->name('opinions.index');
+        Route::get('/opinions/{id}', [App\Http\Controllers\Admin\AdminOpinionController::class, 'show'])->name('opinions.show');
+        Route::post('/opinions/{id}/approve', [App\Http\Controllers\Admin\AdminOpinionController::class, 'approve'])->name('opinions.approve');
+        Route::post('/opinions/{id}/reject', [App\Http\Controllers\Admin\AdminOpinionController::class, 'reject'])->name('opinions.reject');
+        Route::delete('/opinions/{id}', [App\Http\Controllers\Admin\AdminOpinionController::class, 'destroy'])->name('opinions.destroy');
+
+        // Contact Messages Inbox
+        Route::get('/messages', [App\Http\Controllers\Admin\AdminContactMessageController::class, 'index'])->name('messages.index');
+        Route::get('/messages/{id}', [App\Http\Controllers\Admin\AdminContactMessageController::class, 'show'])->name('messages.show');
+        Route::delete('/messages/{id}', [App\Http\Controllers\Admin\AdminContactMessageController::class, 'destroy'])->name('messages.destroy');
+
+        // Live Poll Engine Management
+        Route::get('/polls', [App\Http\Controllers\Admin\AdminPollController::class, 'index'])->name('polls.index');
+        Route::post('/polls', [App\Http\Controllers\Admin\AdminPollController::class, 'store'])->name('polls.store');
+        Route::post('/polls/{id}/toggle', [App\Http\Controllers\Admin\AdminPollController::class, 'toggle'])->name('polls.toggle');
+        Route::post('/polls/{id}/reset', [App\Http\Controllers\Admin\AdminPollController::class, 'resetVotes'])->name('polls.reset');
+        Route::delete('/polls/{id}', [App\Http\Controllers\Admin\AdminPollController::class, 'destroy'])->name('polls.destroy');
+
+        // Newsletter Subscribers
+        Route::get('/subscribers', [App\Http\Controllers\Admin\AdminSubscriberController::class, 'index'])->name('subscribers.index');
+        Route::delete('/subscribers/{id}', [App\Http\Controllers\Admin\AdminSubscriberController::class, 'destroy'])->name('subscribers.destroy');
 
         // User CRUD Resource (Super Admin only)
         Route::resource('users', App\Http\Controllers\Admin\AdminUserController::class)->except(['show', 'create', 'edit']);
@@ -81,4 +125,3 @@ Route::prefix('admin')->name('admin.')->group(function () {
         })->name('epaper.clear_cache');
     });
 });
-

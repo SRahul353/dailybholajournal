@@ -54,6 +54,8 @@
                             <span class="sep">•</span>
                             <a href="{{ route('editorial.policy') }}">সম্পাদকীয় নীতিমালা</a>
                             <span class="sep">•</span>
+                            <a href="{{ route('opinion.submit') }}">মতামত পাঠান</a>
+                            <span class="sep">•</span>
                             <a href="{{ route('contact') }}">যোগাযোগ</a>
                         </div>
                     </div>
@@ -112,12 +114,24 @@
                         <a href="{{ $themeSettings['social_whatsapp'] ?? 'https://wa.me/8801716674375' }}" target="_blank" class="k-social-btn wa" title="WhatsApp"><i class="fa-brands fa-whatsapp"></i></a>
                     </div>
                 </div>
+
+                <!-- Newsletter Subscription Form -->
+                <div class="footer-newsletter-wrap" style="position: relative;">
+                    <form id="footerNewsletterForm" onsubmit="handleNewsletterSubmit(event)" style="display: flex; gap: 6px; align-items: center;">
+                        <input type="email" id="newsletterEmailInput" placeholder="আপনার ইমেইল ঠিকানা লিখুন..." required class="form-control form-control-sm" style="width: 220px; font-size: 0.84rem; border-radius: 20px; padding: 6px 14px; border: 1px solid #cbd5e1;">
+                        <button type="submit" id="newsletterSubmitBtn" class="btn btn-sm btn-dark px-3 rounded-pill fw-bold" style="white-space: nowrap; font-size: 0.82rem; background: #0f172a;">
+                            <i class="fa-solid fa-paper-plane me-1"></i> সাবস্ক্রাইব
+                        </button>
+                    </form>
+                    <div id="newsletterSuccessMsg" style="display: none; font-size: 0.78rem; color: #16a34a; font-weight: 700; position: absolute; top: 100%; left: 10px; margin-top: 2px;"></div>
+                </div>
+
                 <div class="d-flex align-items-center gap-2 flex-wrap">
                     <a href="{{ route('epaper') }}" class="btn btn-sm btn-outline-danger px-3 py-1 fw-bold rounded-pill">
                         <i class="fa-solid fa-newspaper me-1"></i>আজকের ই-পেপার
                     </a>
-                    <a href="{{ route('contact') }}" class="btn btn-sm btn-danger px-3 py-1 fw-bold rounded-pill text-white">
-                        <i class="fa-solid fa-paper-plane me-1"></i>লেখা বা মতামত পাঠান
+                    <a href="{{ route('opinion.submit') }}" class="btn btn-sm btn-danger px-3 py-1 fw-bold rounded-pill text-white">
+                        <i class="fa-solid fa-feather-pointed me-1"></i>লেখা বা মতামত পাঠান
                     </a>
                 </div>
             </div>
@@ -221,6 +235,54 @@
         if(closeBtn) closeBtn.addEventListener('click', toggleDrawer);
         if(overlay) overlay.addEventListener('click', toggleDrawer);
     });
+
+    // Newsletter Ajax Submission
+    function handleNewsletterSubmit(e) {
+        e.preventDefault();
+        const emailInput = document.getElementById('newsletterEmailInput');
+        const submitBtn = document.getElementById('newsletterSubmitBtn');
+        const successMsg = document.getElementById('newsletterSuccessMsg');
+        if (!emailInput || !emailInput.value) return;
+
+        if (submitBtn) {
+            submitBtn.disabled = true;
+            submitBtn.innerHTML = '<i class="fa-solid fa-spinner fa-spin"></i>';
+        }
+
+        fetch('{{ route('newsletter.subscribe') }}', {
+            method: 'POST',
+            headers: {
+                'Content-Type': 'application/json',
+                'X-CSRF-TOKEN': '{{ csrf_token() }}',
+                'Accept': 'application/json'
+            },
+            body: JSON.stringify({ email: emailInput.value })
+        })
+        .then(r => r.json())
+        .then(data => {
+            if (submitBtn) {
+                submitBtn.disabled = false;
+                submitBtn.innerHTML = '<i class="fa-solid fa-paper-plane me-1"></i> সাবস্ক্রাইব';
+            }
+            if (data.success) {
+                emailInput.value = '';
+                if (successMsg) {
+                    successMsg.textContent = data.message;
+                    successMsg.style.display = 'block';
+                    setTimeout(() => { successMsg.style.display = 'none'; }, 6000);
+                }
+            } else {
+                alert(data.message || 'সাবস্ক্রিপশনে ত্রুটি হয়েছে।');
+            }
+        })
+        .catch(() => {
+            if (submitBtn) {
+                submitBtn.disabled = false;
+                submitBtn.innerHTML = '<i class="fa-solid fa-paper-plane me-1"></i> সাবস্ক্রাইব';
+            }
+            alert('ত্রুটি হয়েছে, অনুগ্রহ করে আবার চেষ্টা করুন।');
+        });
+    }
 </script>
 
 <!-- Bootstrap 5.3.3 JS Bundle CDN -->

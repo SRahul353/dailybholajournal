@@ -1,2 +1,7 @@
 User-agent: *
-Disallow:
+Disallow: /admin/
+Disallow: /epaper/clear-cache
+Disallow: /epaper/migrate
+Allow: /
+
+Sitemap: https://bholajournal.com/sitemap.xml

@@ -128,6 +128,44 @@
 
 @section('content')
 
+    <!-- Pending Opinions Alert Banner -->
+    @if(isset($pendingOpinionsCount) && $pendingOpinionsCount > 0)
+        <div style="background: linear-gradient(135deg, #fef2f2 0%, #fee2e2 100%); border: 1px solid #fecaca; border-radius: 8px; padding: 14px 20px; margin-bottom: 16px; display: flex; align-items: center; justify-content: space-between; flex-wrap: wrap; gap: 12px;">
+            <div style="display: flex; align-items: center; gap: 12px;">
+                <div style="width: 38px; height: 38px; border-radius: 50%; background: #ef4444; color: #fff; display: flex; align-items: center; justify-content: center; font-size: 1.1rem;">
+                    <i class="fa-solid fa-pen-nib"></i>
+                </div>
+                <div>
+                    <strong style="color: #991b1b; font-size: 0.98rem;">নতুন মতামত ও কলাম জমা হয়েছে!</strong>
+                    <div style="font-size: 0.84rem; color: #7f1d1d;">মোট {{ $pendingOpinionsCount }} টি মতামত অনুমোদনের অপেক্ষায় রয়েছে।</div>
+                </div>
+            </div>
+            <a href="{{ route('admin.opinions.index', ['status' => 'pending']) }}" class="btn btn-primary" style="background-color: #dc2626; border-color: #dc2626; font-size: 0.85rem; padding: 6px 14px;">
+                <span>পর্যালোচনা করুন</span>
+                <i class="fa-solid fa-arrow-right ms-1"></i>
+            </a>
+        </div>
+    @endif
+
+    <!-- Unread Contact Messages Alert Banner -->
+    @if(isset($unreadMessagesCount) && $unreadMessagesCount > 0)
+        <div style="background: linear-gradient(135deg, #eff6ff 0%, #dbeafe 100%); border: 1px solid #bfdbfe; border-radius: 8px; padding: 14px 20px; margin-bottom: 24px; display: flex; align-items: center; justify-content: space-between; flex-wrap: wrap; gap: 12px;">
+            <div style="display: flex; align-items: center; gap: 12px;">
+                <div style="width: 38px; height: 38px; border-radius: 50%; background: #2563eb; color: #fff; display: flex; align-items: center; justify-content: center; font-size: 1.1rem;">
+                    <i class="fa-solid fa-inbox"></i>
+                </div>
+                <div>
+                    <strong style="color: #1e40af; font-size: 0.98rem;">নতুন বার্তা জমা হয়েছে!</strong>
+                    <div style="font-size: 0.84rem; color: #1e3a8a;">পাঠকদের পাঠানো {{ $unreadMessagesCount }} টি অপঠিত বার্তা ইনবক্সে রয়েছে।</div>
+                </div>
+            </div>
+            <a href="{{ route('admin.messages.index', ['status' => 'unread']) }}" class="btn btn-primary" style="background-color: #2563eb; border-color: #2563eb; font-size: 0.85rem; padding: 6px 14px;">
+                <span>ইনবক্স দেখুন</span>
+                <i class="fa-solid fa-arrow-right ms-1"></i>
+            </a>
+        </div>
+    @endif
+
     <!-- Metrics Statistics Grid -->
     <div class="stats-grid">
         <div class="stat-card">

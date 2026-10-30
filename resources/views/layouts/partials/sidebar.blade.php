@@ -1054,7 +1054,7 @@
             @endforelse
         </div>
         <div class="sidebar-opinion-footer">
-            <a href="{{ route('epaper') }}#submit" class="sidebar-opinion-cta-btn">
+            <a href="{{ route('opinion.submit') }}" class="sidebar-opinion-cta-btn">
                 <i class="fa-solid fa-feather-pointed me-2"></i>
                 <span>আপনার মতামত বা লেখা পাঠান</span>
                 <i class="fa-solid fa-arrow-right ms-2" style="font-size: 0.75rem;"></i>
@@ -1105,7 +1105,11 @@
     </div>
 
     <!-- 4. Interactive Online Poll Widget (অনলাইন জরিপ) -->
-    <div class="sidebar-poll-card">
+    @php
+        $activePoll = \App\Models\Poll::active()->latest()->first();
+    @endphp
+    @if($activePoll)
+    <div class="sidebar-poll-card" id="sidebarPollContainer" data-poll-id="{{ $activePoll->id }}">
         <div class="sidebar-poll-head">
             <h4>
                 <i class="fa-solid fa-square-poll-vertical text-danger"></i>
@@ -1116,7 +1120,7 @@
         <div class="sidebar-poll-body">
             <!-- Question -->
             <p class="sidebar-poll-question">
-                ভোলা-বরিশাল সেতু নির্মাণ ও জেলায় গ্যাসভিত্তিক ভারী শিল্পায়ন দ্বীপবাসীর দীর্ঘদিনের প্রধান দাবি—আপনি কি এর সাথে একমত?
+                {{ $activePoll->question }}
             </p>
 
             <!-- Poll Voting Form View -->
@@ -1135,7 +1139,7 @@
                 </label>
 
                 <div class="poll-action-bar">
-                    <button type="button" class="poll-vote-btn" onclick="submitOnlinePoll()">
+                    <button type="button" class="poll-vote-btn" id="pollSubmitBtn" onclick="submitOnlinePoll()">
                         <i class="fa-solid fa-check"></i>
                         <span>ভোট দিন</span>
                     </button>
@@ -1150,35 +1154,35 @@
                 <div class="poll-result-item">
                     <div class="poll-result-info">
                         <span>হ্যাঁ</span>
-                        <span id="pollPctYes">৮২%</span>
+                        <span id="pollPctYes">{{ $activePoll->yes_percent }}%</span>
                     </div>
                     <div class="poll-progress-bg">
-                        <div class="poll-progress-bar poll-bar-yes" id="pollBarYes" style="width: 82%;"></div>
+                        <div class="poll-progress-bar poll-bar-yes" id="pollBarYes" style="width: {{ $activePoll->yes_percent }}%;"></div>
                     </div>
                 </div>
 
                 <div class="poll-result-item">
                     <div class="poll-result-info">
                         <span>না</span>
-                        <span id="pollPctNo">১৩%</span>
+                        <span id="pollPctNo">{{ $activePoll->no_percent }}%</span>
                     </div>
                     <div class="poll-progress-bg">
-                        <div class="poll-progress-bar poll-bar-no" id="pollBarNo" style="width: 13%;"></div>
+                        <div class="poll-progress-bar poll-bar-no" id="pollBarNo" style="width: {{ $activePoll->no_percent }}%;"></div>
                     </div>
                 </div>
 
                 <div class="poll-result-item">
                     <div class="poll-result-info">
                         <span>মন্তব্য নেই</span>
-                        <span id="pollPctNeutral">৫%</span>
+                        <span id="pollPctNeutral">{{ $activePoll->neutral_percent }}%</span>
                     </div>
                     <div class="poll-progress-bg">
-                        <div class="poll-progress-bar poll-bar-neutral" id="pollBarNeutral" style="width: 5%;"></div>
+                        <div class="poll-progress-bar poll-bar-neutral" id="pollBarNeutral" style="width: {{ $activePoll->neutral_percent }}%;"></div>
                     </div>
                 </div>
 
                 <div class="poll-total-votes">
-                    <span><i class="fa-solid fa-users me-1 text-danger"></i>মোট ভোট: <strong id="pollTotalCount">১,৪৭৮</strong>টি</span>
+                    <span><i class="fa-solid fa-users me-1 text-danger"></i>মোট ভোট: <strong id="pollTotalCount">{{ number_format($activePoll->total_votes) }}</strong>টি</span>
                     <button type="button" class="poll-result-toggle-btn" onclick="togglePollView('form')">
                         ভোট ফর্ম
                     </button>
@@ -1189,6 +1193,7 @@
             </div>
         </div>
     </div>
+    @endif
 
     <!-- 5. Square Advertisement (300x250) -->
     <div class="sidebar-ad-card">
@@ -1380,26 +1385,94 @@
     }
 
     function submitOnlinePoll() {
+        const pollContainer = document.getElementById('sidebarPollContainer');
+        if (!pollContainer) return;
+        const pollId = pollContainer.getAttribute('data-poll-id');
+
         const selectedRadio = document.querySelector('input[name="poll_vote_option"]:checked');
         if (!selectedRadio) {
-            alert('অনুগ্রহ করে একটি মতামত নির্বাচন করুন।');
+            alert('অনুগ্রহ করে আপনার মতামত নির্বাচন করুন (হ্যাঁ, না অথবা মন্তব্য নেই)।');
             return;
         }
 
         const choice = selectedRadio.value;
-        // Save in localStorage to prevent duplicate submissions
-        localStorage.setItem('dbj_poll_voted', choice);
+        const submitBtn = document.getElementById('pollSubmitBtn');
+        if (submitBtn) {
+            submitBtn.disabled = true;
+            submitBtn.innerHTML = '<i class="fa-solid fa-spinner fa-spin"></i> প্রসেসিং...';
+        }
 
-        // Show thank you notice
-        const notice = document.getElementById('pollVotedNotice');
-        if (notice) notice.style.display = 'block';
+        fetch('{{ route('poll.vote') }}', {
+            method: 'POST',
+            headers: {
+                'Content-Type': 'application/json',
+                'X-CSRF-TOKEN': '{{ csrf_token() }}',
+                'Accept': 'application/json'
+            },
+            body: JSON.stringify({
+                poll_id: pollId,
+                vote: choice
+            })
+        })
+        .then(response => response.json())
+        .then(data => {
+            if (submitBtn) {
+                submitBtn.disabled = false;
+                submitBtn.innerHTML = '<i class="fa-solid fa-check"></i> ভোট দিন';
+            }
 
-        togglePollView('results');
+            if (data.poll) {
+                // Update results DOM
+                const poll = data.poll;
+                const pctYes = document.getElementById('pollPctYes');
+                const barYes = document.getElementById('pollBarYes');
+                const pctNo = document.getElementById('pollPctNo');
+                const barNo = document.getElementById('pollBarNo');
+                const pctNeutral = document.getElementById('pollPctNeutral');
+                const barNeutral = document.getElementById('pollBarNeutral');
+                const totalCount = document.getElementById('pollTotalCount');
+
+                if (pctYes) pctYes.textContent = poll.yes_percent + '%';
+                if (barYes) barYes.style.width = poll.yes_percent + '%';
+                if (pctNo) pctNo.textContent = poll.no_percent + '%';
+                if (barNo) barNo.style.width = poll.no_percent + '%';
+                if (pctNeutral) pctNeutral.textContent = poll.neutral_percent + '%';
+                if (barNeutral) barNeutral.style.width = poll.neutral_percent + '%';
+                if (totalCount) totalCount.textContent = poll.total_votes.toLocaleString('bn-BD');
+
+                // Update notice text
+                const notice = document.getElementById('pollVotedNotice');
+                if (notice) {
+                    notice.innerHTML = `<i class="fa-solid fa-circle-check me-1"></i>${data.message}`;
+                    notice.style.display = 'block';
+                }
+
+                // Save flag in localStorage
+                localStorage.setItem('dbj_poll_voted_' + pollId, choice);
+
+                // Switch to results view
+                togglePollView('results');
+            } else if (data.message) {
+                alert(data.message);
+            }
+        })
+        .catch(err => {
+            if (submitBtn) {
+                submitBtn.disabled = false;
+                submitBtn.innerHTML = '<i class="fa-solid fa-check"></i> ভোট দিন';
+            }
+            console.error('Poll submission error:', err);
+            alert('ভোট প্রদানে সমস্যা হয়েছে। অনুগ্রহ করে কিছুক্ষণ পর আবার চেষ্টা করুন।');
+        });
     }
 
-    // Check on load if already voted
+    // Check on load if already voted for this active poll
     document.addEventListener('DOMContentLoaded', function() {
-        const hasVoted = localStorage.getItem('dbj_poll_voted');
+        const pollContainer = document.getElementById('sidebarPollContainer');
+        if (!pollContainer) return;
+        const pollId = pollContainer.getAttribute('data-poll-id');
+
+        const hasVoted = localStorage.getItem('dbj_poll_voted_' + pollId);
         if (hasVoted) {
             const formView = document.getElementById('pollVoteForm');
             const resultsView = document.getElementById('pollResultsView');
@@ -1407,7 +1480,10 @@
             if (formView && resultsView) {
                 formView.style.display = 'none';
                 resultsView.style.display = 'block';
-                if (notice) notice.style.display = 'block';
+                if (notice) {
+                    notice.innerHTML = '<i class="fa-solid fa-circle-check me-1"></i>আপনি ইতিমধ্যে এই জরিপে ভোট প্রদান করেছেন।';
+                    notice.style.display = 'block';
+                }
             }
         }
     });

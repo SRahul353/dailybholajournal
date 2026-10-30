@@ -1,7 +1,7 @@
 @php
     $themeSettingsPath = storage_path('app/theme_settings.json');
     $themeSettings = [
-        'logo_text' => 'দৈনিক ভোলা<span>টাইমস্</span>',
+        'logo_text' => 'দৈনিক ভোলা<span>জার্নাল</span>',
         'logo_image' => '',
         'footer_logo_image' => '',
         'primary_color' => '#1a1a2e',
