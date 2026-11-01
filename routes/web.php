@@ -60,8 +60,8 @@ Route::prefix('admin')->name('admin.')->group(function () {
     Route::get('/login', [App\Http\Controllers\Admin\AdminLoginController::class, 'showLoginForm'])->name('login');
     Route::post('/login', [App\Http\Controllers\Admin\AdminLoginController::class, 'login'])->middleware('throttle:5,1')->name('login.submit');
 
-    // Protected Admin Panel Routes
-    Route::middleware(['auth'])->group(function () {
+    // Protected Admin Panel Routes (Restricted to Editor, Admin, Super Admin)
+    Route::middleware(['auth', 'can:all-admin-users'])->group(function () {
         Route::post('/logout', [App\Http\Controllers\Admin\AdminLoginController::class, 'logout'])->name('logout');
         Route::get('/dashboard', [App\Http\Controllers\Admin\AdminDashboardController::class, 'index'])->name('dashboard');
         

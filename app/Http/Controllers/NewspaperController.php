@@ -493,10 +493,16 @@ class NewspaperController extends Controller
 
         // If not logged in, handle reader registration or save draft
         if (!\Illuminate\Support\Facades\Auth::check()) {
-            if ($request->filled('reader_quick_auth') || $request->ajax()) {
+            if ($request->boolean('reader_quick_auth') || $request->ajax()) {
                 $email = !empty($validated['email']) ? strtolower(trim($validated['email'])) : ('reader_' . preg_replace('/[^0-9]/', '', $validated['phone']) . '@dailybholajournal.com');
                 $user = \App\Models\User::where('email', $email)->first();
-                if (!$user) {
+                if ($user) {
+                    // Prevent bypassing password for staff or password-protected accounts
+                    if ($user->role !== 'reader' || !empty($user->password)) {
+                        session(['pending_contact_submission' => $validated]);
+                        return redirect()->route('login')->with('error', 'এই ইমেইলটি পাসওয়ার্ড সুরক্ষিত। অনুগ্রহ করে পাসওয়ার্ড দিয়ে প্রবেশ করুন।')->withInput(['email' => $email]);
+                    }
+                } else {
                     $user = \App\Models\User::create([
                         'name' => trim($validated['name']),
                         'email' => $email,

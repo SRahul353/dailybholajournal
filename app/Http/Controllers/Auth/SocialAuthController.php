@@ -138,7 +138,12 @@ class SocialAuthController extends Controller
         $name = trim($request->input('name'));
 
         $user = User::where('email', $email)->first();
-        if (!$user) {
+        if ($user) {
+            // Security Check: If user is admin/staff or has a password set, require password authentication!
+            if ($user->role !== 'reader' || !empty($user->password)) {
+                return redirect()->route('login')->with('error', 'এই ইমেইলটি পাসওয়ার্ড সুরক্ষিত। অনুগ্রহ করে পাসওয়ার্ড দিয়ে প্রবেশ করুন।')->withInput(['email' => $email]);
+            }
+        } else {
             $user = User::create([
                 'name' => $name,
                 'email' => $email,
@@ -232,9 +237,12 @@ class SocialAuthController extends Controller
             ]);
         }
 
-        // 3. Fallback to intended URL
+        // 3. Fallback to intended URL (ensure readers are never trapped into admin routes)
         $intended = session()->pull('url.intended');
         if ($intended) {
+            if ($user->role === 'reader' && str_contains($intended, '/admin')) {
+                return redirect()->route('home')->with('success', 'স্বাগতম, ' . $user->name . '! দৈনিক ভোলা জার্নালে আপনাকে স্বাগতম।');
+            }
             return redirect($intended)->with('success', 'স্বাগতম, ' . $user->name . '! সফলভাবে লগইন হয়েছে।');
         }
 

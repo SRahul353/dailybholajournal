@@ -14,5 +14,9 @@ return Application::configure(basePath: dirname(__DIR__))
         $middleware->redirectGuestsTo('/login');
     })
     ->withExceptions(function (Exceptions $exceptions): void {
-        //
+        $exceptions->render(function (\Symfony\Component\HttpKernel\Exception\AccessDeniedHttpException $e, \Illuminate\Http\Request $request) {
+            if ($request->is('admin/*') || $request->is('admin')) {
+                return redirect()->route('home')->with('error', 'আপনার অ্যাডমিন প্যানেলে প্রবেশের অনুমতি নেই।');
+            }
+        });
     })->create();

@@ -318,6 +318,20 @@
                     </div>
                 @endif
 
+                @if(session('error'))
+                    <div class="alert alert-danger d-flex align-items-center mb-4">
+                        <i class="fa-solid fa-circle-exclamation me-2 fs-5"></i>
+                        <div>{{ session('error') }}</div>
+                    </div>
+                @endif
+
+                @if(session('info'))
+                    <div class="alert alert-info d-flex align-items-center mb-4">
+                        <i class="fa-solid fa-circle-info me-2 fs-5"></i>
+                        <div>{{ session('info') }}</div>
+                    </div>
+                @endif
+
                 @if($errors->any())
                     <div class="alert alert-danger mb-4">
                         <ul class="mb-0 ps-3">
@@ -334,29 +348,30 @@
                     <div class="row g-3">
                         <div class="col-md-6">
                             <label class="form-label small fw-bold">আপনার নাম <span class="text-danger">*</span></label>
-                            <input type="text" name="name" id="contactNameInput" class="form-control" placeholder="আপনার পূর্ণ নাম" required value="{{ old('name', auth()->user()?->name) }}">
+                            <input type="text" name="name" id="contactNameInput" class="form-control" placeholder="আপনার পূর্ণ নাম" required value="{{ old('name', session('pending_contact_submission.name', auth()->user()?->name)) }}">
                         </div>
                         <div class="col-md-6">
                             <label class="form-label small fw-bold">মোবাইল নম্বর <span class="text-danger">*</span></label>
-                            <input type="tel" name="phone" id="contactPhoneInput" class="form-control" placeholder="০১XXXXXXXXX" required value="{{ old('phone') }}">
+                            <input type="tel" name="phone" id="contactPhoneInput" class="form-control" placeholder="০১XXXXXXXXX" required value="{{ old('phone', session('pending_contact_submission.phone')) }}">
                         </div>
                         <div class="col-md-12">
                             <label class="form-label small fw-bold">ইমেইল ঠিকানা</label>
-                            <input type="email" name="email" id="contactEmailInput" class="form-control" placeholder="example@gmail.com" value="{{ old('email', auth()->user()?->email) }}">
+                            <input type="email" name="email" id="contactEmailInput" class="form-control" placeholder="example@gmail.com" value="{{ old('email', session('pending_contact_submission.email', auth()->user()?->email)) }}">
                         </div>
                         <div class="col-md-12">
                             <label class="form-label small fw-bold">বিষয় <span class="text-danger">*</span></label>
                             <select name="subject" class="form-select" required>
-                                <option value="সংবাদ সংক্রান্ত" {{ old('subject') == 'সংবাদ সংক্রান্ত' ? 'selected' : '' }}>সংবাদ সংক্রান্ত</option>
-                                <option value="বিজ্ঞাপন ও প্রচার" {{ old('subject') == 'বিজ্ঞাপন ও প্রচার' ? 'selected' : '' }}>বিজ্ঞাপন ও প্রচার</option>
-                                <option value="মতামত ও কলাম" {{ old('subject') == 'মতামত ও কলাম' ? 'selected' : '' }}>মতামত ও কলাম</option>
-                                <option value="অভিযোগ বা পরামর্শ" {{ old('subject') == 'অভিযোগ বা পরামর্শ' ? 'selected' : '' }}>অভিযোগ বা পরামর্শ</option>
-                                <option value="অন্যান্য" {{ old('subject') == 'অন্যান্য' ? 'selected' : '' }}>অন্যান্য</option>
+                                @php $selSub = old('subject', session('pending_contact_submission.subject', 'সংবাদ সংক্রান্ত')); @endphp
+                                <option value="সংবাদ সংক্রান্ত" {{ $selSub == 'সংবাদ সংক্রান্ত' ? 'selected' : '' }}>সংবাদ সংক্রান্ত</option>
+                                <option value="বিজ্ঞাপন ও প্রচার" {{ $selSub == 'বিজ্ঞাপন ও প্রচার' ? 'selected' : '' }}>বিজ্ঞাপন ও প্রচার</option>
+                                <option value="মতামত ও কলাম" {{ $selSub == 'মতামত ও কলাম' ? 'selected' : '' }}>মতামত ও কলাম</option>
+                                <option value="অভিযোগ বা পরামর্শ" {{ $selSub == 'অভিযোগ বা পরামর্শ' ? 'selected' : '' }}>অভিযোগ বা পরামর্শ</option>
+                                <option value="অন্যান্য" {{ $selSub == 'অন্যান্য' ? 'selected' : '' }}>অন্যান্য</option>
                             </select>
                         </div>
                         <div class="col-md-12">
                             <label class="form-label small fw-bold">আপনার বার্তা <span class="text-danger">*</span></label>
-                            <textarea name="message" id="contactMessageInput" class="form-control" rows="5" placeholder="বিস্তারিত লিখুন..." required>{{ old('message') }}</textarea>
+                            <textarea name="message" id="contactMessageInput" class="form-control" rows="5" placeholder="বিস্তারিত লিখুন..." required>{{ old('message', session('pending_contact_submission.message')) }}</textarea>
                         </div>
                         <div class="col-md-12">
                             <button type="submit" class="btn btn-danger px-4 py-2 fw-bold" id="contactSubmitBtn">
@@ -436,16 +451,16 @@
 
 @section('scripts')
 <script>
+    let isSubmittingContactAsReader = false;
+
     document.addEventListener('DOMContentLoaded', function() {
         const contactForm = document.getElementById('contactForm');
-        const submitBtn = document.getElementById('contactSubmitBtn');
         const isGuest = {{ auth()->guest() ? 'true' : 'false' }};
 
-        if (isGuest && submitBtn && contactForm) {
-            submitBtn.addEventListener('click', function(e) {
-                if (!contactForm.checkValidity()) {
-                    contactForm.reportValidity();
-                    return;
+        if (isGuest && contactForm) {
+            contactForm.addEventListener('submit', function(e) {
+                if (isSubmittingContactAsReader) {
+                    return true;
                 }
 
                 // If user is guest, show login modal
@@ -465,6 +480,7 @@
     });
 
     function submitContactAsReader() {
+        isSubmittingContactAsReader = true;
         const contactForm = document.getElementById('contactForm');
         document.getElementById('contactReaderQuickAuth').value = '1';
         contactForm.submit();

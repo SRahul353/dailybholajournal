@@ -210,6 +210,20 @@
         </div>
     @endif
 
+    @if(session('error'))
+        <div class="alert alert-danger d-flex align-items-center mb-4" role="alert">
+            <i class="fa-solid fa-circle-exclamation me-2 fs-5"></i>
+            <div>{{ session('error') }}</div>
+        </div>
+    @endif
+
+    @if(session('info'))
+        <div class="alert alert-info d-flex align-items-center mb-4" role="alert">
+            <i class="fa-solid fa-circle-info me-2 fs-5"></i>
+            <div>{{ session('info') }}</div>
+        </div>
+    @endif
+
     <!-- Validation Errors -->
     @if($errors->any())
         <div class="alert alert-danger alert-dismissible fade show" role="alert">
@@ -242,7 +256,7 @@
                             <label class="form-label">আপনার পূর্ণ নাম <span class="text-danger">*</span></label>
                             <input type="text" 
                                    name="author_name" 
-                                   value="{{ old('author_name', auth()->user()?->name) }}" 
+                                   value="{{ old('author_name', session('pending_opinion_submission.author_name', auth()->user()?->name)) }}" 
                                    class="form-control" 
                                    placeholder="যেমন: ড. রফিকুল ইসলাম" 
                                    required>
@@ -251,7 +265,7 @@
                             <label class="form-label">পেশা বা পদবি <span class="text-danger">*</span></label>
                             <input type="text" 
                                    name="author_designation" 
-                                   value="{{ old('author_designation') }}" 
+                                   value="{{ old('author_designation', session('pending_opinion_submission.author_designation')) }}" 
                                    class="form-control" 
                                    placeholder="যেমন: কলামিস্ট ও গবেষক" 
                                    required>
@@ -260,7 +274,7 @@
                             <label class="form-label">মোবাইল / হোয়াটসঅ্যাপ নম্বর <span class="text-danger">*</span></label>
                             <input type="tel" 
                                    name="author_phone" 
-                                   value="{{ old('author_phone') }}" 
+                                   value="{{ old('author_phone', session('pending_opinion_submission.author_phone')) }}" 
                                    class="form-control" 
                                    placeholder="০১XXXXXXXXX" 
                                    required>
@@ -269,7 +283,7 @@
                             <label class="form-label">ইমেইল ঠিকানা <span class="text-danger">*</span></label>
                             <input type="email" 
                                    name="author_email" 
-                                   value="{{ old('author_email', auth()->user()?->email) }}" 
+                                   value="{{ old('author_email', session('pending_opinion_submission.author_email', auth()->user()?->email)) }}" 
                                    class="form-control" 
                                    placeholder="writer@gmail.com" 
                                    required>
@@ -279,7 +293,7 @@
                             <textarea name="author_bio" 
                                       rows="2" 
                                       class="form-control" 
-                                      placeholder="আপনার কাজের ক্ষেত্র, শিক্ষাগত যোগ্যতা বা লেখক পরিচিতির সংক্ষিপ্ত বিবরণ...">{{ old('author_bio') }}</textarea>
+                                      placeholder="আপনার কাজের ক্ষেত্র, শিক্ষাগত যোগ্যতা বা লেখক পরিচিতির সংক্ষিপ্ত বিবরণ...">{{ old('author_bio', session('pending_opinion_submission.author_bio')) }}</textarea>
                         </div>
                         <div class="col-12">
                             <label class="form-label">লেখকের ছবি (ঐচ্ছিক, তবে সুপারিশকৃত)</label>
@@ -312,7 +326,7 @@
                             <label class="form-label">কলামের আকর্ষণীয় শিরোনাম <span class="text-danger">*</span></label>
                             <input type="text" 
                                    name="title" 
-                                   value="{{ old('title') }}" 
+                                   value="{{ old('title', session('pending_opinion_submission.title')) }}" 
                                    class="form-control" 
                                    placeholder="লেখার মূল বার্তা বহনকারী স্পষ্ট শিরোনাম লিখুন..." 
                                    required>
@@ -320,14 +334,15 @@
                         <div class="col-md-4">
                             <label class="form-label">বিষয় বা ক্ষেত্র</label>
                             <select name="topic" class="form-select">
-                                <option value="সমসাময়িক বিষয়" {{ old('topic') == 'সমসাময়িক বিষয়' ? 'selected' : '' }}>সমসাময়িক বিষয়</option>
-                                <option value="জাতীয় রাজনীতি" {{ old('topic') == 'জাতীয় রাজনীতি' ? 'selected' : '' }}>জাতীয় রাজনীতি</option>
-                                <option value="অর্থনীতি ও উন্নয়ন" {{ old('topic') == 'অর্থনীতি ও উন্নয়ন' ? 'selected' : '' }}>অর্থনীতি ও উন্নয়ন</option>
-                                <option value="উপকূল ও পরিবেশ" {{ old('topic') == 'উপকূল ও পরিবেশ' ? 'selected' : '' }}>উপকূল ও পরিবেশ</option>
-                                <option value="শিক্ষা ও তরুণসমাজ" {{ old('topic') == 'শিক্ষা ও তরুণসমাজ' ? 'selected' : '' }}>শিক্ষা ও তরুণসমাজ</option>
-                                <option value="সাহিত্য ও সংস্কৃতি" {{ old('topic') == 'সাহিত্য ও সংস্কৃতি' ? 'selected' : '' }}>সাহিত্য ও সংস্কৃতি</option>
-                                <option value="আন্তর্জাতিক" {{ old('topic') == 'আন্তর্জাতিক' ? 'selected' : '' }}>আন্তর্জাতিক</option>
-                                <option value="অন্যান্য" {{ old('topic') == 'অন্যান্য' ? 'selected' : '' }}>অন্যান্য</option>
+                                @php $selTopic = old('topic', session('pending_opinion_submission.topic', 'সমসাময়িক বিষয়')); @endphp
+                                <option value="সমসাময়িক বিষয়" {{ $selTopic == 'সমসাময়িক বিষয়' ? 'selected' : '' }}>সমসাময়িক বিষয়</option>
+                                <option value="জাতীয় রাজনীতি" {{ $selTopic == 'জাতীয় রাজনীতি' ? 'selected' : '' }}>জাতীয় রাজনীতি</option>
+                                <option value="অর্থনীতি ও উন্নয়ন" {{ $selTopic == 'অর্থনীতি ও উন্নয়ন' ? 'selected' : '' }}>অর্থনীতি ও উন্নয়ন</option>
+                                <option value="উপকূল ও পরিবেশ" {{ $selTopic == 'উপকূল ও পরিবেশ' ? 'selected' : '' }}>উপকূল ও পরিবেশ</option>
+                                <option value="শিক্ষা ও তরুণসমাজ" {{ $selTopic == 'শিক্ষা ও তরুণসমাজ' ? 'selected' : '' }}>শিক্ষা ও তরুণসমাজ</option>
+                                <option value="সাহিত্য ও সংস্কৃতি" {{ $selTopic == 'সাহিত্য ও সংস্কৃতি' ? 'selected' : '' }}>সাহিত্য ও সংস্কৃতি</option>
+                                <option value="আন্তর্জাতিক" {{ $selTopic == 'আন্তর্জাতিক' ? 'selected' : '' }}>আন্তর্জাতিক</option>
+                                <option value="অন্যান্য" {{ $selTopic == 'অন্যান্য' ? 'selected' : '' }}>অন্যান্য</option>
                             </select>
                         </div>
                         <div class="col-12">
@@ -338,7 +353,7 @@
                                       class="form-control" 
                                       placeholder="আপনার কলামের সম্পূর্ণ লেখাটি এখানে লিখুন বা পেস্ট করুন..." 
                                       oninput="updateWordCount(this)" 
-                                      required>{{ old('content') }}</textarea>
+                                      required>{{ old('content', session('pending_opinion_submission.content')) }}</textarea>
                             <div class="char-counter-bar">
                                 <span id="wordCountDisplay">০ শব্দ</span> | <span id="charCountDisplay">০ অক্ষর</span>
                             </div>
@@ -540,14 +555,12 @@
         }
 
         const opinionForm = document.getElementById('opinionForm');
-        const submitBtn = document.getElementById('opinionSubmitBtn');
         const isGuest = {{ auth()->guest() ? 'true' : 'false' }};
 
-        if (isGuest && submitBtn && opinionForm) {
-            submitBtn.addEventListener('click', function(e) {
-                if (!opinionForm.checkValidity()) {
-                    opinionForm.reportValidity();
-                    return;
+        if (isGuest && opinionForm) {
+            opinionForm.addEventListener('submit', function(e) {
+                if (isSubmittingOpinionAsReader) {
+                    return true;
                 }
 
                 // Show modal for guest
@@ -567,7 +580,10 @@
         }
     });
 
+    let isSubmittingOpinionAsReader = false;
+
     function submitOpinionAsReader() {
+        isSubmittingOpinionAsReader = true;
         const form = document.getElementById('opinionForm');
         document.getElementById('opinionReaderQuickAuth').value = '1';
         form.submit();
