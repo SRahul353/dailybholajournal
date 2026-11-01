@@ -42,7 +42,7 @@ class NewspaperController extends Controller
 
         $leadPostId = $leadPost ? $leadPost->id : 0;
 
-        // 2. Fetch Column 2 Sub Lead Posts (with 'শীর্ষ খবর' tag, excluding lead post)
+        // 2. Fetch Column 2 Sub Lead Posts (with 'শীর্ষ খবর' tag, excluding lead post - Target 5 posts)
         $subLeadPosts = collect();
         if ($topNewsTag && $leadPostId) {
             $subLeadPosts = Post::with('categories')
@@ -52,12 +52,12 @@ class NewspaperController extends Controller
                     $query->where('tags.id', $topNewsTag->id);
                 })
                 ->latest()
-                ->limit(4)
+                ->limit(5)
                 ->get();
         }
 
-        // Fill remaining side leads if fewer than 4 are found
-        $needed = 4 - $subLeadPosts->count();
+        // Fill remaining side leads if fewer than 5 are found
+        $needed = 5 - $subLeadPosts->count();
         if ($needed > 0) {
             $excludeIds = $subLeadPosts->pluck('id')->push($leadPostId)->toArray();
             $fillPosts = Post::with('categories')
@@ -69,19 +69,19 @@ class NewspaperController extends Controller
             $subLeadPosts = $subLeadPosts->merge($fillPosts);
         }
 
-        // 3. Latest News Sidebar (10 latest posts, excluding lead)
+        // 3. Latest News Sidebar (5 latest posts, excluding lead)
         $latestPosts = Post::with('categories')
             ->where('status', 'publish')
             ->where('id', '!=', $leadPostId)
             ->latest()
-            ->limit(10)
+            ->limit(5)
             ->get();
 
-        // 4. Popular News (Top 8 read posts for feed & sidebar)
+        // 4. Popular News (Top 5 read posts for feed & sidebar)
         $popularPosts = Post::where('status', 'publish')
             ->orderBy('views_count', 'desc')
             ->latest()
-            ->limit(8)
+            ->limit(5)
             ->get();
 
         // 5. Categorized News Blocks (load from settings layout list if set, or fallback to categories with posts)

@@ -54,13 +54,14 @@
     .main-lead-img-box {
         position: relative;
         width: 100%;
-        height: 250px;
+        aspect-ratio: 4 / 3;
         overflow: hidden;
         background-color: #e2e8f0;
     }
     @media (min-width: 768px) {
         .main-lead-img-box {
-            height: 360px;
+            aspect-ratio: 4 / 3;
+            height: auto;
         }
     }
     .main-lead-img {
@@ -116,16 +117,16 @@
     }
     .main-lead-headline {
         font-family: 'Noto Serif Bengali', serif !important;
-        font-size: 1.55rem;
+        font-size: 1.35rem;
         font-weight: 800;
         color: #111827;
-        margin-bottom: 14px;
+        margin-bottom: 12px;
         line-height: 1.34;
-        letter-spacing: -0.5px;
+        letter-spacing: -0.4px;
     }
     @media (min-width: 768px) {
         .main-lead-headline {
-            font-size: 2.1rem;
+            font-size: 1.75rem;
         }
     }
     .main-lead-headline a {
@@ -240,23 +241,24 @@
     }
     .sub-lead-item {
         display: flex;
-        gap: 14px;
+        gap: 12px;
         align-items: flex-start;
-        padding: 13px 0;
+        padding: 10px 0;
         border-bottom: 1px solid #f1f5f9;
         transition: transform 0.22s ease;
     }
     .sub-lead-item:last-child {
         border-bottom: none;
-        padding-bottom: 4px;
+        padding-bottom: 2px;
     }
     .sub-lead-item:hover {
         transform: translateX(4px);
     }
     .sub-lead-thumb-box {
-        width: 110px;
-        height: 76px;
-        border-radius: 7px;
+        width: 96px;
+        aspect-ratio: 4 / 3;
+        height: auto;
+        border-radius: 6px;
         overflow: hidden;
         flex-shrink: 0;
         background-color: #f1f5f9;
@@ -390,7 +392,8 @@
     }
     .cat-lead-img-box {
         position: relative;
-        height: 220px;
+        width: 100%;
+        aspect-ratio: 4 / 3;
         overflow: hidden;
         background-color: #e2e8f0;
     }
@@ -453,7 +456,8 @@
     }
     .cat-side-thumb-box {
         width: 100px;
-        height: 76px;
+        aspect-ratio: 4 / 3;
+        height: auto;
         border-radius: 6px;
         overflow: hidden;
         flex-shrink: 0;
@@ -516,7 +520,8 @@
     }
     .cat-grid-img-box {
         position: relative;
-        height: 150px;
+        width: 100%;
+        aspect-ratio: 4 / 3;
         overflow: hidden;
         background-color: #e2e8f0;
     }
@@ -584,7 +589,8 @@
     }
     .cat-card-c-img-box {
         position: relative;
-        height: 180px;
+        width: 100%;
+        aspect-ratio: 4 / 3;
         overflow: hidden;
         background-color: #f1f5f9;
     }

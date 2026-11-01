@@ -3,13 +3,13 @@
         $popularPosts = \App\Models\Post::where('status', 'publish')
             ->orderBy('views_count', 'desc')
             ->latest()
-            ->limit(8)
+            ->limit(5)
             ->get();
     }
     if (!isset($latestPosts) || $latestPosts->isEmpty()) {
         $latestPosts = \App\Models\Post::where('status', 'publish')
             ->latest()
-            ->limit(8)
+            ->limit(5)
             ->get();
     }
     if (!isset($opinionPosts) || $opinionPosts->isEmpty()) {
@@ -188,10 +188,11 @@
         border-color: var(--accent, #c90000);
     }
 
-    /* Thumbnail Box alongside news in sidebar */
+    /* Thumbnail Box alongside news in sidebar - 4:3 Aspect Ratio */
     .sidebar-feed-thumb-box {
-        width: 74px;
-        height: 52px;
+        width: 72px;
+        aspect-ratio: 4 / 3;
+        height: auto;
         border-radius: 6px;
         overflow: hidden;
         flex-shrink: 0;
@@ -936,10 +937,10 @@
             </button>
         </div>
 
-        <!-- Latest News Tab Pane (৮টি খবর উইথ ছবি) -->
+        <!-- Latest News Tab Pane (৫টি খবর উইথ ছবি) -->
         <div id="paneTabLatest" class="sidebar-tab-pane active">
             <ul class="sidebar-feed-list">
-                @foreach($latestPosts->take(8) as $index => $post)
+                @foreach($latestPosts->take(5) as $index => $post)
                     <li class="sidebar-feed-item">
                         <span class="sidebar-rank-badge sidebar-rank-badge-latest">
                             {{ $bnNumbers[$index + 1] ?? ($index + 1) }}
@@ -967,10 +968,10 @@
             </ul>
         </div>
 
-        <!-- Popular News Tab Pane (৮টি খবর উইথ ছবি ও প্রিমিয়াম র‍্যাঙ্ক ব্যাজ) -->
+        <!-- Popular News Tab Pane (৫টি খবর উইথ ছবি ও প্রিমিয়াম র‍্যাঙ্ক ব্যাজ) -->
         <div id="paneTabPopular" class="sidebar-tab-pane">
             <ul class="sidebar-feed-list">
-                @foreach($popularPosts->take(8) as $index => $post)
+                @foreach($popularPosts->take(5) as $index => $post)
                     @php
                         $rankClass = 'sidebar-rank-other';
                         if ($index === 0) $rankClass = 'sidebar-rank-top-1';
