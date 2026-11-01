@@ -648,7 +648,7 @@
     .bottom-content-wrapper { 
         flex: 0 0 332px; 
         width: 1080px; 
-        background: linear-gradient(160deg, #990000 0%, #3a0000 100%); /* Brand Signature Journal Crimson Red */
+        background: linear-gradient(160deg, #1e3a8a 0%, #0f172a 100%); /* Brand Signature Royal Blue Default */
         display: flex; 
         flex-direction: column; 
         padding: 20px 60px 15px 60px;
@@ -672,7 +672,7 @@
     .news-date { 
         font-family: 'Noto Sans Bengali', sans-serif !important;
         font-size: 24px; 
-        color: #ffd700; /* Rich Gold */
+        color: #38bdf8; /* Royal Sky Blue */
         font-weight: 600; 
         transition: color 0.2s ease;
     }
@@ -701,7 +701,7 @@
     .details-hint { 
         font-family: 'Noto Sans Bengali', sans-serif !important;
         font-size: 22px; 
-        color: #fef08a; /* Soft Gold/Cream */
+        color: #7dd3fc; /* Soft Sky Blue */
         margin-top: 15px; 
         font-weight: 500; 
         display: inline-block;
@@ -713,12 +713,12 @@
         flex: 0 0 100px; 
         width: 1080px;
         background: #111;
+        border-top: 3px solid #38bdf8; /* Royal Sky Blue Accent Border */
         display: flex;
         justify-content: center;
         align-items: center;
         z-index: 3;
         overflow: hidden;
-        border-top: 3px solid #ffd700; /* Matching Gold Accent Border */
         transition: border-color 0.2s ease;
     }
     
@@ -907,7 +907,11 @@
                 <div>
                     <label class="studio-label"><i class="fa-solid fa-swatchbook text-danger me-1"></i> ব্যাকগ্রাউন্ড কালার থিম</label>
                     <div class="card-theme-grid">
-                        <button type="button" class="btn-theme-preset active" data-theme="crimson" onclick="applyCardTheme('crimson')">
+                        <button type="button" class="btn-theme-preset active" data-theme="royal" onclick="applyCardTheme('royal')">
+                            <span class="theme-dot" style="background: linear-gradient(135deg, #1e3a8a, #0f172a);"></span>
+                            <span>রয়েল ব্লু</span>
+                        </button>
+                        <button type="button" class="btn-theme-preset" data-theme="crimson" onclick="applyCardTheme('crimson')">
                             <span class="theme-dot" style="background: linear-gradient(135deg, #990000, #3a0000);"></span>
                             <span>জার্নাল রেড</span>
                         </button>
@@ -918,10 +922,6 @@
                         <button type="button" class="btn-theme-preset" data-theme="navy" onclick="applyCardTheme('navy')">
                             <span class="theme-dot" style="background: linear-gradient(135deg, #1e293b, #0a0f1d);"></span>
                             <span>নেভি ব্লু</span>
-                        </button>
-                        <button type="button" class="btn-theme-preset" data-theme="royal" onclick="applyCardTheme('royal')">
-                            <span class="theme-dot" style="background: linear-gradient(135deg, #1e3a8a, #0f172a);"></span>
-                            <span>রয়েল ব্লু</span>
                         </button>
                         <button type="button" class="btn-theme-preset" data-theme="emerald" onclick="applyCardTheme('emerald')">
                             <span class="theme-dot" style="background: linear-gradient(135deg, #064e3b, #022c22);"></span>
@@ -937,31 +937,32 @@
                 <div class="mt-3">
                     <label class="studio-label">কাস্টম ব্যাকগ্রাউন্ড কালার</label>
                     <div class="d-flex align-items-center gap-2">
-                        <input type="color" class="color-picker-studio" id="customBgColor" value="#990000" oninput="setCustomCardBg(this.value)">
-                        <input type="text" class="studio-input py-1 px-2" id="customBgHex" value="#990000" style="font-size: 0.8rem; height: 32px;" onchange="setCustomCardBg(this.value)">
+                        <input type="color" class="color-picker-studio" id="customBgColor" value="#1e3a8a" oninput="setCustomCardBg(this.value)">
+                        <input type="text" class="studio-input py-1 px-2" id="customBgHex" value="#1e3a8a" style="font-size: 0.8rem; height: 32px;" onchange="setCustomCardBg(this.value)">
                     </div>
                 </div>
 
                 <div class="mt-3">
                     <label class="studio-label">তারিখ ও ডিটেইলস কালার</label>
                     <div class="color-swatch-wrapper">
+                        <div class="color-swatch" style="background: #38bdf8;" onclick="setCardDateColor('#38bdf8')" title="রয়েল স্কাই"></div>
                         <div class="color-swatch" style="background: #ffd700;" onclick="setCardDateColor('#ffd700')" title="সোনালী"></div>
                         <div class="color-swatch" style="background: #ffffff;" onclick="setCardDateColor('#ffffff')" title="সাদা"></div>
                         <div class="color-swatch" style="background: #ef4444;" onclick="setCardDateColor('#ef4444')" title="লাল"></div>
-                        <div class="color-swatch" style="background: #38bdf8;" onclick="setCardDateColor('#38bdf8')" title="আকাশী"></div>
                         <div class="color-swatch" style="background: #34d399;" onclick="setCardDateColor('#34d399')" title="হালকা সবুজ"></div>
-                        <input type="color" class="color-picker-studio" id="dateColorPicker" oninput="setCardDateColor(this.value)" value="#ffd700" title="কাস্টম কালার">
+                        <input type="color" class="color-picker-studio" id="dateColorPicker" oninput="setCardDateColor(this.value)" value="#38bdf8" title="কাস্টম কালার">
                     </div>
                 </div>
 
                 <div class="mt-3">
                     <label class="studio-label">ডিভাইডার বর্ডার কালার</label>
                     <div class="color-swatch-wrapper">
+                        <div class="color-swatch" style="background: #38bdf8;" onclick="setCardBorderColor('#38bdf8')" title="রয়েল স্কাই"></div>
                         <div class="color-swatch" style="background: #ffd700;" onclick="setCardBorderColor('#ffd700')" title="সোনালী"></div>
                         <div class="color-swatch" style="background: #ef4444;" onclick="setCardBorderColor('#ef4444')" title="লাল"></div>
                         <div class="color-swatch" style="background: #ffffff;" onclick="setCardBorderColor('#ffffff')" title="সাদা"></div>
                         <div class="color-swatch" style="background: #0ea5e9;" onclick="setCardBorderColor('#0ea5e9')" title="নীল"></div>
-                        <input type="color" class="color-picker-studio" id="borderColorPicker" oninput="setCardBorderColor(this.value)" value="#ffd700" title="কাস্টম কালার">
+                        <input type="color" class="color-picker-studio" id="borderColorPicker" oninput="setCardBorderColor(this.value)" value="#38bdf8" title="কাস্টম কালার">
                     </div>
                 </div>
             </div>
@@ -1621,6 +1622,9 @@
             });
             updateCharCount(headlineInput.value);
         }
+
+        // Initialize with default Royal Blue theme
+        applyCardTheme('royal');
 
         // Generate Bengali dynamic date for first load
         updateBengaliDate();
