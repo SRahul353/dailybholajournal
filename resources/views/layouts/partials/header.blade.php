@@ -71,9 +71,21 @@
     </div>
 
     <!-- Mobile Date inside Drawer -->
-    <div class="py-2 px-1 text-white-50 border-bottom" style="font-size: 0.82rem; border-color: rgba(255,255,255,0.12) !important;">
-        <i class="fa-regular fa-calendar-days text-danger me-1"></i>
-        <span class="currentDateText"></span>
+    <div class="py-2 px-1 text-white-50 border-bottom d-flex align-items-center justify-content-between" style="font-size: 0.82rem; border-color: rgba(255,255,255,0.12) !important;">
+        <div>
+            <i class="fa-regular fa-calendar-days text-danger me-1"></i>
+            <span class="currentDateText"></span>
+        </div>
+        @auth
+            <form action="{{ route('logout') }}" method="POST" class="d-inline m-0">
+                @csrf
+                <button type="submit" class="btn btn-sm btn-outline-danger text-white py-0 px-2" style="font-size: 0.75rem;">লগআউট</button>
+            </form>
+        @else
+            <a href="{{ route('login') }}" class="btn btn-sm btn-danger py-0 px-2 text-white" style="font-size: 0.75rem; font-weight: 700;">
+                <i class="fa-solid fa-arrow-right-to-bracket me-1"></i> লগইন
+            </a>
+        @endauth
     </div>
 
     <ul class="mobile-drawer-links">
@@ -156,9 +168,40 @@
                         <i class="fa-solid fa-folder-open"></i> আর্কাইভ
                     </a>
                     <span class="mql-sep"></span>
-                    <a href="#" class="mql-item">
-                        <i class="fa-solid fa-bookmark"></i> বিশেষ প্রতিবেদন
+                    <a href="{{ route('opinion.submit') }}" class="mql-item">
+                        <i class="fa-solid fa-pen-nib"></i> মতামত পাঠান
                     </a>
+                    <span class="mql-sep"></span>
+                    @auth
+                        <div class="dropdown d-inline-block">
+                            <a href="#" class="mql-item dropdown-toggle" id="headerUserDropdown" role="button" data-bs-toggle="dropdown" aria-expanded="false" style="background: #fee2e2; color: #990000;">
+                                <i class="fa-solid fa-circle-user text-danger"></i>
+                                <span>{{ Str::limit(Auth::user()->name, 10) }}</span>
+                            </a>
+                            <ul class="dropdown-menu dropdown-menu-end shadow-sm animate fade-in" aria-labelledby="headerUserDropdown" style="font-size: 0.88rem; min-width: 190px; border-radius: 8px;">
+                                <li class="px-3 py-2 border-bottom bg-light">
+                                    <div class="fw-bold text-truncate text-dark">{{ Auth::user()->name }}</div>
+                                    <small class="text-muted">{{ Auth::user()->isReader() ? 'সম্মানিত পাঠক' : 'ম্যানেজমেন্ট' }}</small>
+                                </li>
+                                @if(!Auth::user()->isReader())
+                                    <li><a class="dropdown-item py-2" href="{{ route('admin.dashboard') }}"><i class="fa-solid fa-gauge text-danger me-2"></i>ড্যাশবোর্ড</a></li>
+                                @endif
+                                <li><a class="dropdown-item py-2" href="{{ route('opinion.submit') }}"><i class="fa-solid fa-pen-nib text-primary me-2"></i>মতামত দিন</a></li>
+                                <li><a class="dropdown-item py-2" href="{{ route('contact') }}"><i class="fa-solid fa-envelope text-success me-2"></i>যোগাযোগ</a></li>
+                                <li><hr class="dropdown-divider my-1"></li>
+                                <li>
+                                    <form action="{{ route('logout') }}" method="POST" class="d-inline m-0">
+                                        @csrf
+                                        <button type="submit" class="dropdown-item py-2 text-danger"><i class="fa-solid fa-arrow-right-from-bracket me-2"></i>লগআউট</button>
+                                    </form>
+                                </li>
+                            </ul>
+                        </div>
+                    @else
+                        <a href="{{ route('login') }}" class="mql-item" style="background: #fee2e2; color: #990000;" title="পাঠক ও অ্যাডমিন লগইন">
+                            <i class="fa-solid fa-arrow-right-to-bracket text-danger"></i> লগইন
+                        </a>
+                    @endauth
                 </div>
 
                 {{-- Social icons + Search row --}}

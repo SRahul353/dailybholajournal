@@ -17,15 +17,25 @@ Route::get('/terms-of-use', [NewspaperController::class, 'termsOfUse'])->name('t
 Route::get('/terms', [NewspaperController::class, 'termsOfUse'])->name('terms');
 Route::get('/comment-policy', [NewspaperController::class, 'commentPolicy'])->name('comment.policy');
 Route::get('/editorial-policy', [NewspaperController::class, 'editorialPolicy'])->name('editorial.policy');
-Route::get('/contact', [NewspaperController::class, 'contact'])->name('contact');
+// Contact Routes (Login Required as requested)
+Route::get('/contact', [NewspaperController::class, 'contact'])->middleware('auth')->name('contact');
 Route::get('/our-family', [NewspaperController::class, 'contact'])->name('our.family');
 
-// Contact Form Submission (throttled to 6 submissions per minute per IP)
-Route::post('/contact', [NewspaperController::class, 'submitContact'])->middleware('throttle:6,1')->name('contact.submit');
+// Contact Form Submission (Login Required & Throttled to 6 submissions per minute per IP)
+Route::post('/contact', [NewspaperController::class, 'submitContact'])->middleware(['auth', 'throttle:6,1'])->name('contact.submit');
 
-// Opinion & Column Submission Routes (throttled to 6 submissions per minute per IP)
-Route::get('/opinion/submit', [App\Http\Controllers\OpinionController::class, 'create'])->name('opinion.submit');
-Route::post('/opinion/submit', [App\Http\Controllers\OpinionController::class, 'store'])->middleware('throttle:6,1')->name('opinion.store');
+// Opinion & Column Submission Routes (Login Required & Throttled to 6 submissions per minute per IP)
+Route::get('/opinion/submit', [App\Http\Controllers\OpinionController::class, 'create'])->middleware('auth')->name('opinion.submit');
+Route::post('/opinion/submit', [App\Http\Controllers\OpinionController::class, 'store'])->middleware(['auth', 'throttle:6,1'])->name('opinion.store');
+
+// Global Authentication & Social Login Routes
+Route::get('/login', [App\Http\Controllers\Admin\AdminLoginController::class, 'showLoginForm'])->name('login');
+Route::post('/login', [App\Http\Controllers\Admin\AdminLoginController::class, 'login'])->middleware('throttle:5,1')->name('login.submit');
+Route::match(['GET', 'POST'], '/logout', [App\Http\Controllers\Admin\AdminLoginController::class, 'logout'])->name('logout');
+
+// Social Login (Google & Facebook)
+Route::get('/auth/{provider}', [App\Http\Controllers\Auth\SocialAuthController::class, 'redirect'])->name('social.redirect');
+Route::get('/auth/{provider}/callback', [App\Http\Controllers\Auth\SocialAuthController::class, 'callback'])->name('social.callback');
 
 // Interactive Poll Voting (throttled to 15 requests per minute per IP)
 Route::post('/poll/vote', [NewspaperController::class, 'votePoll'])->middleware('throttle:15,1')->name('poll.vote');

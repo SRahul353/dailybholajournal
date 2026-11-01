@@ -241,7 +241,7 @@
                             <label class="form-label">আপনার পূর্ণ নাম <span class="text-danger">*</span></label>
                             <input type="text" 
                                    name="author_name" 
-                                   value="{{ old('author_name') }}" 
+                                   value="{{ old('author_name', auth()->user()?->name) }}" 
                                    class="form-control" 
                                    placeholder="যেমন: ড. রফিকুল ইসলাম" 
                                    required>
@@ -268,7 +268,7 @@
                             <label class="form-label">ইমেইল ঠিকানা <span class="text-danger">*</span></label>
                             <input type="email" 
                                    name="author_email" 
-                                   value="{{ old('author_email') }}" 
+                                   value="{{ old('author_email', auth()->user()?->email) }}" 
                                    class="form-control" 
                                    placeholder="writer@gmail.com" 
                                    required>

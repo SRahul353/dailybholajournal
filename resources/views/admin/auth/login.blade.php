@@ -210,6 +210,104 @@
             gap: 8px;
         }
 
+        /* Social Login Buttons */
+        .social-buttons {
+            display: flex;
+            flex-direction: column;
+            gap: 12px;
+            margin-bottom: 24px;
+        }
+
+        .social-btn {
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            gap: 12px;
+            width: 100%;
+            padding: 12px 16px;
+            border-radius: 8px;
+            font-size: 0.95rem;
+            font-weight: 600;
+            text-decoration: none;
+            transition: var(--transition);
+            box-shadow: 0 1px 3px rgba(0, 0, 0, 0.08);
+            border: 1px solid var(--border-color);
+        }
+
+        .social-btn-google {
+            background-color: #ffffff;
+            color: #374151;
+            border-color: #e5e7eb;
+        }
+
+        .social-btn-google:hover {
+            background-color: #f9fafb;
+            box-shadow: 0 4px 12px rgba(0, 0, 0, 0.1);
+            transform: translateY(-1px);
+            color: #111827;
+        }
+
+        .social-btn-facebook {
+            background-color: #1877f2;
+            color: #ffffff;
+            border-color: #1877f2;
+        }
+
+        .social-btn-facebook:hover {
+            background-color: #166fe5;
+            color: #ffffff;
+            box-shadow: 0 4px 12px rgba(24, 119, 242, 0.35);
+            transform: translateY(-1px);
+        }
+
+        /* Divider */
+        .divider-row {
+            display: flex;
+            align-items: center;
+            text-align: center;
+            margin: 20px 0;
+            color: var(--text-sub);
+            font-size: 0.84rem;
+        }
+
+        .divider-row::before,
+        .divider-row::after {
+            content: '';
+            flex: 1;
+            border-bottom: 1px solid var(--border-color);
+        }
+
+        .divider-row span {
+            padding: 0 12px;
+            font-weight: 500;
+        }
+
+        .alert-info-box {
+            background-color: #eff6ff;
+            border: 1px solid #bfdbfe;
+            color: #1e40af;
+            padding: 12px 16px;
+            border-radius: 8px;
+            font-size: 0.88rem;
+            margin-bottom: 20px;
+            display: flex;
+            align-items: center;
+            gap: 10px;
+        }
+
+        .alert-success-box {
+            background-color: #f0fdf4;
+            border: 1px solid #bbf7d0;
+            color: #166534;
+            padding: 12px 16px;
+            border-radius: 8px;
+            font-size: 0.88rem;
+            margin-bottom: 20px;
+            display: flex;
+            align-items: center;
+            gap: 10px;
+        }
+
         .back-home-link {
             display: block;
             text-align: center;
@@ -227,9 +325,35 @@
 
     <div class="login-card">
         <div class="brand-header">
-            <h1 class="brand-logo">Journal<span>Panel</span></h1>
-            <p class="brand-subtitle">নিউজপেপার কন্ট্রোল ড্যাশবোর্ড</p>
+            <h1 class="brand-logo">দৈনিক ভোলা<span>জার্নাল</span></h1>
+            <p class="brand-subtitle">পাঠক ও কন্ট্রোল প্যানেল লগইন</p>
         </div>
+
+        @if(session('info'))
+            <div class="alert-info-box">
+                <i class="fa-solid fa-circle-info"></i>
+                <span>{{ session('info') }}</span>
+            </div>
+        @elseif(session('url.intended') && (str_contains(session('url.intended'), 'contact') || str_contains(session('url.intended'), 'opinion')))
+            <div class="alert-info-box">
+                <i class="fa-solid fa-lock text-primary"></i>
+                <span>যোগাযোগ করতে বা মতামত/কলাম জমা দিতে অনুগ্রহ করে আগে লগইন করুন।</span>
+            </div>
+        @endif
+
+        @if(session('success'))
+            <div class="alert-success-box">
+                <i class="fa-solid fa-circle-check"></i>
+                <span>{{ session('success') }}</span>
+            </div>
+        @endif
+
+        @if(session('error'))
+            <div class="error-alert">
+                <i class="fa-solid fa-circle-exclamation"></i>
+                <span>{{ session('error') }}</span>
+            </div>
+        @endif
 
         @if($errors->any())
             <div class="error-alert">
@@ -238,21 +362,43 @@
             </div>
         @endif
 
-        <form action="{{ route('admin.login') }}" method="POST">
+        <!-- Social Login: Google & Facebook -->
+        <div class="social-buttons">
+            <a href="{{ route('social.redirect', 'google') }}" class="social-btn social-btn-google">
+                <svg width="20" height="20" viewBox="0 0 48 48">
+                    <path fill="#EA4335" d="M24 9.5c3.54 0 6.71 1.22 9.21 3.6l6.85-6.85C35.9 2.38 30.47 0 24 0 14.62 0 6.51 5.38 2.56 13.22l7.98 6.19C12.43 13.72 17.74 9.5 24 9.5z"/>
+                    <path fill="#4285F4" d="M46.98 24.55c0-1.57-.15-3.09-.38-4.55H24v9.02h12.94c-.58 2.96-2.26 5.48-4.78 7.18l7.73 6c4.51-4.18 7.09-10.36 7.09-17.65z"/>
+                    <path fill="#FBBC05" d="M10.53 28.59c-.48-1.45-.76-2.99-.76-4.59s.27-3.14.76-4.59l-7.98-6.19C.92 16.46 0 20.12 0 24c0 3.88.92 7.54 2.56 10.78l7.97-6.19z"/>
+                    <path fill="#34A853" d="M24 48c6.48 0 11.93-2.13 15.89-5.81l-7.73-6c-2.15 1.45-4.92 2.3-8.16 2.3-6.26 0-11.57-4.22-13.47-9.91l-7.98 6.19C6.51 42.62 14.62 48 24 48z"/>
+                </svg>
+                <span>গুগল (Google) দিয়ে লগইন</span>
+            </a>
+
+            <a href="{{ route('social.redirect', 'facebook') }}" class="social-btn social-btn-facebook">
+                <i class="fa-brands fa-facebook-f" style="font-size: 1.15rem;"></i>
+                <span>ফেসবুক (Facebook) দিয়ে লগইন</span>
+            </a>
+        </div>
+
+        <div class="divider-row">
+            <span>অথবা ইমেইল দিয়ে প্রবেশ করুন</span>
+        </div>
+
+        <form action="{{ route('login.submit') }}" method="POST">
             @csrf
 
             <!-- Email Field -->
             <div class="form-group">
                 <label for="email" class="form-label">ইমেইল ঠিকানা</label>
                 <div class="input-wrapper">
-                    <input type="email" name="email" id="email" value="{{ old('email') }}" required autocomplete="email" autofocus placeholder="admin@example.com" class="form-input">
+                    <input type="email" name="email" id="email" value="{{ old('email') }}" required autocomplete="email" autofocus placeholder="আপনার ইমেইল দিন" class="form-input">
                     <i class="fa-solid fa-envelope input-icon"></i>
                 </div>
             </div>
 
             <!-- Password Field -->
             <div class="form-group">
-                <label for="password" class="form-label">গোপন পাসওয়ার্ড</label>
+                <label for="password" class="form-label">পাসওয়ার্ড</label>
                 <div class="input-wrapper">
                     <input type="password" name="password" id="password" required autocomplete="current-password" placeholder="••••••••" class="form-input">
                     <i class="fa-solid fa-lock input-icon"></i>
@@ -262,10 +408,9 @@
             <!-- Remember Me options -->
             <div class="options-row">
                 <label class="remember-me">
-                    <input type="checkbox" name="remember" id="remember">
+                    <input type="checkbox" name="remember" id="remember" checked>
                     <span>আমাকে মনে রাখুন</span>
                 </label>
-                <a href="#" class="forgot-link">পাসওয়ার্ড ভুলে গেছেন?</a>
             </div>
 
             <!-- Submit Button -->

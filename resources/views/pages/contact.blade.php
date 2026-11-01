@@ -333,7 +333,7 @@
                     <div class="row g-3">
                         <div class="col-md-6">
                             <label class="form-label small fw-bold">আপনার নাম <span class="text-danger">*</span></label>
-                            <input type="text" name="name" class="form-control" placeholder="আপনার পূর্ণ নাম" required value="{{ old('name') }}">
+                            <input type="text" name="name" class="form-control" placeholder="আপনার পূর্ণ নাম" required value="{{ old('name', auth()->user()?->name) }}">
                         </div>
                         <div class="col-md-6">
                             <label class="form-label small fw-bold">মোবাইল নম্বর <span class="text-danger">*</span></label>
@@ -341,7 +341,7 @@
                         </div>
                         <div class="col-md-12">
                             <label class="form-label small fw-bold">ইমেইল ঠিকানা</label>
-                            <input type="email" name="email" class="form-control" placeholder="example@gmail.com" value="{{ old('email') }}">
+                            <input type="email" name="email" class="form-control" placeholder="example@gmail.com" value="{{ old('email', auth()->user()?->email) }}">
                         </div>
                         <div class="col-md-12">
                             <label class="form-label small fw-bold">বিষয় <span class="text-danger">*</span></label>
