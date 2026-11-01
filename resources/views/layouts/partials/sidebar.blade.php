@@ -188,10 +188,10 @@
         border-color: var(--accent, #c90000);
     }
 
-    /* Thumbnail Box alongside news in sidebar - 4:3 Aspect Ratio */
+    /* Thumbnail Box alongside news in sidebar - 16:9 Aspect Ratio */
     .sidebar-feed-thumb-box {
-        width: 72px;
-        aspect-ratio: 4 / 3;
+        width: 80px;
+        aspect-ratio: 16 / 9;
         height: auto;
         border-radius: 6px;
         overflow: hidden;

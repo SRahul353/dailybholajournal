@@ -54,13 +54,13 @@
     .main-lead-img-box {
         position: relative;
         width: 100%;
-        aspect-ratio: 4 / 3;
+        aspect-ratio: 16 / 9;
         overflow: hidden;
         background-color: #e2e8f0;
     }
     @media (min-width: 768px) {
         .main-lead-img-box {
-            aspect-ratio: 4 / 3;
+            aspect-ratio: 16 / 9;
             height: auto;
         }
     }
@@ -255,8 +255,8 @@
         transform: translateX(4px);
     }
     .sub-lead-thumb-box {
-        width: 96px;
-        aspect-ratio: 4 / 3;
+        width: 104px;
+        aspect-ratio: 16 / 9;
         height: auto;
         border-radius: 6px;
         overflow: hidden;
@@ -393,7 +393,7 @@
     .cat-lead-img-box {
         position: relative;
         width: 100%;
-        aspect-ratio: 4 / 3;
+        aspect-ratio: 16 / 9;
         overflow: hidden;
         background-color: #e2e8f0;
     }
@@ -455,8 +455,8 @@
         box-shadow: 0 4px 10px rgba(0,0,0,0.05);
     }
     .cat-side-thumb-box {
-        width: 100px;
-        aspect-ratio: 4 / 3;
+        width: 104px;
+        aspect-ratio: 16 / 9;
         height: auto;
         border-radius: 6px;
         overflow: hidden;
@@ -521,7 +521,7 @@
     .cat-grid-img-box {
         position: relative;
         width: 100%;
-        aspect-ratio: 4 / 3;
+        aspect-ratio: 16 / 9;
         overflow: hidden;
         background-color: #e2e8f0;
     }
@@ -590,7 +590,7 @@
     .cat-card-c-img-box {
         position: relative;
         width: 100%;
-        aspect-ratio: 4 / 3;
+        aspect-ratio: 16 / 9;
         overflow: hidden;
         background-color: #f1f5f9;
     }

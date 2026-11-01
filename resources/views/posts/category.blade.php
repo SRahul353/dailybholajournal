@@ -116,7 +116,7 @@
         position: relative;
         overflow: hidden;
         background-color: #cbd5e1;
-        aspect-ratio: 16 / 10;
+        aspect-ratio: 16 / 9;
     }
     .archive-lead-img {
         width: 100%;
