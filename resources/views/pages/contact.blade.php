@@ -330,18 +330,19 @@
 
                 <form action="{{ route('contact.submit') }}" method="POST" id="contactForm">
                     @csrf
+                    <input type="hidden" name="reader_quick_auth" id="contactReaderQuickAuth" value="0">
                     <div class="row g-3">
                         <div class="col-md-6">
                             <label class="form-label small fw-bold">আপনার নাম <span class="text-danger">*</span></label>
-                            <input type="text" name="name" class="form-control" placeholder="আপনার পূর্ণ নাম" required value="{{ old('name', auth()->user()?->name) }}">
+                            <input type="text" name="name" id="contactNameInput" class="form-control" placeholder="আপনার পূর্ণ নাম" required value="{{ old('name', auth()->user()?->name) }}">
                         </div>
                         <div class="col-md-6">
                             <label class="form-label small fw-bold">মোবাইল নম্বর <span class="text-danger">*</span></label>
-                            <input type="tel" name="phone" class="form-control" placeholder="০১XXXXXXXXX" required value="{{ old('phone') }}">
+                            <input type="tel" name="phone" id="contactPhoneInput" class="form-control" placeholder="০১XXXXXXXXX" required value="{{ old('phone') }}">
                         </div>
                         <div class="col-md-12">
                             <label class="form-label small fw-bold">ইমেইল ঠিকানা</label>
-                            <input type="email" name="email" class="form-control" placeholder="example@gmail.com" value="{{ old('email', auth()->user()?->email) }}">
+                            <input type="email" name="email" id="contactEmailInput" class="form-control" placeholder="example@gmail.com" value="{{ old('email', auth()->user()?->email) }}">
                         </div>
                         <div class="col-md-12">
                             <label class="form-label small fw-bold">বিষয় <span class="text-danger">*</span></label>
@@ -355,7 +356,7 @@
                         </div>
                         <div class="col-md-12">
                             <label class="form-label small fw-bold">আপনার বার্তা <span class="text-danger">*</span></label>
-                            <textarea name="message" class="form-control" rows="5" placeholder="বিস্তারিত লিখুন..." required>{{ old('message') }}</textarea>
+                            <textarea name="message" id="contactMessageInput" class="form-control" rows="5" placeholder="বিস্তারিত লিখুন..." required>{{ old('message') }}</textarea>
                         </div>
                         <div class="col-md-12">
                             <button type="submit" class="btn btn-danger px-4 py-2 fw-bold" id="contactSubmitBtn">
@@ -368,4 +369,126 @@
         </div>
     </div>
 </div>
+
+@guest
+<!-- Contact Login Confirmation Modal -->
+<div class="modal fade" id="contactAuthModal" tabindex="-1" aria-labelledby="contactAuthModalLabel" aria-hidden="true">
+    <div class="modal-dialog modal-dialog-centered">
+        <div class="modal-content shadow border-0" style="border-radius: 14px; overflow: hidden;">
+            <div class="modal-header bg-danger text-white py-3">
+                <h5 class="modal-title fw-bold" id="contactAuthModalLabel" style="font-size: 1.1rem;">
+                    <i class="fa-solid fa-paper-plane me-2"></i> বার্তা পাঠানোর জন্য লগইন নিশ্চিতকরণ
+                </h5>
+                <button type="button" class="btn-close btn-close-white" data-bs-dismiss="modal" aria-label="Close"></button>
+            </div>
+            <div class="modal-body p-4">
+                <p class="text-muted small mb-3">
+                    আপনার বার্তাটি সম্পূর্ণ প্রস্তুত। এটি সফলভাবে প্রেরণের জন্য অনুগ্রহ করে নিচের যেকোনো একটি মাধ্যমে সাইন-ইন নিশ্চিত করুন:
+                </p>
+
+                <!-- Quick 1-Click Reader Submission -->
+                <div class="p-3 bg-light rounded border mb-3">
+                    <div class="d-flex align-items-center gap-2 mb-2">
+                        <span class="badge bg-danger">১-ক্লিকে দ্রুত প্রেরণ</span>
+                        <strong class="text-dark small">পাঠক হিসেবে নিশ্চিত করুন</strong>
+                    </div>
+                    <div class="small text-secondary mb-3">
+                        নাম: <strong class="text-dark" id="modalContactName">--</strong><br>
+                        যোগাযোগ: <span id="modalContactContact">--</span>
+                    </div>
+                    <button type="button" class="btn btn-danger w-100 fw-bold" onclick="submitContactAsReader()">
+                        <i class="fa-solid fa-circle-check me-1"></i> এই তথ্যে বার্তা পাঠান
+                    </button>
+                </div>
+
+                <div class="text-center text-muted small my-2">অথবা সোশ্যাল মিডিয়া দিয়ে লগইন করুন</div>
+
+                <!-- Google & Facebook Login -->
+                <div class="d-flex flex-column gap-2 mb-3">
+                    <button type="button" class="btn btn-outline-dark d-flex align-items-center justify-content-center gap-2 py-2" onclick="saveDraftAndRedirect('contact', 'google')">
+                        <svg width="18" height="18" viewBox="0 0 48 48">
+                            <path fill="#EA4335" d="M24 9.5c3.54 0 6.71 1.22 9.21 3.6l6.85-6.85C35.9 2.38 30.47 0 24 0 14.62 0 6.51 5.38 2.56 13.22l7.98 6.19C12.43 13.72 17.74 9.5 24 9.5z"/>
+                            <path fill="#4285F4" d="M46.98 24.55c0-1.57-.15-3.09-.38-4.55H24v9.02h12.94c-.58 2.96-2.26 5.48-4.78 7.18l7.73 6c4.51-4.18 7.09-10.36 7.09-17.65z"/>
+                            <path fill="#FBBC05" d="M10.53 28.59c-.48-1.45-.76-2.99-.76-4.59s.27-3.14.76-4.59l-7.98-6.19C.92 16.46 0 20.12 0 24c0 3.88.92 7.54 2.56 10.78l7.97-6.19z"/>
+                            <path fill="#34A853" d="M24 48c6.48 0 11.93-2.13 15.89-5.81l-7.73-6c-2.15 1.45-4.92 2.3-8.16 2.3-6.26 0-11.57-4.22-13.47-9.91l-7.98 6.19C6.51 42.62 14.62 48 24 48z"/>
+                        </svg>
+                        <span class="fw-semibold">Google দিয়ে লগইন ও প্রেরণ</span>
+                    </button>
+
+                    <button type="button" class="btn text-white d-flex align-items-center justify-content-center gap-2 py-2" style="background-color: #1877f2;" onclick="saveDraftAndRedirect('contact', 'facebook')">
+                        <i class="fa-brands fa-facebook-f"></i>
+                        <span class="fw-semibold">Facebook দিয়ে লগইন ও প্রেরণ</span>
+                    </button>
+                </div>
+
+                <div class="text-center">
+                    <a href="{{ route('login') }}" class="text-muted small text-decoration-underline">
+                        অ্যাডমিন বা স্টাফ পাসওয়ার্ড দিয়ে লগইন করুন
+                    </a>
+                </div>
+            </div>
+        </div>
+    </div>
+</div>
+@endguest
+
+@endsection
+
+@section('scripts')
+<script>
+    document.addEventListener('DOMContentLoaded', function() {
+        const contactForm = document.getElementById('contactForm');
+        const submitBtn = document.getElementById('contactSubmitBtn');
+        const isGuest = {{ auth()->guest() ? 'true' : 'false' }};
+
+        if (isGuest && submitBtn && contactForm) {
+            submitBtn.addEventListener('click', function(e) {
+                if (!contactForm.checkValidity()) {
+                    contactForm.reportValidity();
+                    return;
+                }
+
+                // If user is guest, show login modal
+                e.preventDefault();
+
+                const name = document.getElementById('contactNameInput').value || 'পাঠক';
+                const phone = document.getElementById('contactPhoneInput').value || '';
+                const email = document.getElementById('contactEmailInput').value || '';
+
+                document.getElementById('modalContactName').textContent = name;
+                document.getElementById('modalContactContact').textContent = email ? (email + ' | ' + phone) : phone;
+
+                const modal = new bootstrap.Modal(document.getElementById('contactAuthModal'));
+                modal.show();
+            });
+        }
+    });
+
+    function submitContactAsReader() {
+        const contactForm = document.getElementById('contactForm');
+        document.getElementById('contactReaderQuickAuth').value = '1';
+        contactForm.submit();
+    }
+
+    function saveDraftAndRedirect(type, provider) {
+        const form = document.getElementById('contactForm');
+        const formData = new FormData(form);
+        const data = {};
+        formData.forEach((value, key) => { data[key] = value; });
+        data.type = type;
+
+        fetch('{{ route("auth.save-draft") }}', {
+            method: 'POST',
+            headers: {
+                'Content-Type': 'application/json',
+                'X-CSRF-TOKEN': '{{ csrf_token() }}'
+            },
+            body: JSON.stringify(data)
+        }).then(() => {
+            window.location.href = '/auth/' + provider;
+        }).catch(() => {
+            window.location.href = '/auth/' + provider;
+        });
+    }
+</script>
 @endsection

@@ -380,6 +380,29 @@
             </a>
         </div>
 
+        <!-- Quick Reader Login Box -->
+        <details class="quick-reader-details" style="background: #f8fafc; border: 1px dashed #cbd5e1; border-radius: 8px; padding: 12px 14px; margin-bottom: 20px;">
+            <summary style="cursor: pointer; font-size: 0.88rem; font-weight: 600; color: #475569; display: flex; align-items: center; justify-content: space-between;">
+                <span><i class="fa-solid fa-user-check text-danger me-1"></i> পাঠক হিসেবে দ্রুত প্রবেশ (পাসওয়ার্ড ছাড়া)</span>
+                <i class="fa-solid fa-chevron-down" style="font-size: 0.75rem;"></i>
+            </summary>
+            <form action="{{ route('auth.quick-reader-login') }}" method="POST" style="margin-top: 14px;">
+                @csrf
+                <div class="form-group" style="margin-bottom: 12px;">
+                    <label class="form-label" style="font-size: 0.82rem;">আপনার নাম</label>
+                    <input type="text" name="name" required placeholder="আপনার পূর্ণ নাম" class="form-input" style="padding: 9px 12px; font-size: 0.88rem;">
+                </div>
+                <div class="form-group" style="margin-bottom: 14px;">
+                    <label class="form-label" style="font-size: 0.82rem;">ইমেইল ঠিকানা</label>
+                    <input type="email" name="email" required placeholder="example@gmail.com" class="form-input" style="padding: 9px 12px; font-size: 0.88rem;">
+                </div>
+                <button type="submit" class="submit-btn" style="padding: 10px; font-size: 0.9rem;">
+                    <span>পাঠক হিসেবে প্রবেশ করুন</span>
+                    <i class="fa-solid fa-arrow-right"></i>
+                </button>
+            </form>
+        </details>
+
         <div class="divider-row">
             <span>অথবা ইমেইল দিয়ে প্রবেশ করুন</span>
         </div>

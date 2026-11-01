@@ -81,10 +81,6 @@
                 @csrf
                 <button type="submit" class="btn btn-sm btn-outline-danger text-white py-0 px-2" style="font-size: 0.75rem;">লগআউট</button>
             </form>
-        @else
-            <a href="{{ route('login') }}" class="btn btn-sm btn-danger py-0 px-2 text-white" style="font-size: 0.75rem; font-weight: 700;">
-                <i class="fa-solid fa-arrow-right-to-bracket me-1"></i> লগইন
-            </a>
         @endauth
     </div>
 
@@ -171,8 +167,8 @@
                     <a href="{{ route('opinion.submit') }}" class="mql-item">
                         <i class="fa-solid fa-pen-nib"></i> মতামত পাঠান
                     </a>
-                    <span class="mql-sep"></span>
                     @auth
+                        <span class="mql-sep"></span>
                         <div class="dropdown d-inline-block">
                             <a href="#" class="mql-item dropdown-toggle" id="headerUserDropdown" role="button" data-bs-toggle="dropdown" aria-expanded="false" style="background: #fee2e2; color: #990000;">
                                 <i class="fa-solid fa-circle-user text-danger"></i>
@@ -197,10 +193,6 @@
                                 </li>
                             </ul>
                         </div>
-                    @else
-                        <a href="{{ route('login') }}" class="mql-item" style="background: #fee2e2; color: #990000;" title="পাঠক ও অ্যাডমিন লগইন">
-                            <i class="fa-solid fa-arrow-right-to-bracket text-danger"></i> লগইন
-                        </a>
                     @endauth
                 </div>
 

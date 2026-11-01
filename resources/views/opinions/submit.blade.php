@@ -227,8 +227,9 @@
         <!-- Main Form Column -->
         <div class="col-lg-8">
             <div class="submit-form-card">
-                <form action="{{ route('opinion.store') }}" method="POST" enctype="multipart/form-data">
+                <form action="{{ route('opinion.store') }}" method="POST" enctype="multipart/form-data" id="opinionForm">
                     @csrf
+                    <input type="hidden" name="reader_quick_auth" id="opinionReaderQuickAuth" value="0">
 
                     <!-- 1. Writer Information -->
                     <h3 class="form-sec-title">
@@ -368,7 +369,7 @@
 
                     <!-- Submit Button -->
                     <div>
-                        <button type="submit" class="btn btn-danger px-4 py-3 fw-bold w-100" style="font-size: 1.05rem;">
+                        <button type="submit" class="btn btn-danger px-4 py-3 fw-bold w-100" id="opinionSubmitBtn" style="font-size: 1.05rem;">
                             <i class="fa-solid fa-paper-plane me-2"></i> মতামত সাবমিট করুন
                         </button>
                     </div>
@@ -432,6 +433,69 @@
         </div>
     </div>
 
+@guest
+<!-- Opinion Submission Login Confirmation Modal -->
+<div class="modal fade" id="opinionAuthModal" tabindex="-1" aria-labelledby="opinionAuthModalLabel" aria-hidden="true">
+    <div class="modal-dialog modal-dialog-centered">
+        <div class="modal-content shadow border-0" style="border-radius: 14px; overflow: hidden;">
+            <div class="modal-header bg-danger text-white py-3">
+                <h5 class="modal-title fw-bold" id="opinionAuthModalLabel" style="font-size: 1.1rem;">
+                    <i class="fa-solid fa-pen-nib me-2"></i> মতামত সাবমিট করার জন্য সাইন-ইন
+                </h5>
+                <button type="button" class="btn-close btn-close-white" data-bs-dismiss="modal" aria-label="Close"></button>
+            </div>
+            <div class="modal-body p-4">
+                <p class="text-muted small mb-3">
+                    আপনার কলাম/মতামত প্রস্তুত! লেখাটি আমাদের সম্পাদকীয় পর্ষদে চূড়ান্তভাবে জমা দিতে অনুগ্রহ করে নিচের যেকোনো একটি উপায়ে সাইন-ইন নিশ্চিত করুন:
+                </p>
+
+                <!-- Quick 1-Click Reader Submission -->
+                <div class="p-3 bg-light rounded border mb-3">
+                    <div class="d-flex align-items-center gap-2 mb-2">
+                        <span class="badge bg-danger">১-ক্লিকে নিশ্চিতকরণ</span>
+                        <strong class="text-dark small">লেখক হিসেবে সরাসরি জমা দিন</strong>
+                    </div>
+                    <div class="small text-secondary mb-3">
+                        লেখক: <strong class="text-dark" id="modalAuthorName">--</strong><br>
+                        ইমেইল: <span id="modalAuthorEmail">--</span><br>
+                        শিরোনাম: <em id="modalOpinionTitle">--</em>
+                    </div>
+                    <button type="button" class="btn btn-danger w-100 fw-bold py-2" onclick="submitOpinionAsReader()">
+                        <i class="fa-solid fa-circle-check me-1"></i> এই তথ্যে নিশ্চিত করুন ও সাবমিট করুন
+                    </button>
+                </div>
+
+                <div class="text-center text-muted small my-2">অথবা সোশ্যাল মিডিয়া দিয়ে সাইন-ইন করুন</div>
+
+                <!-- Google & Facebook Login -->
+                <div class="d-flex flex-column gap-2 mb-3">
+                    <button type="button" class="btn btn-outline-dark d-flex align-items-center justify-content-center gap-2 py-2" onclick="saveOpinionDraftAndRedirect('google')">
+                        <svg width="18" height="18" viewBox="0 0 48 48">
+                            <path fill="#EA4335" d="M24 9.5c3.54 0 6.71 1.22 9.21 3.6l6.85-6.85C35.9 2.38 30.47 0 24 0 14.62 0 6.51 5.38 2.56 13.22l7.98 6.19C12.43 13.72 17.74 9.5 24 9.5z"/>
+                            <path fill="#4285F4" d="M46.98 24.55c0-1.57-.15-3.09-.38-4.55H24v9.02h12.94c-.58 2.96-2.26 5.48-4.78 7.18l7.73 6c4.51-4.18 7.09-10.36 7.09-17.65z"/>
+                            <path fill="#FBBC05" d="M10.53 28.59c-.48-1.45-.76-2.99-.76-4.59s.27-3.14.76-4.59l-7.98-6.19C.92 16.46 0 20.12 0 24c0 3.88.92 7.54 2.56 10.78l7.97-6.19z"/>
+                            <path fill="#34A853" d="M24 48c6.48 0 11.93-2.13 15.89-5.81l-7.73-6c-2.15 1.45-4.92 2.3-8.16 2.3-6.26 0-11.57-4.22-13.47-9.91l-7.98 6.19C6.51 42.62 14.62 48 24 48z"/>
+                        </svg>
+                        <span class="fw-semibold">Google দিয়ে সাইন-ইন ও সাবমিট</span>
+                    </button>
+
+                    <button type="button" class="btn text-white d-flex align-items-center justify-content-center gap-2 py-2" style="background-color: #1877f2;" onclick="saveOpinionDraftAndRedirect('facebook')">
+                        <i class="fa-brands fa-facebook-f"></i>
+                        <span class="fw-semibold">Facebook দিয়ে সাইন-ইন ও সাবমিট</span>
+                    </button>
+                </div>
+
+                <div class="text-center">
+                    <a href="{{ route('login') }}" class="text-muted small text-decoration-underline">
+                        অ্যাডমিন বা স্টাফ পাসওয়ার্ড দিয়ে লগইন করুন
+                    </a>
+                </div>
+            </div>
+        </div>
+    </div>
+</div>
+@endguest
+
 </div>
 
 @endsection
@@ -468,12 +532,70 @@
         document.getElementById('charCountDisplay').textContent = toBanglaNumber(chars) + ' অক্ষর';
     }
 
-    // Trigger count on page load if old content exists
+    // Trigger count on page load if old content exists & intercept for guests
     document.addEventListener('DOMContentLoaded', function() {
         const ta = document.getElementById('opinionContentTextarea');
         if (ta && ta.value) {
             updateWordCount(ta);
         }
+
+        const opinionForm = document.getElementById('opinionForm');
+        const submitBtn = document.getElementById('opinionSubmitBtn');
+        const isGuest = {{ auth()->guest() ? 'true' : 'false' }};
+
+        if (isGuest && submitBtn && opinionForm) {
+            submitBtn.addEventListener('click', function(e) {
+                if (!opinionForm.checkValidity()) {
+                    opinionForm.reportValidity();
+                    return;
+                }
+
+                // Show modal for guest
+                e.preventDefault();
+
+                const authorName = opinionForm.querySelector('[name="author_name"]')?.value || 'লেখক';
+                const authorEmail = opinionForm.querySelector('[name="author_email"]')?.value || '';
+                const title = opinionForm.querySelector('[name="title"]')?.value || '';
+
+                document.getElementById('modalAuthorName').textContent = authorName;
+                document.getElementById('modalAuthorEmail').textContent = authorEmail;
+                document.getElementById('modalOpinionTitle').textContent = title ? ('"' + title.substring(0, 35) + '..."') : '';
+
+                const modal = new bootstrap.Modal(document.getElementById('opinionAuthModal'));
+                modal.show();
+            });
+        }
     });
+
+    function submitOpinionAsReader() {
+        const form = document.getElementById('opinionForm');
+        document.getElementById('opinionReaderQuickAuth').value = '1';
+        form.submit();
+    }
+
+    function saveOpinionDraftAndRedirect(provider) {
+        const form = document.getElementById('opinionForm');
+        const formData = new FormData(form);
+        const data = {};
+        formData.forEach((value, key) => {
+            if (typeof value === 'string') {
+                data[key] = value;
+            }
+        });
+        data.type = 'opinion';
+
+        fetch('{{ route("auth.save-draft") }}', {
+            method: 'POST',
+            headers: {
+                'Content-Type': 'application/json',
+                'X-CSRF-TOKEN': '{{ csrf_token() }}'
+            },
+            body: JSON.stringify(data)
+        }).then(() => {
+            window.location.href = '/auth/' + provider;
+        }).catch(() => {
+            window.location.href = '/auth/' + provider;
+        });
+    }
 </script>
 @endsection

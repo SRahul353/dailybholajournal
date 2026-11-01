@@ -37,11 +37,7 @@ class AdminLoginController extends Controller
             $request->session()->regenerate();
 
             $user = Auth::user();
-            if ($user->role === 'reader') {
-                return redirect()->intended(route('home'))->with('success', 'স্বাগতম, ' . $user->name . '! লগইন সফল হয়েছে।');
-            }
-
-            return redirect()->intended(route('admin.dashboard'));
+            return \App\Http\Controllers\Auth\SocialAuthController::handlePostLoginRedirect($user);
         }
 
         return back()->withErrors([

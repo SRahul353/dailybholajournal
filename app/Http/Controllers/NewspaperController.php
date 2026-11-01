@@ -483,12 +483,35 @@ class NewspaperController extends Controller
             'email' => 'nullable|email|max:150',
             'subject' => 'required|string|max:200',
             'message' => 'required|string|max:5000',
+            'reader_quick_auth' => 'nullable|in:1,0',
         ], [
             'name.required' => 'আপনার নাম প্রদান করুন।',
             'phone.required' => 'আপনার মোবাইল নম্বর প্রদান করুন।',
             'subject.required' => 'বার্তা পাঠানোর বিষয়টি নির্বাচন করুন।',
             'message.required' => 'আপনার বার্তা বা অভিযোগের বিস্তারিত লিখুন।',
         ]);
+
+        // If not logged in, handle reader registration or save draft
+        if (!\Illuminate\Support\Facades\Auth::check()) {
+            if ($request->filled('reader_quick_auth') || $request->ajax()) {
+                $email = !empty($validated['email']) ? strtolower(trim($validated['email'])) : ('reader_' . preg_replace('/[^0-9]/', '', $validated['phone']) . '@dailybholajournal.com');
+                $user = \App\Models\User::where('email', $email)->first();
+                if (!$user) {
+                    $user = \App\Models\User::create([
+                        'name' => trim($validated['name']),
+                        'email' => $email,
+                        'role' => 'reader',
+                        'password' => null,
+                        'email_verified_at' => now(),
+                    ]);
+                }
+                \Illuminate\Support\Facades\Auth::login($user, true);
+            } else {
+                // Save to session and redirect to login
+                session(['pending_contact_submission' => $validated]);
+                return redirect()->route('login')->with('info', 'আপনার বার্তাটি প্রস্তুত আছে। জমা নিশ্চিত করতে অনুগ্রহ করে গুগল, ফেসবুক অথবা ইমেইল দিয়ে লগইন করুন।');
+            }
+        }
 
         $contactMessage = ContactMessage::create([
             'name' => $validated['name'],
