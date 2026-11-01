@@ -595,16 +595,37 @@
         flex-shrink: 0;
     }
 
-    .centered-watermark { 
+    /* Top Right Corner Profile/Emblem Logo (50px margin from right edge) */
+    .card-top-right-logo { 
         position: absolute; 
-        top: 55%; 
+        top: 50px; 
+        right: 50px; 
+        z-index: 20; 
+        pointer-events: none; 
+        display: flex; 
+        align-items: center; 
+        justify-content: center; 
+    }
+    .card-top-right-logo img { 
+        width: 135px; 
+        height: 135px; 
+        object-fit: contain; 
+        display: block; 
+        filter: drop-shadow(0 6px 14px rgba(0, 0, 0, 0.45)); 
+    }
+
+    /* Watermark positioned down behind text */
+    .text-area-watermark { 
+        position: absolute; 
+        top: 50%; 
         left: 50%; 
         transform: translate(-50%, -50%); 
-        width: 75%; 
-        opacity: 0.08; 
-        z-index: 10; 
+        width: 82%; 
+        max-width: 850px; 
+        opacity: 0.12; 
+        z-index: 1; /* strictly behind text */
         pointer-events: none; 
-        filter: grayscale(100%) brightness(150%); 
+        filter: brightness(220%) grayscale(100%); 
     }
 
     .news-image-wrapper { 
@@ -631,6 +652,7 @@
         display: flex; 
         flex-direction: column; 
         padding: 20px 60px 15px 60px;
+        position: relative;
         z-index: 2; 
         overflow: hidden;
         transition: background 0.3s ease;
@@ -638,11 +660,13 @@
 
     .meta-row {
         display: flex;
-        justify-content: space-between;
+        justify-content: flex-start;
         align-items: center;
         width: 100%;
         height: 50px;
         margin-bottom: 10px;
+        position: relative;
+        z-index: 3;
     }
     
     .news-date { 
@@ -652,12 +676,6 @@
         font-weight: 600; 
         transition: color 0.2s ease;
     }
-    
-    .meta-logo img { 
-        height: 50px; 
-        object-fit: contain; 
-        display: block; 
-    }
 
     .headline-wrapper {
         flex: 1;
@@ -666,6 +684,8 @@
         justify-content: center;
         align-items: center;
         text-align: center;
+        position: relative;
+        z-index: 3;
     }
 
     .news-headline { 
@@ -1012,6 +1032,11 @@
             <div class="canvas-resolution-badge"><i class="fa-solid fa-vector-square text-danger me-1"></i> ১০৮০ × ১০৮০ পিক্সেল (১:১)</div>
 
             <div id="social_card_node" class="news-card-1080">
+                <!-- Top Right Corner Profile/Emblem Logo (with 50px space from right edge) -->
+                <div class="card-top-right-logo">
+                    <img src="{{ asset('BJ_Content/Profile Pic b.png') }}" alt="Daily Bhola Journal" crossorigin="anonymous">
+                </div>
+
                 <!-- News Image Section -->
                 <div class="news-image-wrapper">
                     @if($post->social_card_image)
@@ -1029,16 +1054,16 @@
 
                 <!-- Bottom Content Section -->
                 <div class="bottom-content-wrapper" id="bottomContentWrapper">
+                    <!-- Watermark Logo positioned down behind text -->
+                    @if(!empty($themeSettings['logo_image']))
+                        <img src="{{ asset($themeSettings['logo_image']) }}" alt="Watermark" class="text-area-watermark" crossorigin="anonymous">
+                    @elseif(file_exists(public_path('BJ_Content/Text Logo.png')))
+                        <img src="{{ asset('BJ_Content/Text Logo.png') }}" alt="Watermark" class="text-area-watermark" crossorigin="anonymous">
+                    @endif
+
                     <div class="meta-row">
                         <div class="news-date" id="cardDatePreview" contenteditable="true" spellcheck="false">
                             তারিখ...
-                        </div>
-                        <div class="meta-logo">
-                            @if(!empty($themeSettings['logo_image']))
-                                <img src="{{ asset($themeSettings['logo_image']) }}" alt="Logo" crossorigin="anonymous">
-                            @else
-                                <h3 style="color:#fff; font-family:'Noto Sans Bengali',sans-serif; margin:0; font-size: 30px; font-weight: 900;">{!! $themeSettings['logo_text'] ?? 'দৈনিক ভোলা<span>জার্নাল</span>' !!}</h3>
-                            @endif
                         </div>
                     </div>
 
@@ -1052,14 +1077,9 @@
                     </div>
                 </div>
 
-                <!-- Watermark Logo -->
-                @if(!empty($themeSettings['logo_image']))
-                    <img src="{{ asset($themeSettings['logo_image']) }}" alt="Watermark" class="centered-watermark" crossorigin="anonymous">
-                @endif
-
                 <!-- Advertisement bottom bar -->
                 <div class="full-width-ad-bar" id="main_ad_bar">
-                    <img src="{{ asset('images/default-news.jpg') }}" alt="Default Ad" crossorigin="anonymous">
+                    <img src="{{ asset('BJ_Content/ads.png') }}" alt="Default Ad" crossorigin="anonymous">
                 </div>
             </div>
         </div>
@@ -1302,7 +1322,7 @@
             defaultBtn.classList.add('active');
             sponsorBtn.classList.remove('active');
             container.style.display = 'none';
-            adImage.src = "{{ asset('images/default-news.jpg') }}";
+            adImage.src = "{{ asset('BJ_Content/ads.png') }}";
         } else {
             defaultBtn.classList.remove('active');
             sponsorBtn.classList.add('active');
@@ -1318,7 +1338,7 @@
         if (url) {
             adImage.src = url; 
         } else {
-            adImage.src = "{{ asset('images/default-news.jpg') }}";
+            adImage.src = "{{ asset('BJ_Content/ads.png') }}";
         }
     }
 
