@@ -43,6 +43,7 @@ class AdminPostController extends Controller
     {
         $request->validate([
             'title' => 'required',
+            'reporter_name' => 'nullable|string|max:255',
             'content' => 'required',
             'status' => 'required|in:publish,draft',
             'featured_image' => 'nullable|image|mimes:jpeg,png,jpg,gif,webp|max:5120',
@@ -99,6 +100,7 @@ class AdminPostController extends Controller
             'social_card_image' => $socialCardImagePath,
             'status' => $request->status,
             'user_id' => Auth::id(),
+            'reporter_name' => $request->reporter_name,
             'views_count' => 0,
             'created_at' => $publishedAt,
         ]);
@@ -152,6 +154,7 @@ class AdminPostController extends Controller
 
         $request->validate([
             'title' => 'required',
+            'reporter_name' => 'nullable|string|max:255',
             'content' => 'required',
             'status' => 'required|in:publish,draft',
             'featured_image' => 'nullable|image|mimes:jpeg,png,jpg,gif,webp|max:5120',
@@ -206,6 +209,7 @@ class AdminPostController extends Controller
             'featured_image' => $featuredImagePath,
             'social_card_image' => $socialCardImagePath,
             'status' => $request->status,
+            'reporter_name' => $request->reporter_name,
         ];
 
         if ($request->filled('published_at')) {

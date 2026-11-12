@@ -20,6 +20,7 @@ class Post extends Model
         'status',
         'views_count',
         'user_id',
+        'reporter_name',
         'created_at',
         'updated_at',
     ];
@@ -101,5 +102,17 @@ class Post extends Model
         $wordCount = str_word_count(strip_tags($this->content));
         $minutes = ceil($wordCount / 200); // 200 words per minute average
         return $minutes > 0 ? $minutes : 1;
+    }
+
+    /**
+     * Get the display author / reporter name of the post.
+     */
+    public function getAuthorNameAttribute()
+    {
+        if (!empty($this->reporter_name)) {
+            return $this->reporter_name;
+        }
+
+        return $this->user ? $this->user->name : 'ভোলা জার্নাল ডেস্ক';
     }
 }

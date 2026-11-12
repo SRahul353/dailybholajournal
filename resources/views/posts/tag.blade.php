@@ -390,7 +390,7 @@
                             <div class="archive-lead-meta">
                                 <span>
                                     <i class="fa-solid fa-user-pen text-danger me-1"></i>
-                                    {{ $leadPost->user ? $leadPost->user->name : 'অনলাইন ডেস্ক' }}
+                                    {{ $leadPost->author_name }}
                                 </span>
                                 <span>
                                     <i class="fa-regular fa-clock text-danger me-1"></i>

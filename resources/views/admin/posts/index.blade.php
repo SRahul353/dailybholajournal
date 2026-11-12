@@ -36,8 +36,14 @@
                             <td style="font-family: 'Outfit', sans-serif; font-weight: 600; color: var(--text-sub);">
                                 {{ $post->id }}
                             </td>
-                            <td style="font-weight: 600; max-width: 320px; text-overflow: ellipsis; overflow: hidden; white-space: nowrap;">
-                                {{ $post->title }}
+                            <td style="max-width: 320px;">
+                                <div style="font-weight: 600; text-overflow: ellipsis; overflow: hidden; white-space: nowrap;" title="{{ $post->title }}">
+                                    {{ $post->title }}
+                                </div>
+                                <small style="color: var(--text-sub); font-size: 0.8rem; display: flex; align-items: center; gap: 4px; margin-top: 3px;">
+                                    <i class="fa-solid fa-user-pen" style="color: var(--accent); font-size: 0.75rem;"></i>
+                                    <span>{{ $post->author_name }}</span>
+                                </small>
                             </td>
                             <td>
                                 @forelse($post->categories as $cat)

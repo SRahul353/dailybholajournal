@@ -26,7 +26,7 @@
         'dateModified' => ($post->updated_at ?? $post->created_at ?? now())->toIso8601String(),
         'author' => [
             '@type' => 'Person',
-            'name' => $post->user ? $post->user->name : 'দৈনিক ভোলা জার্নাল ডেস্ক',
+            'name' => $post->author_name,
         ],
         'publisher' => [
             '@type' => 'Organization',
@@ -519,7 +519,7 @@
                     <div class="article-meta-left">
                         <span>
                             <i class="fa-solid fa-user-pen text-danger"></i>
-                            <strong>{{ $post->user ? $post->user->name : 'অনলাইন ডেস্ক' }}</strong>
+                            <strong>{{ $post->author_name }}</strong>
                         </span>
                         <span>
                             <i class="fa-regular fa-clock text-danger"></i>

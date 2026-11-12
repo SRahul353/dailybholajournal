@@ -254,6 +254,27 @@
                     <input type="text" name="title" id="title" value="{{ old('title') }}" required placeholder="এখানে সংবাদের আকর্ষণীয় শিরোনাম লিখুন..." class="form-control">
                 </div>
 
+                <!-- Reporter / Author Name (Manual) -->
+                <div class="form-group">
+                    <label for="reporter_name" class="form-label" style="display: flex; justify-content: space-between; align-items: center; flex-wrap: wrap; gap: 4px;">
+                        <span><i class="fa-solid fa-user-pen text-danger me-1"></i> প্রতিবেদক / রিপোর্টারের নাম (ঐচ্ছিক)</span>
+                        <span style="font-size: 0.8rem; color: var(--text-sub); font-weight: normal;">খালি রাখলে স্বয়ংক্রিয়ভাবে অনলাইন ডেস্কের নাম প্রদর্শিত হবে</span>
+                    </label>
+                    <input type="text" name="reporter_name" id="reporter_name" list="reporter_presets" value="{{ old('reporter_name') }}" placeholder="যেমন: নিজস্ব প্রতিবেদক, ভোলা প্রতিনিধি, বিশেষ প্রতিনিধি বা সাংবাদিকের নাম..." class="form-control">
+                    <datalist id="reporter_presets">
+                        <option value="নিজস্ব প্রতিবেদক">
+                        <option value="ভোলা প্রতিনিধি">
+                        <option value="বিশেষ প্রতিনিধি">
+                        <option value="অনলাইন ডেস্ক">
+                        <option value="বোরহানউদ্দিন প্রতিনিধি">
+                        <option value="চরফ্যাশন প্রতিনিধি">
+                        <option value="দৌলতখান প্রতিনিধি">
+                        <option value="লালমোহন প্রতিনিধি">
+                        <option value="মনপুরা প্রতিনিধি">
+                        <option value="তজুমদ্দিন প্রতিনিধি">
+                    </datalist>
+                </div>
+
                 <!-- Excerpt -->
                 <div class="form-group">
                     <label for="excerpt" class="form-label">সারসংক্ষেপ (Excerpt - সংক্ষিপ্ত বিবরণ)</label>
@@ -426,6 +447,7 @@
         if (isSubmitting) return;
 
         const titleEl = document.getElementById('title');
+        const reporterNameEl = document.getElementById('reporter_name');
         const excerptEl = document.getElementById('excerpt');
         const contentEl = document.getElementById('content');
         const statusEl = document.getElementById('status');
@@ -433,6 +455,7 @@
         const newTagsEl = document.getElementById('new_tags');
 
         const titleVal = titleEl ? titleEl.value.trim() : '';
+        const reporterNameVal = reporterNameEl ? reporterNameEl.value.trim() : '';
         const excerptVal = excerptEl ? excerptEl.value.trim() : '';
         const contentVal = postEditorInstance ? postEditorInstance.getData() : (contentEl ? contentEl.value : '');
         const statusVal = statusEl ? statusEl.value : 'publish';
@@ -456,6 +479,7 @@
 
         const draftData = {
             title: titleVal,
+            reporter_name: reporterNameVal,
             excerpt: excerptVal,
             content: contentVal,
             status: statusVal,
@@ -527,6 +551,10 @@
             if (btnRestore) {
                 btnRestore.onclick = function() {
                     if (draft.title) document.getElementById('title').value = draft.title;
+                    if (draft.reporter_name) {
+                        const rn = document.getElementById('reporter_name');
+                        if (rn) rn.value = draft.reporter_name;
+                    }
                     if (draft.excerpt) document.getElementById('excerpt').value = draft.excerpt;
                     if (draft.content) {
                         if (postEditorInstance) {
@@ -629,6 +657,7 @@
         // Form inputs change listeners
         const listenInputs = [
             document.getElementById('title'),
+            document.getElementById('reporter_name'),
             document.getElementById('excerpt'),
             document.getElementById('status'),
             document.getElementById('published_at'),

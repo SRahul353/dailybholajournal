@@ -909,7 +909,7 @@
                                 <div class="main-lead-meta">
                                     <span class="meta-item">
                                         <i class="fa-solid fa-user-pen"></i>
-                                        {{ $leadPost->user ? $leadPost->user->name : 'ভোলা জার্নাল ডেস্ক' }}
+                                        {{ $leadPost->author_name }}
                                     </span>
                                     <span class="meta-item">
                                         <i class="fa-regular fa-clock"></i>
