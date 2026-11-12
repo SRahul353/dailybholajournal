@@ -810,10 +810,126 @@
             display: flex !important;
         }
     }
+
+    /* ============================================
+       MOBILE RESPONSIVE — Social Card Studio
+       max-width: 768px
+    ============================================ */
+    @media (max-width: 768px) {
+
+        /* 1. Stack layout vertically, allow scrolling */
+        .studio-container {
+            flex-direction: column !important;
+            height: auto !important;
+            min-height: 100vh;
+            overflow-x: hidden;
+            overflow-y: auto;
+        }
+
+        /* 2. Inspector panel: full-width, below canvas, hidden by default */
+        .inspector-panel {
+            position: relative !important;
+            left: auto !important;
+            top: auto !important;
+            transform: none !important;
+            width: 100% !important;
+            height: auto !important;
+            max-height: 60vh;
+            border-right: none !important;
+            border-top: 2px solid #e2e8f0;
+            order: 2;
+            display: none !important;
+            overflow-y: auto;
+            -webkit-overflow-scrolling: touch;
+        }
+        .inspector-panel.mobile-open {
+            display: flex !important;
+        }
+
+        /* 3. Canvas workspace on top */
+        .canvas-workspace {
+            order: 1;
+            height: auto !important;
+            min-height: 55vw;
+            padding: 10px 8px !important;
+            overflow: visible !important;
+        }
+
+        /* 4. Inspector content spacing */
+        .inspector-content {
+            padding: 14px !important;
+            gap: 12px !important;
+            padding-bottom: 80px !important; /* room for sticky download btn */
+        }
+        .inspector-section {
+            padding: 12px !important;
+            gap: 10px !important;
+        }
+
+        /* 5. Theme grid — 2 columns on mobile */
+        .card-theme-grid {
+            grid-template-columns: repeat(3, 1fr) !important;
+            gap: 8px !important;
+        }
+
+        /* 6. Sticky download button at bottom */
+        .download-gradient-btn {
+            position: fixed !important;
+            bottom: 0 !important;
+            left: 0 !important;
+            right: 0 !important;
+            border-radius: 0 !important;
+            z-index: 200;
+            padding: 15px 20px !important;
+            font-size: 1rem !important;
+            width: 100% !important;
+            text-align: center;
+        }
+
+        /* 7. Hide resolution badge on mobile */
+        .canvas-resolution-badge { display: none !important; }
+
+        /* 8. Toast notification — full width */
+        .studio-toast {
+            min-width: 90vw !important;
+            width: 90vw !important;
+            left: 5vw !important;
+            right: 5vw !important;
+            bottom: 70px !important;
+        }
+
+        /* 9. Desktop toggle button — hide on mobile */
+        .toggle-studio-panel-btn { display: none !important; }
+
+        /* 10. Inspector header stays readable */
+        .inspector-header { padding: 12px 14px !important; }
+        .inspector-title { font-size: 0.95rem !important; }
+
+        /* 11. Facebook share button full width */
+        .btn-share-facebook {
+            width: 100%;
+            justify-content: center;
+        }
+    }
 </style>
 @endsection
 
 @section('content')
+
+{{-- Mobile-only top bar: title + inspector toggle --}}
+<div class="d-flex d-md-none align-items-center justify-content-between px-3 py-2 border-bottom bg-white"
+     style="position: sticky; top: 70px; z-index: 50; box-shadow: 0 2px 6px rgba(0,0,0,0.07);">
+    <span style="font-size: 0.88rem; font-weight: 700; color: #0f172a;">
+        <i class="fa-solid fa-wand-magic-sparkles text-danger me-2"></i>সোশ্যাল কার্ড স্টুডিও
+    </span>
+    <button type="button" id="mobileInspectorToggle"
+            onclick="toggleMobileInspector()"
+            class="btn btn-sm"
+            style="background:#f1f5f9; border:1px solid #e2e8f0; color:#334155; font-size:0.82rem; border-radius:6px; padding:6px 12px;">
+        <i class="fa-solid fa-sliders me-1"></i> কাস্টমাইজ
+    </button>
+</div>
+
 <div class="studio-container">
     <!-- Inspector Panel (Left side) -->
     <div class="inspector-panel" id="inspectorPanel">
@@ -1586,15 +1702,40 @@
         const scaleContainer = document.getElementById('scaleContainer');
         if (!workspace || !scaleContainer) return;
 
-        const wWidth = workspace.clientWidth;
-        const wHeight = workspace.clientHeight;
+        const isMobile = window.innerWidth <= 768;
 
-        // Fit 1080x1080 canvas inside workspace with dynamic margin padding
-        const targetSize = 1080;
-        const padding = 70; // 35px padding on each side
-        const scale = Math.min((wWidth - padding) / targetSize, (wHeight - padding) / targetSize);
+        if (isMobile) {
+            // Mobile: scale canvas to fit viewport width
+            const padding = 20;
+            const availableWidth = workspace.clientWidth || (window.innerWidth - padding * 2);
+            const scale = Math.min((availableWidth - padding) / 1080, 0.32);
+            scaleContainer.style.transform = `scale(${scale})`;
+            // Set workspace min-height so the canvas is fully visible
+            const scaledHeight = 1080 * scale + 30;
+            workspace.style.minHeight = scaledHeight + 'px';
+        } else {
+            const wWidth = workspace.clientWidth;
+            const wHeight = workspace.clientHeight;
+            // Fit 1080x1080 canvas inside workspace with dynamic margin padding
+            const targetSize = 1080;
+            const padding = 70; // 35px padding on each side
+            const scale = Math.min((wWidth - padding) / targetSize, (wHeight - padding) / targetSize);
+            scaleContainer.style.transform = `scale(${scale})`;
+        }
+    }
 
-        scaleContainer.style.transform = `scale(${scale})`;
+    // Mobile Inspector Panel Toggle
+    function toggleMobileInspector() {
+        const panel = document.getElementById('inspectorPanel');
+        const btn = document.getElementById('mobileInspectorToggle');
+        if (!panel) return;
+
+        const isOpen = panel.classList.toggle('mobile-open');
+        if (btn) {
+            btn.innerHTML = isOpen
+                ? '<i class="fa-solid fa-xmark me-1"></i> বন্ধ করুন'
+                : '<i class="fa-solid fa-sliders me-1"></i> কাস্টমাইজ';
+        }
     }
 
     // Character length counter function
