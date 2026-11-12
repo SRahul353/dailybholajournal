@@ -210,20 +210,6 @@
         </div>
     @endif
 
-    @if(session('error'))
-        <div class="alert alert-danger d-flex align-items-center mb-4" role="alert">
-            <i class="fa-solid fa-circle-exclamation me-2 fs-5"></i>
-            <div>{{ session('error') }}</div>
-        </div>
-    @endif
-
-    @if(session('info'))
-        <div class="alert alert-info d-flex align-items-center mb-4" role="alert">
-            <i class="fa-solid fa-circle-info me-2 fs-5"></i>
-            <div>{{ session('info') }}</div>
-        </div>
-    @endif
-
     <!-- Validation Errors -->
     @if($errors->any())
         <div class="alert alert-danger alert-dismissible fade show" role="alert">
@@ -241,9 +227,8 @@
         <!-- Main Form Column -->
         <div class="col-lg-8">
             <div class="submit-form-card">
-                <form action="{{ route('opinion.store') }}" method="POST" enctype="multipart/form-data" id="opinionForm">
+                <form action="{{ route('opinion.store') }}" method="POST" enctype="multipart/form-data">
                     @csrf
-                    <input type="hidden" name="reader_quick_auth" id="opinionReaderQuickAuth" value="0">
 
                     <!-- 1. Writer Information -->
                     <h3 class="form-sec-title">
@@ -256,7 +241,7 @@
                             <label class="form-label">আপনার পূর্ণ নাম <span class="text-danger">*</span></label>
                             <input type="text" 
                                    name="author_name" 
-                                   value="{{ old('author_name', session('pending_opinion_submission.author_name', auth()->user()?->name)) }}" 
+                                   value="{{ old('author_name') }}" 
                                    class="form-control" 
                                    placeholder="যেমন: ড. রফিকুল ইসলাম" 
                                    required>
@@ -265,7 +250,7 @@
                             <label class="form-label">পেশা বা পদবি <span class="text-danger">*</span></label>
                             <input type="text" 
                                    name="author_designation" 
-                                   value="{{ old('author_designation', session('pending_opinion_submission.author_designation')) }}" 
+                                   value="{{ old('author_designation') }}" 
                                    class="form-control" 
                                    placeholder="যেমন: কলামিস্ট ও গবেষক" 
                                    required>
@@ -274,7 +259,7 @@
                             <label class="form-label">মোবাইল / হোয়াটসঅ্যাপ নম্বর <span class="text-danger">*</span></label>
                             <input type="tel" 
                                    name="author_phone" 
-                                   value="{{ old('author_phone', session('pending_opinion_submission.author_phone')) }}" 
+                                   value="{{ old('author_phone') }}" 
                                    class="form-control" 
                                    placeholder="০১XXXXXXXXX" 
                                    required>
@@ -283,7 +268,7 @@
                             <label class="form-label">ইমেইল ঠিকানা <span class="text-danger">*</span></label>
                             <input type="email" 
                                    name="author_email" 
-                                   value="{{ old('author_email', session('pending_opinion_submission.author_email', auth()->user()?->email)) }}" 
+                                   value="{{ old('author_email') }}" 
                                    class="form-control" 
                                    placeholder="writer@gmail.com" 
                                    required>
@@ -293,7 +278,7 @@
                             <textarea name="author_bio" 
                                       rows="2" 
                                       class="form-control" 
-                                      placeholder="আপনার কাজের ক্ষেত্র, শিক্ষাগত যোগ্যতা বা লেখক পরিচিতির সংক্ষিপ্ত বিবরণ...">{{ old('author_bio', session('pending_opinion_submission.author_bio')) }}</textarea>
+                                      placeholder="আপনার কাজের ক্ষেত্র, শিক্ষাগত যোগ্যতা বা লেখক পরিচিতির সংক্ষিপ্ত বিবরণ...">{{ old('author_bio') }}</textarea>
                         </div>
                         <div class="col-12">
                             <label class="form-label">লেখকের ছবি (ঐচ্ছিক, তবে সুপারিশকৃত)</label>
@@ -326,7 +311,7 @@
                             <label class="form-label">কলামের আকর্ষণীয় শিরোনাম <span class="text-danger">*</span></label>
                             <input type="text" 
                                    name="title" 
-                                   value="{{ old('title', session('pending_opinion_submission.title')) }}" 
+                                   value="{{ old('title') }}" 
                                    class="form-control" 
                                    placeholder="লেখার মূল বার্তা বহনকারী স্পষ্ট শিরোনাম লিখুন..." 
                                    required>
@@ -334,15 +319,14 @@
                         <div class="col-md-4">
                             <label class="form-label">বিষয় বা ক্ষেত্র</label>
                             <select name="topic" class="form-select">
-                                @php $selTopic = old('topic', session('pending_opinion_submission.topic', 'সমসাময়িক বিষয়')); @endphp
-                                <option value="সমসাময়িক বিষয়" {{ $selTopic == 'সমসাময়িক বিষয়' ? 'selected' : '' }}>সমসাময়িক বিষয়</option>
-                                <option value="জাতীয় রাজনীতি" {{ $selTopic == 'জাতীয় রাজনীতি' ? 'selected' : '' }}>জাতীয় রাজনীতি</option>
-                                <option value="অর্থনীতি ও উন্নয়ন" {{ $selTopic == 'অর্থনীতি ও উন্নয়ন' ? 'selected' : '' }}>অর্থনীতি ও উন্নয়ন</option>
-                                <option value="উপকূল ও পরিবেশ" {{ $selTopic == 'উপকূল ও পরিবেশ' ? 'selected' : '' }}>উপকূল ও পরিবেশ</option>
-                                <option value="শিক্ষা ও তরুণসমাজ" {{ $selTopic == 'শিক্ষা ও তরুণসমাজ' ? 'selected' : '' }}>শিক্ষা ও তরুণসমাজ</option>
-                                <option value="সাহিত্য ও সংস্কৃতি" {{ $selTopic == 'সাহিত্য ও সংস্কৃতি' ? 'selected' : '' }}>সাহিত্য ও সংস্কৃতি</option>
-                                <option value="আন্তর্জাতিক" {{ $selTopic == 'আন্তর্জাতিক' ? 'selected' : '' }}>আন্তর্জাতিক</option>
-                                <option value="অন্যান্য" {{ $selTopic == 'অন্যান্য' ? 'selected' : '' }}>অন্যান্য</option>
+                                <option value="সমসাময়িক বিষয়" {{ old('topic') == 'সমসাময়িক বিষয়' ? 'selected' : '' }}>সমসাময়িক বিষয়</option>
+                                <option value="জাতীয় রাজনীতি" {{ old('topic') == 'জাতীয় রাজনীতি' ? 'selected' : '' }}>জাতীয় রাজনীতি</option>
+                                <option value="অর্থনীতি ও উন্নয়ন" {{ old('topic') == 'অর্থনীতি ও উন্নয়ন' ? 'selected' : '' }}>অর্থনীতি ও উন্নয়ন</option>
+                                <option value="উপকূল ও পরিবেশ" {{ old('topic') == 'উপকূল ও পরিবেশ' ? 'selected' : '' }}>উপকূল ও পরিবেশ</option>
+                                <option value="শিক্ষা ও তরুণসমাজ" {{ old('topic') == 'শিক্ষা ও তরুণসমাজ' ? 'selected' : '' }}>শিক্ষা ও তরুণসমাজ</option>
+                                <option value="সাহিত্য ও সংস্কৃতি" {{ old('topic') == 'সাহিত্য ও সংস্কৃতি' ? 'selected' : '' }}>সাহিত্য ও সংস্কৃতি</option>
+                                <option value="আন্তর্জাতিক" {{ old('topic') == 'আন্তর্জাতিক' ? 'selected' : '' }}>আন্তর্জাতিক</option>
+                                <option value="অন্যান্য" {{ old('topic') == 'অন্যান্য' ? 'selected' : '' }}>অন্যান্য</option>
                             </select>
                         </div>
                         <div class="col-12">
@@ -353,7 +337,7 @@
                                       class="form-control" 
                                       placeholder="আপনার কলামের সম্পূর্ণ লেখাটি এখানে লিখুন বা পেস্ট করুন..." 
                                       oninput="updateWordCount(this)" 
-                                      required>{{ old('content', session('pending_opinion_submission.content')) }}</textarea>
+                                      required>{{ old('content') }}</textarea>
                             <div class="char-counter-bar">
                                 <span id="wordCountDisplay">০ শব্দ</span> | <span id="charCountDisplay">০ অক্ষর</span>
                             </div>
@@ -384,7 +368,7 @@
 
                     <!-- Submit Button -->
                     <div>
-                        <button type="submit" class="btn btn-danger px-4 py-3 fw-bold w-100" id="opinionSubmitBtn" style="font-size: 1.05rem;">
+                        <button type="submit" class="btn btn-danger px-4 py-3 fw-bold w-100" style="font-size: 1.05rem;">
                             <i class="fa-solid fa-paper-plane me-2"></i> মতামত সাবমিট করুন
                         </button>
                     </div>
@@ -448,69 +432,6 @@
         </div>
     </div>
 
-@guest
-<!-- Opinion Submission Login Confirmation Modal -->
-<div class="modal fade" id="opinionAuthModal" tabindex="-1" aria-labelledby="opinionAuthModalLabel" aria-hidden="true">
-    <div class="modal-dialog modal-dialog-centered">
-        <div class="modal-content shadow border-0" style="border-radius: 14px; overflow: hidden;">
-            <div class="modal-header bg-danger text-white py-3">
-                <h5 class="modal-title fw-bold" id="opinionAuthModalLabel" style="font-size: 1.1rem;">
-                    <i class="fa-solid fa-pen-nib me-2"></i> মতামত সাবমিট করার জন্য সাইন-ইন
-                </h5>
-                <button type="button" class="btn-close btn-close-white" data-bs-dismiss="modal" aria-label="Close"></button>
-            </div>
-            <div class="modal-body p-4">
-                <p class="text-muted small mb-3">
-                    আপনার কলাম/মতামত প্রস্তুত! লেখাটি আমাদের সম্পাদকীয় পর্ষদে চূড়ান্তভাবে জমা দিতে অনুগ্রহ করে নিচের যেকোনো একটি উপায়ে সাইন-ইন নিশ্চিত করুন:
-                </p>
-
-                <!-- Quick 1-Click Reader Submission -->
-                <div class="p-3 bg-light rounded border mb-3">
-                    <div class="d-flex align-items-center gap-2 mb-2">
-                        <span class="badge bg-danger">১-ক্লিকে নিশ্চিতকরণ</span>
-                        <strong class="text-dark small">লেখক হিসেবে সরাসরি জমা দিন</strong>
-                    </div>
-                    <div class="small text-secondary mb-3">
-                        লেখক: <strong class="text-dark" id="modalAuthorName">--</strong><br>
-                        ইমেইল: <span id="modalAuthorEmail">--</span><br>
-                        শিরোনাম: <em id="modalOpinionTitle">--</em>
-                    </div>
-                    <button type="button" class="btn btn-danger w-100 fw-bold py-2" onclick="submitOpinionAsReader()">
-                        <i class="fa-solid fa-circle-check me-1"></i> এই তথ্যে নিশ্চিত করুন ও সাবমিট করুন
-                    </button>
-                </div>
-
-                <div class="text-center text-muted small my-2">অথবা সোশ্যাল মিডিয়া দিয়ে সাইন-ইন করুন</div>
-
-                <!-- Google & Facebook Login -->
-                <div class="d-flex flex-column gap-2 mb-3">
-                    <button type="button" class="btn btn-outline-dark d-flex align-items-center justify-content-center gap-2 py-2" onclick="saveOpinionDraftAndRedirect('google')">
-                        <svg width="18" height="18" viewBox="0 0 48 48">
-                            <path fill="#EA4335" d="M24 9.5c3.54 0 6.71 1.22 9.21 3.6l6.85-6.85C35.9 2.38 30.47 0 24 0 14.62 0 6.51 5.38 2.56 13.22l7.98 6.19C12.43 13.72 17.74 9.5 24 9.5z"/>
-                            <path fill="#4285F4" d="M46.98 24.55c0-1.57-.15-3.09-.38-4.55H24v9.02h12.94c-.58 2.96-2.26 5.48-4.78 7.18l7.73 6c4.51-4.18 7.09-10.36 7.09-17.65z"/>
-                            <path fill="#FBBC05" d="M10.53 28.59c-.48-1.45-.76-2.99-.76-4.59s.27-3.14.76-4.59l-7.98-6.19C.92 16.46 0 20.12 0 24c0 3.88.92 7.54 2.56 10.78l7.97-6.19z"/>
-                            <path fill="#34A853" d="M24 48c6.48 0 11.93-2.13 15.89-5.81l-7.73-6c-2.15 1.45-4.92 2.3-8.16 2.3-6.26 0-11.57-4.22-13.47-9.91l-7.98 6.19C6.51 42.62 14.62 48 24 48z"/>
-                        </svg>
-                        <span class="fw-semibold">Google দিয়ে সাইন-ইন ও সাবমিট</span>
-                    </button>
-
-                    <button type="button" class="btn text-white d-flex align-items-center justify-content-center gap-2 py-2" style="background-color: #1877f2;" onclick="saveOpinionDraftAndRedirect('facebook')">
-                        <i class="fa-brands fa-facebook-f"></i>
-                        <span class="fw-semibold">Facebook দিয়ে সাইন-ইন ও সাবমিট</span>
-                    </button>
-                </div>
-
-                <div class="text-center">
-                    <a href="{{ route('login') }}" class="text-muted small text-decoration-underline">
-                        অ্যাডমিন বা স্টাফ পাসওয়ার্ড দিয়ে লগইন করুন
-                    </a>
-                </div>
-            </div>
-        </div>
-    </div>
-</div>
-@endguest
-
 </div>
 
 @endsection
@@ -547,71 +468,12 @@
         document.getElementById('charCountDisplay').textContent = toBanglaNumber(chars) + ' অক্ষর';
     }
 
-    // Trigger count on page load if old content exists & intercept for guests
+    // Trigger count on page load if old content exists
     document.addEventListener('DOMContentLoaded', function() {
         const ta = document.getElementById('opinionContentTextarea');
         if (ta && ta.value) {
             updateWordCount(ta);
         }
-
-        const opinionForm = document.getElementById('opinionForm');
-        const isGuest = {{ auth()->guest() ? 'true' : 'false' }};
-
-        if (isGuest && opinionForm) {
-            opinionForm.addEventListener('submit', function(e) {
-                if (isSubmittingOpinionAsReader) {
-                    return true;
-                }
-
-                // Show modal for guest
-                e.preventDefault();
-
-                const authorName = opinionForm.querySelector('[name="author_name"]')?.value || 'লেখক';
-                const authorEmail = opinionForm.querySelector('[name="author_email"]')?.value || '';
-                const title = opinionForm.querySelector('[name="title"]')?.value || '';
-
-                document.getElementById('modalAuthorName').textContent = authorName;
-                document.getElementById('modalAuthorEmail').textContent = authorEmail;
-                document.getElementById('modalOpinionTitle').textContent = title ? ('"' + title.substring(0, 35) + '..."') : '';
-
-                const modal = new bootstrap.Modal(document.getElementById('opinionAuthModal'));
-                modal.show();
-            });
-        }
     });
-
-    let isSubmittingOpinionAsReader = false;
-
-    function submitOpinionAsReader() {
-        isSubmittingOpinionAsReader = true;
-        const form = document.getElementById('opinionForm');
-        document.getElementById('opinionReaderQuickAuth').value = '1';
-        form.submit();
-    }
-
-    function saveOpinionDraftAndRedirect(provider) {
-        const form = document.getElementById('opinionForm');
-        const formData = new FormData(form);
-        const data = {};
-        formData.forEach((value, key) => {
-            if (typeof value === 'string') {
-                data[key] = value;
-            }
-        });
-        data.type = 'opinion';
-
-        fetch('{{ route("auth.save-draft") }}', {
-            method: 'POST',
-            headers: {
-                'Content-Type': 'application/json',
-                'X-CSRF-TOKEN': '{{ csrf_token() }}'
-            },
-            body: JSON.stringify(data)
-        }).then(() => {
-            window.location.href = '/auth/' + provider;
-        }).catch(() => {
-            window.location.href = '/auth/' + provider;
-        });
-    }
 </script>
 @endsection

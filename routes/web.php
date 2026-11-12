@@ -17,29 +17,15 @@ Route::get('/terms-of-use', [NewspaperController::class, 'termsOfUse'])->name('t
 Route::get('/terms', [NewspaperController::class, 'termsOfUse'])->name('terms');
 Route::get('/comment-policy', [NewspaperController::class, 'commentPolicy'])->name('comment.policy');
 Route::get('/editorial-policy', [NewspaperController::class, 'editorialPolicy'])->name('editorial.policy');
-// Contact Routes (Open to all, login option upon submission)
 Route::get('/contact', [NewspaperController::class, 'contact'])->name('contact');
 Route::get('/our-family', [NewspaperController::class, 'contact'])->name('our.family');
 
-// Contact Form Submission (Throttled to 6 submissions per minute per IP)
+// Contact Form Submission (throttled to 6 submissions per minute per IP)
 Route::post('/contact', [NewspaperController::class, 'submitContact'])->middleware('throttle:6,1')->name('contact.submit');
 
-// Opinion & Column Submission Routes (Open to all, login option upon submission)
+// Opinion & Column Submission Routes (throttled to 6 submissions per minute per IP)
 Route::get('/opinion/submit', [App\Http\Controllers\OpinionController::class, 'create'])->name('opinion.submit');
 Route::post('/opinion/submit', [App\Http\Controllers\OpinionController::class, 'store'])->middleware('throttle:6,1')->name('opinion.store');
-
-// Global Authentication & Social Login Routes
-Route::get('/login', [App\Http\Controllers\Admin\AdminLoginController::class, 'showLoginForm'])->name('login');
-Route::post('/login', [App\Http\Controllers\Admin\AdminLoginController::class, 'login'])->middleware('throttle:5,1')->name('login.submit');
-Route::match(['GET', 'POST'], '/logout', [App\Http\Controllers\Admin\AdminLoginController::class, 'logout'])->name('logout');
-
-// Quick Reader Login & Submission Draft Handlers
-Route::post('/auth/quick-reader-login', [App\Http\Controllers\Auth\SocialAuthController::class, 'quickReaderLogin'])->name('auth.quick-reader-login');
-Route::post('/auth/save-submission-draft', [App\Http\Controllers\Auth\SocialAuthController::class, 'saveSubmissionDraft'])->name('auth.save-draft');
-
-// Social Login (Google & Facebook)
-Route::get('/auth/{provider}', [App\Http\Controllers\Auth\SocialAuthController::class, 'redirect'])->name('social.redirect');
-Route::get('/auth/{provider}/callback', [App\Http\Controllers\Auth\SocialAuthController::class, 'callback'])->name('social.callback');
 
 // Interactive Poll Voting (throttled to 15 requests per minute per IP)
 Route::post('/poll/vote', [NewspaperController::class, 'votePoll'])->middleware('throttle:15,1')->name('poll.vote');
@@ -54,14 +40,17 @@ Route::get('/rss', [App\Http\Controllers\SeoController::class, 'rss'])->name('se
 Route::get('/feed', [App\Http\Controllers\SeoController::class, 'rss'])->name('seo.feed');
 Route::get('/rss.xml', [App\Http\Controllers\SeoController::class, 'rss'])->name('seo.rss.xml');
 
+// Global login alias redirect
+Route::redirect('/login', '/admin/login')->name('login');
+
 // Admin Panel Routes
 Route::prefix('admin')->name('admin.')->group(function () {
     // Unprotected Auth Routes
     Route::get('/login', [App\Http\Controllers\Admin\AdminLoginController::class, 'showLoginForm'])->name('login');
     Route::post('/login', [App\Http\Controllers\Admin\AdminLoginController::class, 'login'])->middleware('throttle:5,1')->name('login.submit');
 
-    // Protected Admin Panel Routes (Restricted to Editor, Admin, Super Admin)
-    Route::middleware(['auth', 'can:all-admin-users'])->group(function () {
+    // Protected Admin Panel Routes
+    Route::middleware(['auth'])->group(function () {
         Route::post('/logout', [App\Http\Controllers\Admin\AdminLoginController::class, 'logout'])->name('logout');
         Route::get('/dashboard', [App\Http\Controllers\Admin\AdminDashboardController::class, 'index'])->name('dashboard');
         

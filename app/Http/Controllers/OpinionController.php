@@ -32,7 +32,6 @@ class OpinionController extends Controller
             'content' => 'required|string|min:150',
             'featured_image' => 'nullable|image|mimes:jpeg,png,jpg,webp|max:5120',
             'agreement' => 'accepted',
-            'reader_quick_auth' => 'nullable|in:1,0',
         ], [
             'author_name.required' => 'আপনার পূর্ণ নাম প্রদান করুন।',
             'author_email.required' => 'একটি কার্যকর ইমেইল ঠিকানা দিন।',
@@ -69,47 +68,6 @@ class OpinionController extends Controller
             $featName = time() . '_feat_' . preg_replace('/[^a-zA-Z0-9._-]/', '', $featFile->getClientOriginalName());
             $featFile->move($featDir, $featName);
             $featuredImagePath = 'uploads/opinions/featured/' . $featName;
-        }
-
-        // Handle Guest submission authentication
-        if (!\Illuminate\Support\Facades\Auth::check()) {
-            $pendingDraft = [
-                'author_name' => $request->author_name,
-                'author_email' => $request->author_email,
-                'author_phone' => $request->author_phone,
-                'author_designation' => $request->author_designation,
-                'author_bio' => $request->author_bio,
-                'author_photo' => $authorPhotoPath,
-                'title' => $request->title,
-                'topic' => $request->topic ?: 'সমসাময়িক বিষয়',
-                'content' => $request->content,
-                'featured_image' => $featuredImagePath,
-            ];
-
-            if ($request->boolean('reader_quick_auth')) {
-                $email = strtolower(trim($request->author_email));
-                $user = \App\Models\User::where('email', $email)->first();
-                if ($user) {
-                    // Prevent bypassing password for staff or password-protected accounts
-                    if ($user->role !== 'reader' || !empty($user->password)) {
-                        session(['pending_opinion_submission' => $pendingDraft]);
-                        return redirect()->route('login')->with('error', 'এই ইমেইলটি পাসওয়ার্ড সুরক্ষিত। অনুগ্রহ করে পাসওয়ার্ড দিয়ে প্রবেশ করুন।')->withInput(['email' => $email]);
-                    }
-                } else {
-                    $user = \App\Models\User::create([
-                        'name' => trim($request->author_name),
-                        'email' => $email,
-                        'role' => 'reader',
-                        'password' => null,
-                        'email_verified_at' => now(),
-                    ]);
-                }
-                \Illuminate\Support\Facades\Auth::login($user, true);
-            } else {
-                // Save to session and redirect to login
-                session(['pending_opinion_submission' => $pendingDraft]);
-                return redirect()->route('login')->with('info', 'আপনার মতামতটি সংরক্ষিত হয়েছে। জমা নিশ্চিত করতে অনুগ্রহ করে গুগল, ফেসবুক অথবা ইমেইল দিয়ে লগইন করুন।');
-            }
         }
 
         // Create submission record

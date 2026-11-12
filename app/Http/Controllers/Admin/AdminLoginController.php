@@ -9,15 +9,11 @@ use Illuminate\Support\Facades\Auth;
 class AdminLoginController extends Controller
 {
     /**
-     * Show the login form.
+     * Show the admin login form.
      */
     public function showLoginForm()
     {
         if (Auth::check()) {
-            $user = Auth::user();
-            if ($user->role === 'reader') {
-                return redirect()->route('home');
-            }
             return redirect()->route('admin.dashboard');
         }
         return view('admin.auth.login');
@@ -36,8 +32,7 @@ class AdminLoginController extends Controller
         if (Auth::attempt($credentials, $request->boolean('remember'))) {
             $request->session()->regenerate();
 
-            $user = Auth::user();
-            return \App\Http\Controllers\Auth\SocialAuthController::handlePostLoginRedirect($user);
+            return redirect()->intended(route('admin.dashboard'));
         }
 
         return back()->withErrors([
@@ -46,7 +41,7 @@ class AdminLoginController extends Controller
     }
 
     /**
-     * Log the user out of the session.
+     * Log the admin out of the session.
      */
     public function logout(Request $request)
     {
@@ -55,6 +50,6 @@ class AdminLoginController extends Controller
         $request->session()->invalidate();
         $request->session()->regenerateToken();
 
-        return redirect()->route('home')->with('success', 'সফলভাবে লগআউট হয়েছে।');
+        return redirect()->route('admin.login');
     }
 }
