@@ -109,6 +109,102 @@
         background-color: #e2e8f0 !important;
         color: var(--text-dark) !important;
     }
+
+    /* Draft alert banner */
+    .draft-alert {
+        background: linear-gradient(135deg, #eff6ff 0%, #dbeafe 100%);
+        border: 1px solid #bfdbfe;
+        border-radius: var(--radius-sm);
+        padding: 12px 18px;
+        margin-bottom: 20px;
+        display: flex;
+        flex-wrap: wrap;
+        align-items: center;
+        justify-content: space-between;
+        gap: 12px;
+        box-shadow: 0 2px 6px rgba(37, 99, 235, 0.08);
+    }
+    .draft-alert-left {
+        display: flex;
+        align-items: center;
+        gap: 12px;
+    }
+    .draft-alert-icon {
+        width: 36px;
+        height: 36px;
+        border-radius: 50%;
+        background-color: #dbeafe;
+        color: #2563eb;
+        display: flex;
+        align-items: center;
+        justify-content: center;
+        font-size: 1rem;
+        flex-shrink: 0;
+    }
+    .draft-alert-actions {
+        display: flex;
+        align-items: center;
+        gap: 8px;
+    }
+    .btn-restore {
+        background-color: #2563eb;
+        color: #ffffff;
+        border: none;
+        padding: 6px 14px;
+        border-radius: 6px;
+        font-size: 0.85rem;
+        font-weight: 600;
+        cursor: pointer;
+        display: inline-flex;
+        align-items: center;
+        gap: 6px;
+        transition: background 0.2s ease;
+    }
+    .btn-restore:hover {
+        background-color: #1d4ed8;
+    }
+    .btn-discard {
+        background-color: #f1f5f9;
+        color: #475569;
+        border: 1px solid #cbd5e1;
+        padding: 6px 12px;
+        border-radius: 6px;
+        font-size: 0.85rem;
+        font-weight: 600;
+        cursor: pointer;
+        display: inline-flex;
+        align-items: center;
+        gap: 6px;
+        transition: background 0.2s ease;
+    }
+    .btn-discard:hover {
+        background-color: #e2e8f0;
+        color: #1e293b;
+    }
+
+    /* Autosave badge */
+    .autosave-badge {
+        display: inline-flex;
+        align-items: center;
+        gap: 6px;
+        font-size: 0.82rem;
+        color: var(--text-sub);
+        background: #f1f5f9;
+        padding: 4px 12px;
+        border-radius: 20px;
+        border: 1px solid var(--border-color);
+        transition: all 0.3s ease;
+    }
+    .autosave-badge.saving {
+        background: #fef3c7;
+        color: #b45309;
+        border-color: #fde68a;
+    }
+    .autosave-badge.saved {
+        background: #ecfdf5;
+        color: #047857;
+        border-color: #a7f3d0;
+    }
 </style>
 @endsection
 
@@ -120,10 +216,37 @@
         <div class="form-split">
             <!-- Left main writing card -->
             <div class="admin-card">
-                <h3 class="card-title" style="margin-bottom: 24px;">
-                    <i class="fa-solid fa-file-signature"></i>
-                    <span>সংবাদের বিবরণ</span>
-                </h3>
+                <div style="display: flex; justify-content: space-between; align-items: center; margin-bottom: 24px; flex-wrap: wrap; gap: 10px;">
+                    <h3 class="card-title" style="margin-bottom: 0;">
+                        <i class="fa-solid fa-file-signature"></i>
+                        <span>সংবাদের বিবরণ</span>
+                    </h3>
+                    <div id="autoSaveIndicator" class="autosave-badge" title="স্বয়ংক্রিয় খসড়া সংরক্ষণ">
+                        <i class="fa-solid fa-cloud"></i>
+                        <span id="autoSaveText">অটো-সেভ সক্রিয়</span>
+                    </div>
+                </div>
+
+                <!-- Draft Recovery Alert -->
+                <div id="draftRecoveryAlert" class="draft-alert" style="display: none;">
+                    <div class="draft-alert-left">
+                        <div class="draft-alert-icon">
+                            <i class="fa-solid fa-clock-rotate-left"></i>
+                        </div>
+                        <div>
+                            <strong style="color: #1e3a8a; font-size: 0.95rem;">পূর্বের একটি অসংরক্ষিত খসড়া পাওয়া গেছে!</strong>
+                            <p id="draftSavedTime" style="margin: 2px 0 0; font-size: 0.82rem; color: #475569;">সর্বশেষ সংরক্ষিত: --</p>
+                        </div>
+                    </div>
+                    <div class="draft-alert-actions">
+                        <button type="button" id="btnRestoreDraft" class="btn-restore">
+                            <i class="fa-solid fa-rotate-left"></i> ফিরিয়ে আনুন
+                        </button>
+                        <button type="button" id="btnDiscardDraft" class="btn-discard">
+                            <i class="fa-solid fa-trash-can"></i> বাতিল করুন
+                        </button>
+                    </div>
+                </div>
 
                 <!-- Title -->
                 <div class="form-group">
@@ -286,6 +409,183 @@
     }
 
     let postEditorInstance = null;
+    let isEditorReady = false;
+    let isDirty = false;
+    let isSubmitting = false;
+    let autoSaveTimeout = null;
+    const DRAFT_STORAGE_KEY = 'dailybholajournal_news_draft_create';
+
+    function markDirtyAndScheduleSave() {
+        if (!isEditorReady) return;
+        isDirty = true;
+        if (autoSaveTimeout) clearTimeout(autoSaveTimeout);
+        autoSaveTimeout = setTimeout(executeAutoSave, 1500);
+    }
+
+    function executeAutoSave() {
+        if (isSubmitting) return;
+
+        const titleEl = document.getElementById('title');
+        const excerptEl = document.getElementById('excerpt');
+        const contentEl = document.getElementById('content');
+        const statusEl = document.getElementById('status');
+        const publishedAtEl = document.getElementById('published_at');
+        const newTagsEl = document.getElementById('new_tags');
+
+        const titleVal = titleEl ? titleEl.value.trim() : '';
+        const excerptVal = excerptEl ? excerptEl.value.trim() : '';
+        const contentVal = postEditorInstance ? postEditorInstance.getData() : (contentEl ? contentEl.value : '');
+        const statusVal = statusEl ? statusEl.value : 'publish';
+        const publishedAtVal = publishedAtEl ? publishedAtEl.value : '';
+        const newTagsVal = newTagsEl ? newTagsEl.value.trim() : '';
+
+        const selectedCategories = Array.from(document.querySelectorAll('input[name="categories[]"]:checked')).map(cb => cb.value);
+        const selectedTags = Array.from(document.querySelectorAll('input[name="tags[]"]:checked')).map(cb => cb.value);
+
+        const stripped = contentVal.replace(/<[^>]*>/g, '').trim();
+        // If everything is blank, don't store empty draft
+        if (!titleVal && !stripped && !excerptVal && selectedCategories.length === 0) {
+            return;
+        }
+
+        const indicator = document.getElementById('autoSaveIndicator');
+        if (indicator) {
+            indicator.className = 'autosave-badge saving';
+            indicator.innerHTML = '<i class="fa-solid fa-arrows-rotate fa-spin"></i> <span>সংরক্ষণ হচ্ছে...</span>';
+        }
+
+        const draftData = {
+            title: titleVal,
+            excerpt: excerptVal,
+            content: contentVal,
+            status: statusVal,
+            published_at: publishedAtVal,
+            categories: selectedCategories,
+            tags: selectedTags,
+            new_tags: newTagsVal,
+            savedAt: new Date().toISOString()
+        };
+
+        try {
+            localStorage.setItem(DRAFT_STORAGE_KEY, JSON.stringify(draftData));
+            const timeStr = new Date().toLocaleTimeString('bn-BD', { hour: '2-digit', minute: '2-digit', second: '2-digit' });
+            if (indicator) {
+                indicator.className = 'autosave-badge saved';
+                indicator.innerHTML = `<i class="fa-solid fa-circle-check"></i> <span>খসড়া সংরক্ষিত: ${timeStr}</span>`;
+                setTimeout(() => {
+                    if (indicator.classList.contains('saved')) {
+                        indicator.className = 'autosave-badge';
+                        indicator.innerHTML = `<i class="fa-solid fa-cloud"></i> <span>সংরক্ষিত: ${timeStr}</span>`;
+                    }
+                }, 4000);
+            }
+        } catch (e) {
+            console.warn('LocalStorage draft error:', e);
+            if (indicator) {
+                indicator.className = 'autosave-badge';
+                indicator.innerHTML = '<i class="fa-solid fa-cloud"></i> <span>অটো-সেভ সক্রিয়</span>';
+            }
+        }
+    }
+
+    function checkDraftOnLoad() {
+        try {
+            const raw = localStorage.getItem(DRAFT_STORAGE_KEY);
+            if (!raw) return;
+            const draft = JSON.parse(raw);
+            if (!draft) return;
+
+            const stripped = (draft.content || '').replace(/<[^>]*>/g, '').trim();
+            const hasData = (draft.title && draft.title.trim()) || stripped || (draft.excerpt && draft.excerpt.trim());
+            if (!hasData) return;
+
+            // Only show banner if current inputs are currently empty
+            const currentTitle = document.getElementById('title')?.value.trim();
+            const currentExcerpt = document.getElementById('excerpt')?.value.trim();
+            const currentContent = postEditorInstance ? postEditorInstance.getData().replace(/<[^>]*>/g, '').trim() : '';
+            if (currentTitle || currentExcerpt || currentContent) {
+                return;
+            }
+
+            let savedDateText = '';
+            if (draft.savedAt) {
+                const d = new Date(draft.savedAt);
+                savedDateText = d.toLocaleDateString('bn-BD', { day: 'numeric', month: 'short', year: 'numeric' }) + ' ' +
+                                d.toLocaleTimeString('bn-BD', { hour: '2-digit', minute: '2-digit' });
+            }
+
+            const alertBox = document.getElementById('draftRecoveryAlert');
+            const timeBox = document.getElementById('draftSavedTime');
+            if (alertBox) {
+                if (timeBox && savedDateText) {
+                    timeBox.textContent = 'সর্বশেষ সংরক্ষিত: ' + savedDateText;
+                }
+                alertBox.style.display = 'flex';
+            }
+
+            const btnRestore = document.getElementById('btnRestoreDraft');
+            if (btnRestore) {
+                btnRestore.onclick = function() {
+                    if (draft.title) document.getElementById('title').value = draft.title;
+                    if (draft.excerpt) document.getElementById('excerpt').value = draft.excerpt;
+                    if (draft.content) {
+                        if (postEditorInstance) {
+                            postEditorInstance.setData(draft.content);
+                        }
+                        const contentEl = document.getElementById('content');
+                        if (contentEl) contentEl.value = draft.content;
+                    }
+                    if (draft.status) document.getElementById('status').value = draft.status;
+                    if (draft.published_at) document.getElementById('published_at').value = draft.published_at;
+                    if (draft.new_tags) {
+                        const nt = document.getElementById('new_tags');
+                        if (nt) nt.value = draft.new_tags;
+                    }
+
+                    if (Array.isArray(draft.categories)) {
+                        document.querySelectorAll('input[name="categories[]"]').forEach(cb => {
+                            cb.checked = draft.categories.includes(cb.value);
+                        });
+                    }
+
+                    if (Array.isArray(draft.tags)) {
+                        document.querySelectorAll('input[name="tags[]"]').forEach(cb => {
+                            cb.checked = draft.tags.includes(cb.value);
+                        });
+                    }
+
+                    isDirty = true;
+                    if (alertBox) {
+                        alertBox.style.background = '#f0fdf4';
+                        alertBox.style.borderColor = '#bbf7d0';
+                        alertBox.innerHTML = `
+                            <div style="display: flex; align-items: center; gap: 10px; color: #166534; font-weight: 600; padding: 4px 0;">
+                                <i class="fa-solid fa-circle-check" style="font-size: 1.2rem; color: #16a34a;"></i>
+                                <span>পূর্বের খসড়া সফলভাবে ফিরিয়ে আনা হয়েছে!</span>
+                            </div>
+                        `;
+                        setTimeout(() => {
+                            alertBox.style.display = 'none';
+                        }, 3500);
+                    }
+                };
+            }
+
+            const btnDiscard = document.getElementById('btnDiscardDraft');
+            if (btnDiscard) {
+                btnDiscard.onclick = function() {
+                    try {
+                        localStorage.removeItem(DRAFT_STORAGE_KEY);
+                    } catch (e) {}
+                    if (alertBox) {
+                        alertBox.style.display = 'none';
+                    }
+                };
+            }
+        } catch (e) {
+            console.warn('Draft check error:', e);
+        }
+    }
 
     document.addEventListener('DOMContentLoaded', function() {
         const contentEl = document.querySelector('#content');
@@ -308,12 +608,42 @@
                     // Sync data to textarea whenever content changes
                     editor.model.document.on('change:data', () => {
                         contentEl.value = editor.getData();
+                        markDirtyAndScheduleSave();
                     });
+
+                    setTimeout(() => {
+                        isEditorReady = true;
+                        checkDraftOnLoad();
+                    }, 300);
                 })
                 .catch(error => {
                     console.error('CKEditor init error:', error);
+                    isEditorReady = true;
+                    checkDraftOnLoad();
                 });
+        } else {
+            isEditorReady = true;
+            checkDraftOnLoad();
         }
+
+        // Form inputs change listeners
+        const listenInputs = [
+            document.getElementById('title'),
+            document.getElementById('excerpt'),
+            document.getElementById('status'),
+            document.getElementById('published_at'),
+            document.getElementById('new_tags')
+        ];
+        listenInputs.forEach(el => {
+            if (el) {
+                el.addEventListener('input', markDirtyAndScheduleSave);
+                el.addEventListener('change', markDirtyAndScheduleSave);
+            }
+        });
+
+        document.querySelectorAll('input[name="categories[]"], input[name="tags[]"]').forEach(cb => {
+            cb.addEventListener('change', markDirtyAndScheduleSave);
+        });
 
         // Form submit safety & validation
         const formEl = document.querySelector('form');
@@ -338,8 +668,31 @@
                     }
                     return false;
                 }
+
+                // Legitimate submission: allow leaving and purge local draft
+                isSubmitting = true;
+                isDirty = false;
+                try {
+                    localStorage.removeItem(DRAFT_STORAGE_KEY);
+                } catch(err) {}
             });
         }
+
+        // Warning when closing tab or navigating away with unsaved changes
+        window.addEventListener('beforeunload', function(e) {
+            if (isDirty && !isSubmitting) {
+                e.preventDefault();
+                e.returnValue = '';
+                return '';
+            }
+        });
+
+        // Periodic auto-save every 25 seconds if changes occurred
+        setInterval(function() {
+            if (isDirty && !isSubmitting) {
+                executeAutoSave();
+            }
+        }, 25000);
     });
 
     // Sync Featured Image upload local preview
