@@ -95,6 +95,13 @@ Route::prefix('admin')->name('admin.')->group(function () {
         Route::get('/theme/settings', [App\Http\Controllers\Admin\AdminThemeSettingsController::class, 'index'])->name('theme.settings');
         Route::post('/theme/settings', [App\Http\Controllers\Admin\AdminThemeSettingsController::class, 'update'])->name('theme.settings.update');
 
+        // YouTube Video Gallery Management (Admin & Super Admin)
+        Route::get('/video-gallery', [App\Http\Controllers\Admin\AdminVideoGalleryController::class, 'index'])->name('videos.index');
+        Route::post('/video-gallery/add', [App\Http\Controllers\Admin\AdminVideoGalleryController::class, 'add'])->name('videos.add');
+        Route::post('/video-gallery/update-item', [App\Http\Controllers\Admin\AdminVideoGalleryController::class, 'updateItem'])->name('videos.updateItem');
+        Route::post('/video-gallery/delete', [App\Http\Controllers\Admin\AdminVideoGalleryController::class, 'delete'])->name('videos.delete');
+        Route::post('/video-gallery/save', [App\Http\Controllers\Admin\AdminVideoGalleryController::class, 'save'])->name('videos.save');
+
         // SEO Manager (Admin & Super Admin)
         Route::get('/seo', [App\Http\Controllers\Admin\AdminSeoController::class, 'index'])->name('seo.index');
         Route::post('/seo', [App\Http\Controllers\Admin\AdminSeoController::class, 'update'])->name('seo.update');

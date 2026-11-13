@@ -601,18 +601,18 @@
                         <span>এসইও ম্যানেজার (SEO)</span>
                     </a>
                 </li>
+                <li class="menu-item">
+                    <a href="{{ route('admin.videos.index') }}" class="menu-link {{ request()->routeIs('admin.videos.*') ? 'active' : '' }}">
+                        <i class="fa-brands fa-youtube" style="color: #ef4444;"></i>
+                        <span>ভিডিও গ্যালারি</span>
+                    </a>
+                </li>
             @endcan
             @can('super-admin-only')
                 <li class="menu-item">
                     <a href="{{ route('admin.theme.settings') }}" class="menu-link {{ request()->routeIs('admin.theme.settings') ? 'active' : '' }}">
                         <i class="fa-solid fa-palette"></i>
                         <span>থিম ডিজাইন সেটিংস</span>
-                    </a>
-                </li>
-                <li class="menu-item">
-                    <a href="{{ route('admin.theme.settings') }}#videoGallerySection" class="menu-link">
-                        <i class="fa-brands fa-youtube" style="color: #ef4444;"></i>
-                        <span>ভিডিও গ্যালারি</span>
                     </a>
                 </li>
                 <li class="menu-item">

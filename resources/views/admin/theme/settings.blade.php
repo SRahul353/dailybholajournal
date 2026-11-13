@@ -387,9 +387,15 @@
         <!-- YouTube Video Gallery Manager -->
         <div class="row mt-4" id="videoGallerySection">
             <div class="col-12 form-group">
-                <h4 class="mb-3 text-dark pb-2 border-bottom" style="font-size: 1.05rem; border-color: var(--border-color) !important;">
-                    <i class="fa-brands fa-youtube text-danger me-2"></i>ইউটিউব ভিডিও গ্যালারি ম্যানেজমেন্ট (YouTube Video Gallery Manager)
-                </h4>
+                <div class="d-flex justify-content-between align-items-center mb-3 pb-2 border-bottom" style="border-color: var(--border-color) !important;">
+                    <h4 class="m-0 text-dark" style="font-size: 1.05rem;">
+                        <i class="fa-brands fa-youtube text-danger me-2"></i>ইউটিউব ভিডিও গ্যালারি ম্যানেজমেন্ট (YouTube Video Gallery Manager)
+                    </h4>
+                    <a href="{{ route('admin.videos.index') }}" class="btn btn-sm btn-outline-danger d-inline-flex align-items-center gap-1">
+                        <i class="fa-solid fa-up-right-from-square"></i>
+                        <span>ভিডিও ম্যানেজার পেজে যান</span>
+                    </a>
+                </div>
                 <div class="alert alert-info py-2 px-3 mb-3" style="font-size: 0.88rem; background-color: rgba(239, 68, 68, 0.08); border: 1px solid rgba(239, 68, 68, 0.2); color: #991b1b; border-radius: 6px;">
                     <i class="fa-brands fa-youtube me-2 fs-6"></i>
                     <span><strong>কীভাবে কাজ করে:</strong> হোমপেজের ভিডিও গ্যালারিতে দেখানোর জন্য যেকোনো ইউটিউব ভিডিওর লিংক দিন। লিংক থেকে স্বয়ংক্রিয়ভাবে ভিডিও আইডি ও থাম্বনেইল চলে আসবে। যেকোনো পাঠক ক্লিক করলেই পপআপ প্লেয়ারে ভিডিও দেখতে পারবেন।</span>
@@ -422,6 +428,17 @@
                         <i class="fa-brands fa-youtube d-block mb-2 text-danger" style="font-size: 2.2rem; opacity: 0.5;"></i>
                         বর্তমানে কোনো ভিডিও যুক্ত করা নেই। ওপরের ফর্ম থেকে ইউটিউব ভিডিও যুক্ত করুন।
                     </div>
+                </div>
+
+                <!-- Instant Save Bar for Video Gallery -->
+                <div class="d-flex justify-content-between align-items-center mt-2 p-2 bg-light border rounded">
+                    <span class="small text-muted" id="videoSaveMsg">
+                        <i class="fa-solid fa-circle-info text-primary me-1"></i>ভিডিও যোগ, ডিলিট বা পরিবর্তন করার পর এই বাটনে চাপলে অবিলম্বে হোমপেজে আপডেট হবে।
+                    </span>
+                    <button type="button" class="btn btn-sm btn-success fw-bold d-inline-flex align-items-center gap-1" id="btnSaveVideoInstant" onclick="saveVideoGalleryInstant()">
+                        <i class="fa-solid fa-floppy-disk"></i>
+                        <span>ভিডিও গ্যালারি সংরক্ষণ করুন</span>
+                    </button>
                 </div>
 
                 <!-- Hidden input to store serialized structure -->
@@ -771,7 +788,7 @@
             if (!url) return '';
             url = url.trim();
             if (/^[a-zA-Z0-9_-]{11}$/.test(url)) return url;
-            const regExp = /(?:youtu\.be\/|youtube\.com\/(?:embed\/|v\/|watch\?v=|watch\?.+&v=))([\w-]{11})/;
+            const regExp = /(?:youtu\.be\/|(?:m\.|www\.)?youtube\.com\/(?:embed\/|v\/|watch\?v=|watch\?.+&v=|shorts\/|live\/))([\w-]{11})/i;
             const match = url.match(regExp);
             return (match && match[1]) ? match[1] : '';
         }
@@ -812,6 +829,9 @@
                             </div>
                         </div>
                         <div class="d-flex align-items-center gap-1 flex-shrink-0">
+                            <button type="button" class="btn btn-sm btn-outline-primary py-1 px-2" title="ভিডিও সম্পাদনা / পরিবর্তন" onclick="editVideoItem(${index})">
+                                <i class="fa-solid fa-pen-to-square"></i>
+                            </button>
                             <button type="button" class="btn btn-sm btn-outline-secondary py-1 px-2" title="উপরে তুলুন" onclick="moveVideo(${index}, -1)" ${index === 0 ? 'disabled' : ''}>
                                 <i class="fa-solid fa-arrow-up"></i>
                             </button>
@@ -827,6 +847,27 @@
                 });
             }
             updateVideoGalleryInput();
+        };
+
+        window.editVideoItem = function(index) {
+            const vid = videoList[index];
+            if (!vid) return;
+            const newTitle = prompt('ভিডিওর শিরোনাম পরিবর্তন করুন:', vid.title || '');
+            if (newTitle === null) return;
+            const newUrl = prompt('ইউটিউব লিংক পরিবর্তন করুন:', vid.youtube_url || '');
+            if (newUrl === null) return;
+            const videoId = extractYouTubeID(newUrl);
+            if (!videoId) {
+                alert('সঠিক ইউটিউব ভিডিও লিংক বা আইডি দিন।');
+                return;
+            }
+            videoList[index] = {
+                title: newTitle.trim() || 'ভিডিও সংবাদ',
+                video_id: videoId,
+                youtube_url: newUrl.startsWith('http') ? newUrl.trim() : `https://www.youtube.com/watch?v=${videoId}`,
+                thumbnail: `https://img.youtube.com/vi/${videoId}/hqdefault.jpg`
+            };
+            renderVideoGallery();
         };
 
         window.addYouTubeVideo = function() {
@@ -879,6 +920,44 @@
                 videoGalleryInput.value = JSON.stringify(videoList);
             }
         }
+
+        window.saveVideoGalleryInstant = function() {
+            const btn = document.getElementById('btnSaveVideoInstant');
+            const msg = document.getElementById('videoSaveMsg');
+            const originalHtml = btn.innerHTML;
+
+            btn.disabled = true;
+            btn.innerHTML = '<i class="fa-solid fa-circle-notch fa-spin me-1"></i>সংরক্ষণ হচ্ছে...';
+
+            fetch("{{ route('admin.videos.save') }}", {
+                method: 'POST',
+                headers: {
+                    'Content-Type': 'application/json',
+                    'Accept': 'application/json',
+                    'X-CSRF-TOKEN': '{{ csrf_token() }}'
+                },
+                body: JSON.stringify({ videos: videoList })
+            })
+            .then(res => res.json())
+            .then(data => {
+                btn.disabled = false;
+                btn.innerHTML = originalHtml;
+                if (data.success) {
+                    if (msg) {
+                        msg.innerHTML = '<span class="text-success fw-bold"><i class="fa-solid fa-circle-check me-1"></i>ভিডিও গ্যালারি সফলভাবে সংরক্ষিত হয়েছে এবং হোমপেজে আপডেট হয়েছে!</span>';
+                        setTimeout(() => {
+                            msg.innerHTML = '<i class="fa-solid fa-circle-info text-primary me-1"></i>ভিডিও যোগ, ডিলিট বা পরিবর্তন করার পর এই বাটনে চাপলে অবিলম্বে হোমপেজে আপডেট হবে।';
+                        }, 4000);
+                    }
+                    alert('ভিডিও গ্যালারি সফলভাবে সংরক্ষিত হয়েছে এবং হোমপেজে আপডেট হয়েছে!');
+                }
+            })
+            .catch(err => {
+                btn.disabled = false;
+                btn.innerHTML = originalHtml;
+                alert('সংরক্ষণে সমস্যা হয়েছে। অনুগ্রহ করে আবার চেষ্টা করুন।');
+            });
+        };
 
         // Ensure form submission always grabs the serialized arrays
         const themeForm = document.querySelector('form');

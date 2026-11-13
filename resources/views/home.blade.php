@@ -1118,8 +1118,7 @@
                 @php
                     $vId = $vid['video_id'] ?? '';
                     if (empty($vId) && !empty($vid['youtube_url'])) {
-                        preg_match('/(?:youtu\.be\/|youtube\.com\/(?:embed\/|v\/|watch\?v=|watch\?.+&v=))([\w-]{11})/', $vid['youtube_url'], $matches);
-                        $vId = $matches[1] ?? '';
+                        $vId = \App\Http\Controllers\Admin\AdminVideoGalleryController::extractYouTubeId($vid['youtube_url']) ?: '';
                     }
                     $thumb = $vid['thumbnail'] ?? (!empty($vId) ? "https://img.youtube.com/vi/{$vId}/hqdefault.jpg" : 'https://images.unsplash.com/photo-1504711434969-e33886168f5c?auto=format&fit=crop&q=80&w=400');
                     $title = $vid['title'] ?? 'ভিডিও সংবাদ';
