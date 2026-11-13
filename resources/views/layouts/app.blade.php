@@ -1208,6 +1208,9 @@
     @yield('styles')
 </head>
 <body>
+    <!-- Facebook Root Element for Social Plugins -->
+    <div id="fb-root"></div>
+
     @if(!empty($seoSettings['google_tag_manager_id']))
         <!-- Google Tag Manager (noscript) -->
         <noscript><iframe src="https://www.googletagmanager.com/ns.html?id={{ $seoSettings['google_tag_manager_id'] }}"

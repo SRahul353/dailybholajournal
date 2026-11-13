@@ -619,11 +619,55 @@
                         ফেসবুক অ্যাকাউন্টের মাধ্যমে আপনি সরাসরি মন্তব্য করতে পারেন। কোনো ধরনের আক্রমণাত্মক, আপত্তিকর বা বিভ্রান্তিকর বক্তব্য প্রকাশ আইনত নিষিদ্ধ ও দণ্ডনীয় অপরাধ।
                     </div>
 
-                    <!-- Facebook Comments Plugin -->
-                    <div id="fb-root"></div>
-                    <div class="fb-comments-wrapper" style="min-height: 180px; width: 100%; overflow-x: auto;">
+                    @php
+                        // Construct a valid public canonical URL for Facebook comments crawler
+                        $canonicalBase = !empty($seoSettings['canonical_url']) ? rtrim($seoSettings['canonical_url'], '/') : '';
+                        $currentHost = request()->getHost();
+                        $isNonPublicHost = in_array($currentHost, ['localhost', '127.0.0.1', '::1'])
+                                           || str_ends_with($currentHost, '.test')
+                                           || str_ends_with($currentHost, '.local');
+
+                        if (!empty($canonicalBase)) {
+                            $fbCommentUrl = $canonicalBase . '/post/' . $post->slug;
+                        } elseif ($isNonPublicHost) {
+                            $fbCommentUrl = 'https://dailybholajournal.com/post/' . $post->slug;
+                        } else {
+                            $root = request()->root();
+                            if (str_starts_with($root, 'http://')) {
+                                $root = 'https://' . substr($root, 7);
+                            }
+                            $fbCommentUrl = $root . '/post/' . $post->slug;
+                        }
+                    @endphp
+
+                    <!-- Facebook Comments Plugin Wrapper -->
+                    <div class="fb-comments-wrapper" id="fbCommentsWrapper" style="min-height: 180px; width: 100%; position: relative;">
+                        <!-- Loading Indicator -->
+                        <div id="fb-comments-loader" class="text-center py-4" style="color: #64748b;">
+                            <div class="spinner-border spinner-border-sm text-primary me-2" role="status"></div>
+                            <span>ফেসবুক মন্তব্য প্লাগইন লোড হচ্ছে...</span>
+                        </div>
+
+                        <!-- Adblocker / Offline Fallback Notice -->
+                        <div id="fb-comments-fallback" class="d-none p-4 bg-light rounded border text-center my-2" style="font-size: 0.88rem; color: #475569;">
+                            <i class="fa-brands fa-facebook text-primary fs-2 mb-2 d-block"></i>
+                            <p class="mb-2 fw-semibold text-dark">ফেসবুক কমেন্ট প্লাগইন লোড হতে পারেনি</p>
+                            <p class="text-muted small mb-3">আপনার ব্রাউজারের অ্যাডব্লকার (Adblocker) বা ট্র্যাকিং প্রটেকশন সক্রিয় থাকার কারণে ফেসবুক স্ক্রিপ্ট ব্লক হয়ে থাকতে পারে।</p>
+                            <div class="d-flex justify-content-center gap-2 flex-wrap">
+                                <a href="https://www.facebook.com/sharer/sharer.php?u={{ urlencode($fbCommentUrl) }}" target="_blank" class="btn btn-sm btn-outline-primary">
+                                    <i class="fa-brands fa-facebook me-1"></i>ফেসবুকে শেয়ার করুন
+                                </a>
+                                @if(!empty($seoSettings['facebook_page_url']))
+                                <a href="{{ $seoSettings['facebook_page_url'] }}" target="_blank" class="btn btn-sm btn-primary">
+                                    <i class="fa-solid fa-arrow-up-right-from-square me-1"></i>আমাদের ফেসবুক পেজে যান
+                                </a>
+                                @endif
+                            </div>
+                        </div>
+
+                        <!-- Facebook Comments Element -->
                         <div class="fb-comments" 
-                             data-href="{{ request()->url() }}" 
+                             data-href="{{ $fbCommentUrl }}" 
                              data-width="100%" 
                              data-numposts="5" 
                              data-order-by="reverse_time">
@@ -736,13 +780,79 @@
         progressBar.style.width = Math.min(Math.max(scrolled, 0), 100) + '%';
     });
 
-    // Recalibrate Facebook comments on window resize
+</script>
+
+<!-- Facebook JavaScript SDK with window.fbAsyncInit & Fallbacks -->
+<script>
+    window.fbAsyncInit = function() {
+        FB.init({
+            @if(!empty($seoSettings['facebook_app_id']))
+            appId            : '{{ $seoSettings['facebook_app_id'] }}',
+            @endif
+            autoLogAppEvents : true,
+            xfbml            : true,
+            version          : 'v19.0'
+        });
+
+        // Hide loading indicator once XFBML renders
+        FB.Event.subscribe('xfbml.render', function() {
+            var loader = document.getElementById('fb-comments-loader');
+            if (loader) loader.style.display = 'none';
+        });
+
+        // Explicitly parse the comments container
+        var wrapper = document.getElementById('fbCommentsWrapper');
+        if (wrapper && typeof FB.XFBML !== 'undefined') {
+            FB.XFBML.parse(wrapper);
+        }
+    };
+
+    // Load SDK script asynchronously
+    (function(d, s, id) {
+        var js, fjs = d.getElementsByTagName(s)[0];
+        if (d.getElementById(id)) return;
+        js = d.createElement(s); js.id = id;
+        js.async = true;
+        js.defer = true;
+        js.crossOrigin = "anonymous";
+        @php
+            $fbAppIdParam = !empty($seoSettings['facebook_app_id']) ? '&appId=' . $seoSettings['facebook_app_id'] : '';
+            $fbLocale = ($seoSettings['og_locale'] ?? 'bn_BD') === 'bn_BD' ? 'bn_IN' : 'en_US';
+        @endphp
+        js.src = "https://connect.facebook.net/{{ $fbLocale }}/sdk.js#xfbml=1&version=v19.0{{ $fbAppIdParam }}";
+
+        // Handle adblocker blocking the script
+        js.onerror = function() {
+            var loader = document.getElementById('fb-comments-loader');
+            var fallback = document.getElementById('fb-comments-fallback');
+            if (loader) loader.style.display = 'none';
+            if (fallback) fallback.classList.remove('d-none');
+        };
+
+        fjs.parentNode.insertBefore(js, fjs);
+    }(document, 'script', 'facebook-jssdk'));
+
+    // Safety timeout (6 seconds) if FB fails to render
+    setTimeout(function() {
+        var loader = document.getElementById('fb-comments-loader');
+        if (loader && loader.style.display !== 'none') {
+            var iframe = document.querySelector('.fb-comments iframe');
+            if (!iframe) {
+                loader.style.display = 'none';
+                var fallback = document.getElementById('fb-comments-fallback');
+                if (fallback) fallback.classList.remove('d-none');
+            } else {
+                loader.style.display = 'none';
+            }
+        }
+    }, 6000);
+
+    // Recalibrate on resize
     window.addEventListener('resize', function() {
-        if (typeof FB !== 'undefined' && FB.XFBML) {
-            FB.XFBML.parse();
+        var wrapper = document.getElementById('fbCommentsWrapper');
+        if (typeof FB !== 'undefined' && FB.XFBML && wrapper) {
+            FB.XFBML.parse(wrapper);
         }
     });
 </script>
-<!-- Facebook Comments SDK -->
-<script async defer crossorigin="anonymous" src="https://connect.facebook.net/bn_IN/sdk.js#xfbml=1&version=v19.0"></script>
 @endsection
