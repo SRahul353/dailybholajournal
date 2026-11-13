@@ -205,18 +205,118 @@
         color: #047857;
         border-color: #a7f3d0;
     }
+
+    /* ============================================
+       MOBILE RESPONSIVE — নতুন সংবাদ লিখুন পেজ
+    ============================================ */
+    @media (max-width: 768px) {
+
+        /* 1. Admin content padding কমানো */
+        /* (admin layout এ padding: 32px — override করি) */
+        .admin-content {
+            padding: 12px !important;
+        }
+
+        /* 2. CKEditor toolbar wrap করবে ছোট স্ক্রিনে */
+        .ck.ck-toolbar {
+            flex-wrap: wrap !important;
+        }
+        .ck-editor__editable_inline {
+            min-height: 280px !important;
+        }
+
+        /* 3. Submit বাটন row full width */
+        .btn-row-mobile {
+            flex-direction: column !important;
+        }
+        .btn-row-mobile .btn {
+            width: 100% !important;
+            justify-content: center !important;
+        }
+
+        /* 4. Draft alert wraps নিচে */
+        .draft-alert {
+            flex-direction: column;
+            align-items: flex-start;
+            gap: 10px;
+        }
+        .draft-alert-actions {
+            width: 100%;
+        }
+        .btn-restore, .btn-discard {
+            flex: 1;
+            justify-content: center;
+        }
+
+        /* 5. Card header row (title + autosave badge) */
+        .card-header-row-mobile {
+            flex-direction: column !important;
+            align-items: flex-start !important;
+            gap: 8px !important;
+        }
+
+        /* 6. Autosave badge font smaller */
+        .autosave-badge {
+            font-size: 0.75rem;
+            padding: 3px 10px;
+        }
+
+        /* 7. Reporter label stacks vertically */
+        .reporter-label-row {
+            flex-direction: column !important;
+            align-items: flex-start !important;
+            gap: 2px !important;
+        }
+
+        /* 8. checklist-box higher scrollable */
+        .checklist-box {
+            max-height: 180px;
+        }
+
+        /* 9. image preview box height কমানো */
+        .image-preview-box {
+            height: 140px;
+        }
+
+        /* 10. Sticky "সংরক্ষণ করুন" বাটন — fixed bottom */
+        .sticky-submit-bar {
+            position: fixed;
+            bottom: 0;
+            left: 0;
+            right: 0;
+            z-index: 95;
+            background: #ffffff;
+            border-top: 1px solid #e2e8f0;
+            padding: 10px 16px;
+            display: flex;
+            gap: 10px;
+            box-shadow: 0 -4px 12px rgba(0,0,0,0.08);
+        }
+        .sticky-submit-bar .btn {
+            flex: 1;
+            justify-content: center;
+        }
+        /* Bottom padding so content is not hidden behind sticky bar */
+        .form-split {
+            padding-bottom: 72px;
+        }
+        /* Hide the in-card submit row on mobile (replaced by sticky bar) */
+        .inline-submit-row {
+            display: none !important;
+        }
+    }
 </style>
 @endsection
 
 @section('content')
 
-    <form action="{{ route('admin.posts.store') }}" method="POST" enctype="multipart/form-data">
+    <form id="post-create-form" action="{{ route('admin.posts.store') }}" method="POST" enctype="multipart/form-data">
         @csrf
 
         <div class="form-split">
             <!-- Left main writing card -->
             <div class="admin-card">
-                <div style="display: flex; justify-content: space-between; align-items: center; margin-bottom: 24px; flex-wrap: wrap; gap: 10px;">
+                <div style="display: flex; justify-content: space-between; align-items: center; margin-bottom: 24px; flex-wrap: wrap; gap: 10px;" class="card-header-row-mobile">
                     <h3 class="card-title" style="margin-bottom: 0;">
                         <i class="fa-solid fa-file-signature"></i>
                         <span>সংবাদের বিবরণ</span>
@@ -256,7 +356,7 @@
 
                 <!-- Reporter / Author Name (Manual) -->
                 <div class="form-group">
-                    <label for="reporter_name" class="form-label" style="display: flex; justify-content: space-between; align-items: center; flex-wrap: wrap; gap: 4px;">
+                    <label for="reporter_name" class="form-label reporter-label-row" style="display: flex; justify-content: space-between; align-items: center; flex-wrap: wrap; gap: 4px;">
                         <span><i class="fa-solid fa-user-pen text-danger me-1"></i> প্রতিবেদক / রিপোর্টারের নাম (ঐচ্ছিক)</span>
                         <span style="font-size: 0.8rem; color: var(--text-sub); font-weight: normal;">খালি রাখলে স্বয়ংক্রিয়ভাবে অনলাইন ডেস্কের নাম প্রদর্শিত হবে</span>
                     </label>
@@ -319,7 +419,7 @@
                         <span class="form-text">সংবাদ প্রকাশের পেছনের বা বর্তমান তারিখ ও সময় পরিবর্তন করতে পারেন।</span>
                     </div>
 
-                    <div style="display: flex; gap: 12px; margin-top: 24px;">
+                    <div style="display: flex; gap: 12px; margin-top: 24px;" class="inline-submit-row">
                         <button type="submit" class="btn btn-primary" style="flex-grow: 1; justify-content: center;">
                             <i class="fa-solid fa-floppy-disk"></i>
                             <span>সংরক্ষণ করুন</span>
@@ -395,6 +495,15 @@
             </div>
         </div>
 
+        {{-- Mobile-only: sticky bottom submit bar --}}
+        <div class="sticky-submit-bar d-md-none">
+            <button type="submit" class="btn btn-primary">
+                <i class="fa-solid fa-floppy-disk me-1"></i> সংরক্ষণ করুন
+            </button>
+            <a href="{{ route('admin.posts.index') }}" class="btn btn-secondary">
+                <i class="fa-solid fa-xmark me-1"></i> বাতিল
+            </a>
+        </div>
 
     </form>
 
