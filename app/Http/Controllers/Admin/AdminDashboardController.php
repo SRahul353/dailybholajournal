@@ -14,6 +14,7 @@ use App\Models\User;
 use App\Models\VisitorLog;
 use Carbon\Carbon;
 use Illuminate\Http\Request;
+use Illuminate\Support\Facades\Auth;
 
 class AdminDashboardController extends Controller
 {
@@ -198,6 +199,9 @@ class AdminDashboardController extends Controller
 
         $maxCategoryPosts = $categoriesBreakdown->max('posts_count') ?: 1;
 
+        // 11. Logged-in user name for greeting card
+        $userName = Auth::user()->name ?? 'অ্যাডমিন';
+
         return view('admin.dashboard', compact(
             'range',
             'rangeTitle',
@@ -228,7 +232,8 @@ class AdminDashboardController extends Controller
             'recentOpinions',
             'recentMessages',
             'categoriesBreakdown',
-            'maxCategoryPosts'
+            'maxCategoryPosts',
+            'userName'
         ));
     }
 }
