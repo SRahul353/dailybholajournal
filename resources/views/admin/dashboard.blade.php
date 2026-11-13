@@ -1,101 +1,15 @@
 @extends('layouts.admin')
 
-@section('title', 'ড্যাশবোর্ড | অ্যাডমিন প্যানেল | দৈনিক ভোলা জার্নাল')
-@section('header_title', 'কন্ট্রোল প্যানেল ড্যাশবোর্ড')
+@section('title', 'ড্যাশবোর্ড ও ভিজিটর অ্যানালিটিক্স | দৈনিক ভোলা জার্নাল')
+@section('header_title', 'কন্ট্রোল প্যানেল ও ভিজিটর অ্যানালিটিক্স')
 
 @section('styles')
 <style>
     /* ========================================================
-       Dashboard Modern UI Styles
+       Dashboard & Visitor Analytics Modern UI Styles
        ======================================================== */
 
-    /* Quick Action Shortcuts Hub */
-    .quick-actions-bar {
-        background: var(--content-bg);
-        border: 1px solid var(--border-color);
-        border-radius: var(--radius-md);
-        padding: 16px 20px;
-        margin-bottom: 24px;
-        box-shadow: var(--shadow);
-    }
-
-    .quick-actions-title {
-        font-size: 0.95rem;
-        font-weight: 700;
-        color: var(--text-dark);
-        margin-bottom: 14px;
-        display: flex;
-        align-items: center;
-        gap: 8px;
-    }
-
-    .quick-actions-grid {
-        display: grid;
-        grid-template-columns: repeat(2, 1fr);
-        gap: 12px;
-    }
-
-    @media (min-width: 640px) {
-        .quick-actions-grid {
-            grid-template-columns: repeat(3, 1fr);
-        }
-    }
-
-    @media (min-width: 1024px) {
-        .quick-actions-grid {
-            grid-template-columns: repeat(6, 1fr);
-        }
-    }
-
-    .quick-action-btn {
-        display: flex;
-        flex-direction: column;
-        align-items: center;
-        justify-content: center;
-        gap: 8px;
-        padding: 14px 10px;
-        border-radius: var(--radius-sm);
-        border: 1px solid var(--border-color);
-        background: #f8fafc;
-        color: var(--text-main);
-        font-size: 0.84rem;
-        font-weight: 600;
-        text-align: center;
-        transition: var(--transition);
-        text-decoration: none;
-    }
-
-    .quick-action-btn i {
-        font-size: 1.35rem;
-        transition: transform 0.2s ease;
-    }
-
-    .quick-action-btn:hover {
-        background: #ffffff;
-        transform: translateY(-2px);
-        box-shadow: 0 6px 14px -2px rgba(15, 23, 42, 0.08);
-        border-color: #cbd5e1;
-        color: var(--text-dark);
-    }
-
-    .quick-action-btn:hover i {
-        transform: scale(1.12);
-    }
-
-    .qa-new-post { color: #dc2626; border-color: rgba(220, 38, 38, 0.2); background: rgba(220, 38, 38, 0.03); }
-    .qa-new-post:hover { border-color: #dc2626; background: rgba(220, 38, 38, 0.08); color: #dc2626; }
-    .qa-social-card { color: #8b5cf6; border-color: rgba(139, 92, 246, 0.2); background: rgba(139, 92, 246, 0.03); }
-    .qa-social-card:hover { border-color: #8b5cf6; background: rgba(139, 92, 246, 0.08); color: #8b5cf6; }
-    .qa-video { color: #ea580c; border-color: rgba(234, 88, 12, 0.2); background: rgba(234, 88, 12, 0.03); }
-    .qa-video:hover { border-color: #ea580c; background: rgba(234, 88, 12, 0.08); color: #ea580c; }
-    .qa-seo { color: #059669; border-color: rgba(5, 150, 105, 0.2); background: rgba(5, 150, 105, 0.03); }
-    .qa-seo:hover { border-color: #059669; background: rgba(5, 150, 105, 0.08); color: #059669; }
-    .qa-epaper { color: #0284c7; border-color: rgba(2, 132, 199, 0.2); background: rgba(2, 132, 199, 0.03); }
-    .qa-epaper:hover { border-color: #0284c7; background: rgba(2, 132, 199, 0.08); color: #0284c7; }
-    .qa-poll { color: #d97706; border-color: rgba(217, 119, 6, 0.2); background: rgba(217, 119, 6, 0.03); }
-    .qa-poll:hover { border-color: #d97706; background: rgba(217, 119, 6, 0.08); color: #d97706; }
-
-    /* Stats Grid Layout - 8 Cards */
+    /* Stats Grid Layout - 8 Metrics Cards */
     .stats-grid {
         display: grid;
         grid-template-columns: repeat(2, 1fr);
@@ -143,13 +57,13 @@
     }
 
     /* Icon theme variants */
-    .stat-icon-posts     { background-color: rgba(220, 38, 38, 0.12); color: #dc2626; }
-    .stat-icon-today     { background-color: rgba(16, 185, 129, 0.12); color: #10b981; }
-    .stat-icon-drafts    { background-color: rgba(100, 116, 139, 0.14); color: #64748b; }
-    .stat-icon-views     { background-color: rgba(14, 165, 233, 0.12); color: #0284c7; }
-    .stat-icon-cats      { background-color: rgba(245, 158, 11, 0.12); color: #d97706; }
+    .stat-icon-visitors  { background-color: rgba(16, 185, 129, 0.12); color: #059669; }
+    .stat-icon-views     { background-color: rgba(220, 38, 38, 0.12); color: #dc2626; }
+    .stat-icon-traffic   { background-color: rgba(14, 165, 233, 0.12); color: #0284c7; }
+    .stat-icon-allviews  { background-color: rgba(99, 102, 241, 0.12); color: #4f46e5; }
+    .stat-icon-posts     { background-color: rgba(245, 158, 11, 0.12); color: #d97706; }
+    .stat-icon-cats      { background-color: rgba(100, 116, 139, 0.14); color: #475569; }
     .stat-icon-users     { background-color: rgba(139, 92, 246, 0.12); color: #7c3aed; }
-    .stat-icon-subs      { background-color: rgba(236, 72, 153, 0.12); color: #db2777; }
     .stat-icon-poll      { background-color: rgba(20, 184, 166, 0.12); color: #0d9488; }
 
     .stat-info {
@@ -158,12 +72,11 @@
         overflow: hidden;
     }
 
-    /* CRITICAL FIX: Ensure stat-value is dark slate-900 high contrast, NEVER white */
     .stat-value {
         font-family: 'Outfit', 'Noto Sans Bengali', sans-serif;
         font-size: 1.65rem;
         font-weight: 700;
-        color: #0f172a !important; /* Fixed invisible text bug */
+        color: #0f172a !important;
         line-height: 1.2;
     }
 
@@ -214,7 +127,7 @@
     }
 
     .card-header-wrapper {
-        padding: 18px 20px;
+        padding: 16px 20px;
         border-bottom: 1px solid var(--border-color);
         display: flex;
         align-items: center;
@@ -223,7 +136,7 @@
     }
 
     .card-title {
-        font-size: 1.05rem;
+        font-size: 1.02rem;
         font-weight: 700;
         color: var(--text-dark);
         margin: 0;
@@ -232,15 +145,117 @@
         gap: 10px;
     }
 
-    .card-title i {
-        color: var(--accent);
-    }
-
     .card-body-padded {
         padding: 20px;
     }
 
-    /* Category Breakdown styling */
+    /* Chart Container */
+    .chart-container-wrapper {
+        position: relative;
+        height: 290px;
+        width: 100%;
+    }
+
+    /* Visitor Tech & Device Breakdown */
+    .tech-group-title {
+        font-size: 0.84rem;
+        font-weight: 700;
+        color: var(--text-dark);
+        margin-bottom: 10px;
+        display: flex;
+        align-items: center;
+        gap: 6px;
+    }
+
+    .device-progress-item {
+        margin-bottom: 14px;
+    }
+
+    .device-progress-item:last-child {
+        margin-bottom: 0;
+    }
+
+    .device-progress-header {
+        display: flex;
+        justify-content: space-between;
+        align-items: center;
+        font-size: 0.84rem;
+        margin-bottom: 5px;
+    }
+
+    .device-bar-bg {
+        width: 100%;
+        height: 7px;
+        background-color: #f1f5f9;
+        border-radius: 999px;
+        overflow: hidden;
+    }
+
+    .device-bar-fill {
+        height: 100%;
+        border-radius: 999px;
+        transition: width 0.6s ease;
+    }
+
+    .bar-mobile  { background: linear-gradient(90deg, #10b981 0%, #059669 100%); }
+    .bar-desktop { background: linear-gradient(90deg, #3b82f6 0%, #1d4ed8 100%); }
+    .bar-tablet  { background: linear-gradient(90deg, #f59e0b 0%, #d97706 100%); }
+
+    /* Source Pills */
+    .source-pills-list {
+        display: flex;
+        flex-wrap: wrap;
+        gap: 8px;
+        margin-top: 10px;
+    }
+
+    .source-pill {
+        display: inline-flex;
+        align-items: center;
+        gap: 6px;
+        padding: 5px 10px;
+        border-radius: 6px;
+        font-size: 0.78rem;
+        font-weight: 600;
+        background: #f8fafc;
+        border: 1px solid var(--border-color);
+        color: var(--text-dark);
+    }
+
+    .source-pill i {
+        font-size: 0.85rem;
+    }
+
+    .source-fb    { color: #1877f2; border-color: #dbeafe; background: #eff6ff; }
+    .source-goog  { color: #ea4335; border-color: #fee2e2; background: #fef2f2; }
+    .source-dir   { color: #059669; border-color: #d1fae5; background: #ecfdf5; }
+    .source-tw    { color: #0ea5e9; border-color: #e0f2fe; background: #f0f9ff; }
+    .source-wa    { color: #16a34a; border-color: #dcfce7; background: #f0fdf4; }
+
+    /* Live Visitors Table */
+    .visitor-ip-badge {
+        font-family: 'Outfit', monospace;
+        font-size: 0.78rem;
+        font-weight: 600;
+        color: #475569;
+        background: #f1f5f9;
+        border: 1px solid #e2e8f0;
+        padding: 2px 7px;
+        border-radius: 4px;
+        white-space: nowrap;
+    }
+
+    .device-icon-badge {
+        display: inline-flex;
+        align-items: center;
+        gap: 4px;
+        font-size: 0.78rem;
+        font-weight: 600;
+        color: var(--text-dark);
+        white-space: nowrap;
+    }
+
+    /* Category breakdown styling */
     .breakdown-list {
         list-style: none;
         padding: 0;
@@ -378,7 +393,7 @@
         font-size: 0.92rem;
         text-decoration: none;
         display: inline-block;
-        max-width: 280px;
+        max-width: 260px;
         white-space: nowrap;
         overflow: hidden;
         text-overflow: ellipsis;
@@ -448,7 +463,7 @@
         color: #ffffff;
     }
 
-    /* Compact lists for opinions & messages */
+    /* Hub list styles for opinions & messages */
     .hub-list {
         list-style: none;
         padding: 0;
@@ -513,13 +528,6 @@
         align-items: center;
         gap: 8px;
         margin-top: 2px;
-    }
-
-    /* Chart Container */
-    .chart-container-wrapper {
-        position: relative;
-        height: 290px;
-        width: 100%;
     }
 
     /* Mobile specific adjustments */
@@ -589,83 +597,59 @@
         </div>
     @endif
 
-    <!-- 2. Quick Actions Shortcuts Hub -->
-    <div class="quick-actions-bar">
-        <div class="quick-actions-title">
-            <i class="fa-solid fa-bolt text-warning"></i>
-            <span>দ্রুত নেভিগেশন ও কার্যসম্পাদন শর্টকাট (Quick Actions)</span>
-        </div>
-        <div class="quick-actions-grid">
-            <a href="{{ route('admin.posts.create') }}" class="quick-action-btn qa-new-post">
-                <i class="fa-solid fa-plus-circle"></i>
-                <span>নতুন সংবাদ লিখুন</span>
-            </a>
-            <a href="{{ route('admin.social-card') }}" class="quick-action-btn qa-social-card">
-                <i class="fa-solid fa-wand-magic-sparkles"></i>
-                <span>সোশ্যাল কার্ড</span>
-            </a>
-            <a href="{{ route('admin.videos.index') }}" class="quick-action-btn qa-video">
-                <i class="fa-brands fa-youtube"></i>
-                <span>ভিডিও গ্যালারি</span>
-            </a>
-            <a href="{{ route('admin.seo.index') }}" class="quick-action-btn qa-seo">
-                <i class="fa-solid fa-magnifying-glass-chart"></i>
-                <span>এসইও ম্যানেজার</span>
-            </a>
-            <a href="{{ route('admin.epaper.index') }}" class="quick-action-btn qa-epaper">
-                <i class="fa-regular fa-newspaper"></i>
-                <span>ই-পেপার বিল্ডার</span>
-            </a>
-            <a href="{{ route('admin.polls.index') }}" class="quick-action-btn qa-poll">
-                <i class="fa-solid fa-square-poll-vertical"></i>
-                <span>অনলাইন জরিপ</span>
-            </a>
-        </div>
-    </div>
-
-    <!-- 3. Metrics Statistics Grid (8 Metrics Cards) -->
+    <!-- 2. Metrics Statistics Grid (8 Cards: Visitors, Views & Editorial) -->
     <div class="stats-grid">
-        <!-- 1. Published Posts -->
+        <!-- 1. Today's Unique Visitors -->
+        <div class="stat-card" style="border-left: 4px solid #10b981;">
+            <div class="stat-icon stat-icon-visitors"><i class="fa-solid fa-users"></i></div>
+            <div class="stat-info">
+                <span class="stat-value">{{ number_format($todayVisitorsCount) }}</span>
+                <span class="stat-label">আজকের ইউনিক ভিজিটর</span>
+                <span class="stat-subtext">আজকের পৃথক পাঠক</span>
+            </div>
+        </div>
+
+        <!-- 2. Today's Page Views -->
+        <div class="stat-card" style="border-left: 4px solid #dc2626;">
+            <div class="stat-icon stat-icon-views"><i class="fa-solid fa-chart-line"></i></div>
+            <div class="stat-info">
+                <span class="stat-value">{{ number_format($todayViewsCount) }}</span>
+                <span class="stat-label">আজকের পেজ ভিউ</span>
+                <span class="stat-subtext">আজ মোট পড়া হয়েছে</span>
+            </div>
+        </div>
+
+        <!-- 3. Last 7 Days Visitors -->
+        <div class="stat-card" style="border-left: 4px solid #0284c7;">
+            <div class="stat-icon stat-icon-traffic"><i class="fa-solid fa-chart-area"></i></div>
+            <div class="stat-info">
+                <span class="stat-value">{{ number_format($weekVisitorsCount) }}</span>
+                <span class="stat-label">সাপ্তাহিক ভিজিটর</span>
+                <span class="stat-subtext">গত ৭ দিনে মোট পাঠক</span>
+            </div>
+        </div>
+
+        <!-- 4. Total Views Across News -->
+        <div class="stat-card" style="border-left: 4px solid #4f46e5;">
+            <div class="stat-icon stat-icon-allviews"><i class="fa-solid fa-eye"></i></div>
+            <div class="stat-info">
+                <span class="stat-value">{{ number_format($totalViews) }}</span>
+                <span class="stat-label">সর্বমোট পাঠক ভিউ</span>
+                <span class="stat-subtext">সকল সংবাদের মোট রিড</span>
+            </div>
+        </div>
+
+        <!-- 5. Published News Posts -->
         <a href="{{ route('admin.posts.index') }}" class="stat-card">
             <div class="stat-icon stat-icon-posts"><i class="fa-solid fa-newspaper"></i></div>
             <div class="stat-info">
                 <span class="stat-value">{{ number_format($totalPosts) }}</span>
                 <span class="stat-label">প্রকাশিত সংবাদ</span>
-                <span class="stat-subtext">সর্বমোট লাইভ পোস্ট</span>
+                <span class="stat-subtext">আজ {{ $todayPosts }}টি, ড্রাফট {{ $draftPosts }}টি</span>
             </div>
         </a>
 
-        <!-- 2. Today's Posts -->
-        <a href="{{ route('admin.posts.index') }}" class="stat-card">
-            <div class="stat-icon stat-icon-today"><i class="fa-solid fa-calendar-day"></i></div>
-            <div class="stat-info">
-                <span class="stat-value">{{ number_format($todayPosts) }}</span>
-                <span class="stat-label">আজকের সংবাদ</span>
-                <span class="stat-subtext">আজ প্রকাশিত হয়েছে</span>
-            </div>
-        </a>
-
-        <!-- 3. Draft Posts -->
-        <a href="{{ route('admin.posts.index') }}" class="stat-card">
-            <div class="stat-icon stat-icon-drafts"><i class="fa-solid fa-file-pen"></i></div>
-            <div class="stat-info">
-                <span class="stat-value">{{ number_format($draftPosts) }}</span>
-                <span class="stat-label">ড্রাফট / খসড়া</span>
-                <span class="stat-subtext">অপ্রকাশিত সংরক্ষিত</span>
-            </div>
-        </a>
-
-        <!-- 4. Total Views -->
-        <div class="stat-card" style="cursor: default;">
-            <div class="stat-icon stat-icon-views"><i class="fa-solid fa-eye"></i></div>
-            <div class="stat-info">
-                <span class="stat-value">{{ number_format($totalViews) }}</span>
-                <span class="stat-label">মোট পাঠক ভিউ</span>
-                <span class="stat-subtext">সর্বমোট নিউজ রিড</span>
-            </div>
-        </div>
-
-        <!-- 5. Categories & Tags -->
+        <!-- 6. Categories & Tags -->
         <a href="{{ route('admin.categories.index') }}" class="stat-card">
             <div class="stat-icon stat-icon-cats"><i class="fa-solid fa-folder-tree"></i></div>
             <div class="stat-info">
@@ -675,23 +659,13 @@
             </div>
         </a>
 
-        <!-- 6. Registered Users/Reporters -->
+        <!-- 7. Registered Users/Reporters -->
         <a href="{{ route('admin.users.index') }}" class="stat-card">
-            <div class="stat-icon stat-icon-users"><i class="fa-solid fa-users"></i></div>
+            <div class="stat-icon stat-icon-users"><i class="fa-solid fa-user-shield"></i></div>
             <div class="stat-info">
                 <span class="stat-value">{{ number_format($totalUsers) }}</span>
-                <span class="stat-label">ইউজার ও সাংবাদিক</span>
+                <span class="stat-label">সাংবাদিক ও স্টাফ</span>
                 <span class="stat-subtext">নিবন্ধিত অ্যাকাউন্ট</span>
-            </div>
-        </a>
-
-        <!-- 7. Subscribers -->
-        <a href="{{ route('admin.subscribers.index') }}" class="stat-card">
-            <div class="stat-icon stat-icon-subs"><i class="fa-solid fa-bell"></i></div>
-            <div class="stat-info">
-                <span class="stat-value">{{ number_format($totalSubscribers) }}</span>
-                <span class="stat-label">সাবস্ক্রাইবার</span>
-                <span class="stat-subtext">ইমেইল গ্রাহক সংখ্যা</span>
             </div>
         </a>
 
@@ -706,61 +680,253 @@
         </a>
     </div>
 
-    <!-- 4. Middle Split (7-Day Trend Chart & Category Breakdown) -->
+    <!-- 3. Visitor Traffic Trend & Device Intelligence (Split 8-4) -->
     <div class="dashboard-splits split-8-4">
-        <!-- 7-Day Trend Area Chart -->
+        <!-- 7-Day Visitor Traffic Chart -->
         <div class="admin-card">
             <div class="card-header-wrapper">
                 <h3 class="card-title">
-                    <i class="fa-solid fa-chart-line"></i>
-                    <span>গত ৭ দিনের সংবাদ প্রকাশনার ট্রেন্ড</span>
+                    <i class="fa-solid fa-chart-line text-success"></i>
+                    <span>ভিজিটর ট্রাফিক ও পেজ ভিউ ট্রেন্ড (গত ৭ দিন)</span>
                 </h3>
-                <span class="badge bg-light text-secondary border px-2 py-1" style="font-size: 0.78rem;">
-                    সর্বশেষ ৭ দিন
-                </span>
+                <div class="d-flex align-items-center gap-3">
+                    <span style="font-size: 0.78rem; display: flex; align-items: center; gap: 6px;">
+                        <span style="width: 10px; height: 10px; background: #10b981; border-radius: 50%; display: inline-block;"></span>
+                        ইউনিক ভিজিটর
+                    </span>
+                    <span style="font-size: 0.78rem; display: flex; align-items: center; gap: 6px;">
+                        <span style="width: 10px; height: 10px; background: #dc2626; border-radius: 50%; display: inline-block;"></span>
+                        পেজ ভিউজ
+                    </span>
+                </div>
             </div>
             <div class="card-body-padded">
                 <div class="chart-container-wrapper">
-                    <canvas id="publishTrendChart"></canvas>
+                    <canvas id="visitorTrendChart"></canvas>
                 </div>
             </div>
         </div>
 
-        <!-- Category Breakdown -->
+        <!-- Visitor Tech & Device Breakdown -->
         <div class="admin-card">
             <div class="card-header-wrapper">
                 <h3 class="card-title">
-                    <i class="fa-solid fa-layer-group"></i>
-                    <span>শীর্ষ ক্যাটাগরিসমূহ</span>
+                    <i class="fa-solid fa-mobile-screen-button text-primary"></i>
+                    <span>ভিজিটর ডিভাইস ও প্রযুক্তি বিশ্লেষণ</span>
                 </h3>
-                <a href="{{ route('admin.categories.index') }}" class="btn btn-outline-secondary btn-sm" style="font-size: 0.8rem; padding: 4px 10px;">সব দেখুন</a>
+                <span class="badge bg-light text-secondary border px-2 py-1" style="font-size: 0.76rem;">
+                    ডিভাইস অ্যানালিটিক্স
+                </span>
             </div>
             <div class="card-body-padded">
-                <ul class="breakdown-list">
-                    @forelse($categoriesBreakdown as $cat)
+                <!-- Device Breakdown -->
+                <div class="tech-group-title">
+                    <i class="fa-solid fa-laptop-file text-muted"></i>
+                    <span>ডিভাইস ডিস্ট্রিবিউশন:</span>
+                </div>
+                <div style="margin-bottom: 20px;">
+                    @forelse($deviceStats as $device)
                         @php
-                            $percentage = $maxCategoryPosts > 0 ? round(($cat->posts_count / $maxCategoryPosts) * 100) : 0;
+                            $barClass = $device->device === 'Mobile' ? 'bar-mobile' : ($device->device === 'Desktop' ? 'bar-desktop' : 'bar-tablet');
+                            $iconClass = $device->device === 'Mobile' ? 'fa-mobile-screen' : ($device->device === 'Desktop' ? 'fa-desktop' : 'fa-tablet-screen-button');
                         @endphp
-                        <li class="breakdown-item">
-                            <div class="breakdown-header">
-                                <span class="breakdown-name">{{ $cat->name }}</span>
-                                <span class="breakdown-count">{{ number_format($cat->posts_count) }} টি পোস্ট</span>
+                        <div class="device-progress-item">
+                            <div class="device-progress-header">
+                                <span class="d-flex align-items-center gap-2">
+                                    <i class="fa-solid {{ $iconClass }} text-muted"></i>
+                                    <strong>{{ $device->device === 'Mobile' ? 'মোবাইল (Mobile)' : ($device->device === 'Desktop' ? 'ডেস্কটপ (Desktop)' : 'ট্যাবলেট (Tablet)') }}</strong>
+                                </span>
+                                <span style="font-family: 'Outfit', sans-serif; font-weight: 700;">{{ $device->percent }}% ({{ number_format($device->count) }})</span>
                             </div>
-                            <div class="breakdown-bar-bg">
-                                <div class="breakdown-bar-fill" style="width: {{ $percentage }}%;"></div>
+                            <div class="device-bar-bg">
+                                <div class="device-bar-fill {{ $barClass }}" style="width: {{ $device->percent }}%;"></div>
+                            </div>
+                        </div>
+                    @empty
+                        <div class="text-muted small">তথ্য পাওয়া যায়নি।</div>
+                    @endforelse
+                </div>
+
+                <!-- Top Browsers -->
+                <div class="tech-group-title">
+                    <i class="fa-brands fa-chrome text-muted"></i>
+                    <span>শীর্ষ ব্যবহৃত ব্রাউজার:</span>
+                </div>
+                <div class="d-flex flex-wrap gap-2 mb-3">
+                    @foreach($browserStats as $browser)
+                        <span class="badge bg-light text-dark border px-2 py-1" style="font-size: 0.78rem;">
+                            <i class="fa-solid fa-globe text-secondary me-1"></i>
+                            {{ $browser->browser }}: <strong style="font-family: 'Outfit', sans-serif;">{{ $browser->percent }}%</strong>
+                        </span>
+                    @endforeach
+                </div>
+
+                <!-- Traffic Sources -->
+                <div class="tech-group-title">
+                    <i class="fa-solid fa-share-nodes text-muted"></i>
+                    <span>প্রধান ট্রাফিক উৎস (Traffic Sources):</span>
+                </div>
+                <div class="source-pills-list">
+                    @foreach($sourceStats as $source)
+                        @php
+                            $pillClass = 'source-dir';
+                            $icon = 'fa-solid fa-link';
+                            if (stripos($source->referer_source, 'Facebook') !== false) {
+                                $pillClass = 'source-fb';
+                                $icon = 'fa-brands fa-facebook';
+                            } elseif (stripos($source->referer_source, 'Google') !== false) {
+                                $pillClass = 'source-goog';
+                                $icon = 'fa-brands fa-google';
+                            } elseif (stripos($source->referer_source, 'Twitter') !== false) {
+                                $pillClass = 'source-tw';
+                                $icon = 'fa-brands fa-x-twitter';
+                            } elseif (stripos($source->referer_source, 'WhatsApp') !== false) {
+                                $pillClass = 'source-wa';
+                                $icon = 'fa-brands fa-whatsapp';
+                            }
+                        @endphp
+                        <span class="source-pill {{ $pillClass }}">
+                            <i class="{{ $icon }}"></i>
+                            <span>{{ $source->referer_source }} ({{ $source->percent }}%)</span>
+                        </span>
+                    @endforeach
+                </div>
+            </div>
+        </div>
+    </div>
+
+    <!-- 4. Recent Live Visitors Feed & Top Viewed News (Split 8-4) -->
+    <div class="dashboard-splits split-8-4">
+        <!-- Recent Live Visitors Table -->
+        <div class="admin-card">
+            <div class="card-header-wrapper">
+                <h3 class="card-title">
+                    <i class="fa-solid fa-satellite-dish text-primary"></i>
+                    <span>সাম্প্রতিক ভিজিটর লাইভ লগ (Recent Live Visitors)</span>
+                </h3>
+                <span class="badge bg-success-subtle text-success border border-success-subtle px-2 py-1" style="font-size: 0.76rem;">
+                    <i class="fa-solid fa-circle-dot me-1"></i>রিয়েলটাইম লগ
+                </span>
+            </div>
+
+            <div class="table-responsive">
+                <table class="admin-table">
+                    <thead>
+                        <tr>
+                            <th>ডিভাইস ও ওএস</th>
+                            <th>ব্রাউজার</th>
+                            <th>পরিদর্শিত পেজ / পঠিত সংবাদ</th>
+                            <th>উৎস (Referer)</th>
+                            <th>আইপি অ্যাড্রেস</th>
+                            <th style="text-align: right;">সময়</th>
+                        </tr>
+                    </thead>
+                    <tbody>
+                        @forelse($recentVisitors as $visitor)
+                            <tr>
+                                <td>
+                                    <span class="device-icon-badge">
+                                        @if($visitor->device === 'Mobile')
+                                            <i class="fa-solid fa-mobile-screen text-success"></i>
+                                        @elseif($visitor->device === 'Tablet')
+                                            <i class="fa-solid fa-tablet-screen-button text-warning"></i>
+                                        @else
+                                            <i class="fa-solid fa-desktop text-primary"></i>
+                                        @endif
+                                        <span>{{ $visitor->os }}</span>
+                                    </span>
+                                </td>
+                                <td>
+                                    <span class="badge bg-light text-secondary border" style="font-size: 0.74rem;">
+                                        {{ $visitor->browser }}
+                                    </span>
+                                </td>
+                                <td>
+                                    @if($visitor->post)
+                                        <a href="{{ route('post', $visitor->post->slug) }}" target="_blank" class="post-title-link" title="{{ $visitor->post->title }}">
+                                            <i class="fa-solid fa-newspaper text-muted me-1" style="font-size: 0.78rem;"></i>
+                                            {{ $visitor->post->title }}
+                                        </a>
+                                    @elseif($visitor->page_title)
+                                        <span style="font-size: 0.84rem; font-weight: 600; color: var(--text-dark);">
+                                            {{ $visitor->page_title }}
+                                        </span>
+                                    @else
+                                        <span style="font-size: 0.82rem; color: var(--text-sub);">হোমপেজ / মূল পাতা</span>
+                                    @endif
+                                </td>
+                                <td>
+                                    @php
+                                        $source = $visitor->referer_source ?: 'Direct';
+                                        $pillClass = 'source-dir';
+                                        if (stripos($source, 'Facebook') !== false) $pillClass = 'source-fb';
+                                        elseif (stripos($source, 'Google') !== false) $pillClass = 'source-goog';
+                                        elseif (stripos($source, 'WhatsApp') !== false) $pillClass = 'source-wa';
+                                        elseif (stripos($source, 'Twitter') !== false) $pillClass = 'source-tw';
+                                    @endphp
+                                    <span class="source-pill {{ $pillClass }}" style="padding: 2px 7px; font-size: 0.74rem;">
+                                        {{ $source }}
+                                    </span>
+                                </td>
+                                <td>
+                                    <span class="visitor-ip-badge">{{ $visitor->ip_address }}</span>
+                                </td>
+                                <td style="text-align: right; font-size: 0.78rem; color: var(--text-sub); white-space: nowrap;">
+                                    {{ $visitor->created_at->diffForHumans() }}
+                                </td>
+                            </tr>
+                        @empty
+                            <tr>
+                                <td colspan="6" style="text-align: center; padding: 28px; color: var(--text-sub);">
+                                    কোনো ভিজিটর লগ পাওয়া যায়নি।
+                                </td>
+                            </tr>
+                        @endforelse
+                    </tbody>
+                </table>
+            </div>
+        </div>
+
+        <!-- Top 5 Most Viewed News -->
+        <div class="admin-card">
+            <div class="card-header-wrapper">
+                <h3 class="card-title">
+                    <i class="fa-solid fa-fire text-danger"></i>
+                    <span>সর্বাধিক পঠিত সংবাদ</span>
+                </h3>
+                <span class="badge bg-danger-subtle text-danger border border-danger-subtle px-2 py-1" style="font-size: 0.78rem;">
+                    টপ ৫ ভিউ
+                </span>
+            </div>
+            <div class="card-body-padded">
+                <ul class="top-viewed-list">
+                    @forelse($topViewedPosts as $index => $topPost)
+                        <li class="top-viewed-item">
+                            <span class="rank-badge {{ $index == 0 ? 'rank-1' : ($index == 1 ? 'rank-2' : ($index == 2 ? 'rank-3' : 'rank-other')) }}">
+                                {{ $index + 1 }}
+                            </span>
+                            <div class="top-post-details">
+                                <a href="{{ route('post', $topPost->slug) }}" target="_blank" class="top-post-title" title="{{ $topPost->title }}">
+                                    {{ $topPost->title }}
+                                </a>
+                                <div class="top-post-meta">
+                                    <span><i class="fa-regular fa-eye me-1"></i>{{ number_format($topPost->views_count) }} বার</span>
+                                    <span>•</span>
+                                    <span>{{ $topPost->author_name }}</span>
+                                </div>
                             </div>
                         </li>
                     @empty
-                        <li style="color: var(--text-sub); text-align: center; padding: 24px 0;">কোনো ক্যাটাগরির তথ্য পাওয়া যায়নি।</li>
+                        <li style="color: var(--text-sub); text-align: center; padding: 24px 0;">কোনো সংবাদ পাওয়া যায়নি।</li>
                     @endforelse
                 </ul>
             </div>
         </div>
     </div>
 
-    <!-- 5. Lower Split (Recent Posts & Most Viewed Posts) -->
+    <!-- 5. Recent News & Category Breakdown (Split 8-4) -->
     <div class="dashboard-splits split-8-4">
-        <!-- Recent Posts Section -->
+        <!-- Recent Published Posts Section -->
         <div class="admin-card">
             <div class="card-header-wrapper">
                 <h3 class="card-title">
@@ -780,7 +946,7 @@
                     <thead>
                         <tr>
                             <th style="width: 50px;">ছবি</th>
-                            <th>সংবাদের শিরোনাম ও প্রতিবেদক</th>
+                            <th>শিরোনাম ও প্রতিবেদক</th>
                             <th>ক্যাটাগরি</th>
                             <th>তারিখ</th>
                             <th>ভিউস</th>
@@ -852,37 +1018,32 @@
             </div>
         </div>
 
-        <!-- Top 5 Most Viewed News -->
+        <!-- Category Breakdown -->
         <div class="admin-card">
             <div class="card-header-wrapper">
                 <h3 class="card-title">
-                    <i class="fa-solid fa-fire text-danger"></i>
-                    <span>সর্বাধিক পঠিত সংবাদ</span>
+                    <i class="fa-solid fa-layer-group"></i>
+                    <span>শীর্ষ ক্যাটাগরিসমূহ</span>
                 </h3>
-                <span class="badge bg-danger-subtle text-danger border border-danger-subtle px-2 py-1" style="font-size: 0.78rem;">
-                    টপ ৫ ভিউ
-                </span>
+                <a href="{{ route('admin.categories.index') }}" class="btn btn-outline-secondary btn-sm" style="font-size: 0.8rem; padding: 4px 10px;">সব দেখুন</a>
             </div>
             <div class="card-body-padded">
-                <ul class="top-viewed-list">
-                    @forelse($topViewedPosts as $index => $topPost)
-                        <li class="top-viewed-item">
-                            <span class="rank-badge {{ $index == 0 ? 'rank-1' : ($index == 1 ? 'rank-2' : ($index == 2 ? 'rank-3' : 'rank-other')) }}">
-                                {{ $index + 1 }}
-                            </span>
-                            <div class="top-post-details">
-                                <a href="{{ route('post', $topPost->slug) }}" target="_blank" class="top-post-title" title="{{ $topPost->title }}">
-                                    {{ $topPost->title }}
-                                </a>
-                                <div class="top-post-meta">
-                                    <span><i class="fa-regular fa-eye me-1"></i>{{ number_format($topPost->views_count) }} বার</span>
-                                    <span>•</span>
-                                    <span>{{ $topPost->author_name }}</span>
-                                </div>
+                <ul class="breakdown-list">
+                    @forelse($categoriesBreakdown as $cat)
+                        @php
+                            $percentage = $maxCategoryPosts > 0 ? round(($cat->posts_count / $maxCategoryPosts) * 100) : 0;
+                        @endphp
+                        <li class="breakdown-item">
+                            <div class="breakdown-header">
+                                <span class="breakdown-name">{{ $cat->name }}</span>
+                                <span class="breakdown-count">{{ number_format($cat->posts_count) }} টি পোস্ট</span>
+                            </div>
+                            <div class="breakdown-bar-bg">
+                                <div class="breakdown-bar-fill" style="width: {{ $percentage }}%;"></div>
                             </div>
                         </li>
                     @empty
-                        <li style="color: var(--text-sub); text-align: center; padding: 24px 0;">কোনো সংবাদ পাওয়া যায়নি।</li>
+                        <li style="color: var(--text-sub); text-align: center; padding: 24px 0;">কোনো ক্যাটাগরির তথ্য পাওয়া যায়নি।</li>
                     @endforelse
                 </ul>
             </div>
@@ -987,48 +1148,78 @@
 @endsection
 
 @section('scripts')
-<!-- Chart.js 4.4 CDN for 7-Day Trend Line/Area Chart -->
+<!-- Chart.js 4.4 CDN for 7-Day Visitor & Traffic Trend Dual Chart -->
 <script src="https://cdn.jsdelivr.net/npm/chart.js@4.4.1/dist/chart.umd.min.js"></script>
 <script>
     document.addEventListener('DOMContentLoaded', function () {
-        const ctx = document.getElementById('publishTrendChart');
+        const ctx = document.getElementById('visitorTrendChart');
         if (!ctx) return;
 
         const labels = @json($chartLabels);
-        const dataValues = @json($chartPostCounts);
+        const visitorsData = @json($chartVisitors);
+        const viewsData = @json($chartViews);
 
         const chartContext = ctx.getContext('2d');
         
-        // Gradient fill for area under the line
-        const gradient = chartContext.createLinearGradient(0, 0, 0, 260);
-        gradient.addColorStop(0, 'rgba(220, 38, 38, 0.28)');
-        gradient.addColorStop(1, 'rgba(220, 38, 38, 0.01)');
+        // Gradient for Unique Visitors (Emerald Green)
+        const gradientVisitors = chartContext.createLinearGradient(0, 0, 0, 260);
+        gradientVisitors.addColorStop(0, 'rgba(16, 185, 129, 0.28)');
+        gradientVisitors.addColorStop(1, 'rgba(16, 185, 129, 0.01)');
+
+        // Gradient for Page Views (Crimson Red)
+        const gradientViews = chartContext.createLinearGradient(0, 0, 0, 260);
+        gradientViews.addColorStop(0, 'rgba(220, 38, 38, 0.22)');
+        gradientViews.addColorStop(1, 'rgba(220, 38, 38, 0.01)');
 
         new Chart(ctx, {
             type: 'line',
             data: {
                 labels: labels,
-                datasets: [{
-                    label: 'প্রকাশিত সংবাদ',
-                    data: dataValues,
-                    borderColor: '#dc2626',
-                    backgroundColor: gradient,
-                    borderWidth: 2.5,
-                    fill: true,
-                    tension: 0.35,
-                    pointBackgroundColor: '#ffffff',
-                    pointBorderColor: '#dc2626',
-                    pointBorderWidth: 2,
-                    pointRadius: 4,
-                    pointHoverRadius: 6,
-                    pointHoverBackgroundColor: '#dc2626',
-                    pointHoverBorderColor: '#ffffff',
-                    pointHoverBorderWidth: 2
-                }]
+                datasets: [
+                    {
+                        label: 'ইউনিক ভিজিটর',
+                        data: visitorsData,
+                        borderColor: '#10b981',
+                        backgroundColor: gradientVisitors,
+                        borderWidth: 2.5,
+                        fill: true,
+                        tension: 0.35,
+                        pointBackgroundColor: '#ffffff',
+                        pointBorderColor: '#10b981',
+                        pointBorderWidth: 2,
+                        pointRadius: 4,
+                        pointHoverRadius: 6,
+                        pointHoverBackgroundColor: '#10b981',
+                        pointHoverBorderColor: '#ffffff',
+                        pointHoverBorderWidth: 2
+                    },
+                    {
+                        label: 'পেজ ভিউজ',
+                        data: viewsData,
+                        borderColor: '#dc2626',
+                        backgroundColor: gradientViews,
+                        borderWidth: 2,
+                        borderDash: [4, 4],
+                        fill: false,
+                        tension: 0.35,
+                        pointBackgroundColor: '#ffffff',
+                        pointBorderColor: '#dc2626',
+                        pointBorderWidth: 2,
+                        pointRadius: 3,
+                        pointHoverRadius: 5,
+                        pointHoverBackgroundColor: '#dc2626',
+                        pointHoverBorderColor: '#ffffff',
+                        pointHoverBorderWidth: 2
+                    }
+                ]
             },
             options: {
                 responsive: true,
                 maintainAspectRatio: false,
+                interaction: {
+                    mode: 'index',
+                    intersect: false
+                },
                 plugins: {
                     legend: {
                         display: false
@@ -1041,15 +1232,13 @@
                         },
                         bodyFont: {
                             family: 'Noto Sans Bengali, Outfit, sans-serif',
-                            size: 13,
-                            weight: 'bold'
+                            size: 13
                         },
                         padding: 10,
                         cornerRadius: 6,
-                        displayColors: false,
                         callbacks: {
                             label: function(context) {
-                                return context.parsed.y + ' টি সংবাদ প্রকাশিত';
+                                return context.dataset.label + ': ' + context.parsed.y + ' জন';
                             }
                         }
                     }
@@ -1069,9 +1258,9 @@
                     },
                     y: {
                         beginAtZero: true,
-                        suggestedMax: Math.max(...dataValues, 5) + 1,
+                        suggestedMax: Math.max(...viewsData, ...visitorsData, 10) + 5,
                         ticks: {
-                            stepSize: 1,
+                            stepSize: 5,
                             font: {
                                 family: 'Outfit, sans-serif',
                                 size: 12
