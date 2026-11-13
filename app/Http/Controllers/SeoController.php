@@ -4,6 +4,7 @@ namespace App\Http\Controllers;
 
 use App\Models\Category;
 use App\Models\Post;
+use App\Services\SeoService;
 use Carbon\Carbon;
 use Illuminate\Http\Response;
 
@@ -73,9 +74,10 @@ class SeoController extends Controller
 
             // If published in the last 48 hours, include Google News tags
             if ($post->created_at && $post->created_at->greaterThanOrEqualTo($twoDaysAgo)) {
+                $pubName = htmlspecialchars(SeoService::get('site_name', 'দৈনিক ভোলা জার্নাল'));
                 $xml .= "    <news:news>\n";
                 $xml .= "      <news:publication>\n";
-                $xml .= "        <news:name>দৈনিক ভোলা জার্নাল</news:name>\n";
+                $xml .= "        <news:name>{$pubName}</news:name>\n";
                 $xml .= "        <news:language>bn</news:language>\n";
                 $xml .= "      </news:publication>\n";
                 $xml .= "      <news:publication_date>" . $pubDate . "</news:publication_date>\n";
@@ -98,14 +100,7 @@ class SeoController extends Controller
      */
     public function robots()
     {
-        $sitemapUrl = route('seo.sitemap');
-
-        $content = "User-agent: *\n";
-        $content .= "Disallow: /admin/\n";
-        $content .= "Disallow: /epaper/clear-cache\n";
-        $content .= "Disallow: /epaper/migrate\n";
-        $content .= "Allow: /\n\n";
-        $content .= "Sitemap: " . $sitemapUrl . "\n";
+        $content = SeoService::getRobotsTxt();
 
         return response($content, 200, [
             'Content-Type' => 'text/plain; charset=utf-8',
@@ -123,13 +118,8 @@ class SeoController extends Controller
             ->limit(50)
             ->get();
 
-        $themeSettingsPath = storage_path('app/theme_settings.json');
-        $siteTitle = 'দৈনিক ভোলা জার্নাল';
-        $siteDesc = 'সত্য ও তথ্যের সমন্বয়ে উপকূলের দিনলিপি';
-        if (file_exists($themeSettingsPath)) {
-            $settings = json_decode(file_get_contents($themeSettingsPath), true);
-            $siteDesc = $settings['footer_text'] ?? $siteDesc;
-        }
+        $siteTitle = SeoService::get('site_name', 'দৈনিক ভোলা জার্নাল');
+        $siteDesc = SeoService::get('meta_description', 'সত্য ও তথ্যের সমন্বয়ে উপকূলের দিনলিপি');
 
         $xml = '<?xml version="1.0" encoding="UTF-8"?>' . "\n";
         $xml .= '<rss version="2.0" xmlns:content="http://purl.org/rss/1.0/modules/content/" xmlns:dc="http://purl.org/dc/elements/1.1/" xmlns:atom="http://www.w3.org/2005/Atom">' . "\n";

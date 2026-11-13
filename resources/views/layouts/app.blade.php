@@ -25,6 +25,8 @@
     if (file_exists($themeSettingsPath)) {
         $themeSettings = array_merge($themeSettings, json_decode(file_get_contents($themeSettingsPath), true));
     }
+
+    $seoSettings = \App\Services\SeoService::getSettings();
 @endphp
 <!DOCTYPE html>
 <html lang="bn">
@@ -33,34 +35,98 @@
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     
     <!-- Primary SEO Meta Tags -->
-    <title>@yield('title', 'দৈনিক ভোলা জার্নাল | Daily Bhola Journal - সত্য ও ন্যায়ের সন্ধানে সার্বক্ষণিক')</title>
-    <meta name="description" content="@yield('meta_description', $themeSettings['footer_text'] ?? 'দৈনিক ভোলা জার্নাল - ভোলা জেলার শীর্ষস্থানীয় একটি অনলাইন সংবাদপত্র। আমরা অত্যন্ত সততা, নিষ্ঠা ও নিরপেক্ষতার সাথে সব ধরণের স্থানীয় ও জাতীয় সংবাদ সবার আগে প্রকাশ করি।')">
-    <meta name="keywords" content="@yield('meta_keywords', 'দৈনিক ভোলা জার্নাল, ভোলা জার্নাল, ভোলা নিউজ, daily bhola journal, bhola journal, bhola news, dainik bholajournal, bholajournal, bhola newspaper')">
-    <meta name="author" content="দৈনিক ভোলা জার্নাল">
-    <meta name="robots" content="index, follow">
-    <link rel="canonical" href="@yield('canonical_url', request()->url())">
+    <title>@yield('title', $seoSettings['site_title'] ?? 'দৈনিক ভোলা জার্নাল | Daily Bhola Journal - সত্য ও ন্যায়ের সন্ধানে সার্বক্ষণিক')</title>
+    <meta name="description" content="@yield('meta_description', $seoSettings['meta_description'] ?? $themeSettings['footer_text'] ?? 'দৈনিক ভোলা জার্নাল - ভোলা জেলার শীর্ষস্থানীয় একটি অনলাইন সংবাদপত্র। আমরা অত্যন্ত সততা, নিষ্ঠা ও নিরপেক্ষতার সাথে সব ধরণের স্থানীয় ও জাতীয় সংবাদ সবার আগে প্রকাশ করি।')">
+    <meta name="keywords" content="@yield('meta_keywords', $seoSettings['meta_keywords'] ?? 'দৈনিক ভোলা জার্নাল, ভোলা জার্নাল, ভোলা নিউজ, daily bhola journal, bhola journal, bhola news, dainik bholajournal, bholajournal, bhola newspaper')">
+    <meta name="author" content="@yield('meta_author', $seoSettings['meta_author'] ?? 'দৈনিক ভোলা জার্নাল')">
+    <meta name="robots" content="@yield('meta_robots', $seoSettings['robots_indexing'] ?? 'index, follow')">
+    <link rel="canonical" href="@yield('canonical_url', $seoSettings['canonical_url'] ? (rtrim($seoSettings['canonical_url'], '/') . '/' . ltrim(request()->path() === '/' ? '' : request()->path(), '/')) : request()->url())">
     
+    <!-- Search Engine Verifications -->
+    @if(!empty($seoSettings['google_site_verification']))
+        <meta name="google-site-verification" content="{{ $seoSettings['google_site_verification'] }}">
+    @endif
+    @if(!empty($seoSettings['bing_site_verification']))
+        <meta name="msvalidate.01" content="{{ $seoSettings['bing_site_verification'] }}">
+    @endif
+    @if(!empty($seoSettings['yandex_verification']))
+        <meta name="yandex-verification" content="{{ $seoSettings['yandex_verification'] }}">
+    @endif
+
     <!-- Open Graph / Facebook Meta Tags -->
-    <meta property="og:type" content="@yield('og_type', 'website')">
-    <meta property="og:title" content="@yield('og_title', 'দৈনিক ভোলা জার্নাল | Daily Bhola Journal')">
-    <meta property="og:description" content="@yield('og_description', $themeSettings['footer_text'] ?? 'দৈনিক ভোলা জার্নাল - ভোলা জেলার শীর্ষস্থানীয় একটি অনলাইন সংবাদপত্র।')">
-    <meta property="og:image" content="@yield('og_image', asset($themeSettings['logo_image'] ?? 'https://images.unsplash.com/photo-1504711434969-e33886168f5c?auto=format&fit=crop&q=80&w=800'))">
+    <meta property="og:type" content="@yield('og_type', $seoSettings['og_type'] ?? 'website')">
+    <meta property="og:title" content="@yield('og_title', $seoSettings['site_title'] ?? 'দৈনিক ভোলা জার্নাল | Daily Bhola Journal')">
+    <meta property="og:description" content="@yield('og_description', $seoSettings['meta_description'] ?? $themeSettings['footer_text'] ?? 'দৈনিক ভোলা জার্নাল - ভোলা জেলার শীর্ষস্থানীয় একটি অনলাইন সংবাদপত্র।')">
+    <meta property="og:image" content="@yield('og_image', !empty($seoSettings['og_image']) ? asset($seoSettings['og_image']) : asset($themeSettings['logo_image'] ?? 'https://images.unsplash.com/photo-1504711434969-e33886168f5c?auto=format&fit=crop&q=80&w=800'))">
     <meta property="og:url" content="@yield('og_url', request()->url())">
-    <meta property="og:site_name" content="দৈনিক ভোলা জার্নাল">
-    <meta property="og:locale" content="bn_BD">
+    <meta property="og:site_name" content="{{ $seoSettings['site_name'] ?? 'দৈনিক ভোলা জার্নাল' }}">
+    <meta property="og:locale" content="{{ $seoSettings['og_locale'] ?? 'bn_BD' }}">
+    @if(!empty($seoSettings['facebook_app_id']))
+        <meta property="fb:app_id" content="{{ $seoSettings['facebook_app_id'] }}">
+    @endif
     
     <!-- Twitter Card Meta Tags -->
-    <meta name="twitter:card" content="summary_large_image">
-    <meta name="twitter:title" content="@yield('og_title', 'দৈনিক ভোলা জার্নাল | Daily Bhola Journal')">
-    <meta name="twitter:description" content="@yield('og_description', $themeSettings['footer_text'] ?? 'দৈনিক ভোলা জার্নাল - ভোলা জেলার শীর্ষস্থানীয় একটি অনলাইন সংবাদপত্র।')">
-    <meta name="twitter:image" content="@yield('og_image', asset($themeSettings['logo_image'] ?? 'https://images.unsplash.com/photo-1504711434969-e33886168f5c?auto=format&fit=crop&q=80&w=800'))">
+    <meta name="twitter:card" content="{{ $seoSettings['twitter_card'] ?? 'summary_large_image' }}">
+    <meta name="twitter:title" content="@yield('og_title', $seoSettings['site_title'] ?? 'দৈনিক ভোলা জার্নাল | Daily Bhola Journal')">
+    <meta name="twitter:description" content="@yield('og_description', $seoSettings['meta_description'] ?? $themeSettings['footer_text'] ?? 'দৈনিক ভোলা জার্নাল - ভোলা জেলার শীর্ষস্থানীয় একটি অনলাইন সংবাদপত্র।')">
+    <meta name="twitter:image" content="@yield('og_image', !empty($seoSettings['og_image']) ? asset($seoSettings['og_image']) : asset($themeSettings['logo_image'] ?? 'https://images.unsplash.com/photo-1504711434969-e33886168f5c?auto=format&fit=crop&q=80&w=800'))">
+    @if(!empty($seoSettings['twitter_site']))
+        <meta name="twitter:site" content="{{ $seoSettings['twitter_site'] }}">
+    @endif
+    @if(!empty($seoSettings['twitter_creator']))
+        <meta name="twitter:creator" content="{{ $seoSettings['twitter_creator'] }}">
+    @endif
     
     <!-- RSS & Discovery Feeds -->
-    <link rel="alternate" type="application/rss+xml" title="দৈনিক ভোলা জার্নাল RSS Feed" href="{{ route('seo.rss') }}">
+    <link rel="alternate" type="application/rss+xml" title="{{ $seoSettings['site_name'] ?? 'দৈনিক ভোলা জার্নাল' }} RSS Feed" href="{{ route('seo.rss') }}">
     <link rel="sitemap" type="application/xml" title="Sitemap" href="{{ route('seo.sitemap') }}">
 
     <!-- Schema.org Structured Data -->
     @yield('schema_json')
+    
+    <!-- Google Analytics 4 (GA4) -->
+    @if(!empty($seoSettings['google_analytics_id']))
+        <script async src="https://www.googletagmanager.com/gtag/js?id={{ $seoSettings['google_analytics_id'] }}"></script>
+        <script>
+            window.dataLayer = window.dataLayer || [];
+            function gtag(){dataLayer.push(arguments);}
+            gtag('js', new Date());
+            gtag('config', '{{ $seoSettings['google_analytics_id'] }}');
+        </script>
+    @endif
+
+    <!-- Google Tag Manager -->
+    @if(!empty($seoSettings['google_tag_manager_id']))
+        <script>(function(w,d,s,l,i){w[l]=w[l]||[];w[l].push({'gtm.start':
+        new Date().getTime(),event:'gtm.js'});var f=d.getElementsByTagName(s)[0],
+        j=d.createElement(s),dl=l!='dataLayer'?'&l='+l:'';j.async=true;j.src=
+        'https://www.googletagmanager.com/gtm.js?id='+i+dl;f.parentNode.insertBefore(j,f);
+        })(window,document,'script','dataLayer','{{ $seoSettings['google_tag_manager_id'] }}');</script>
+    @endif
+
+    <!-- Meta / Facebook Pixel Code -->
+    @if(!empty($seoSettings['facebook_pixel_id']))
+        <script>
+        !function(f,b,e,v,n,t,s)
+        {if(f.fbq)return;n=f.fbq=function(){n.callMethod?
+        n.callMethod.apply(n,arguments):n.queue.push(arguments)};
+        if(!f._fbq)f._fbq=n;n.push=n;n.loaded=!0;n.version='2.0';
+        n.queue=[];t=b.createElement(e);t.async=!0;
+        t.src=v;s=b.getElementsByTagName(e)[0];
+        s.parentNode.insertBefore(t,s)}(window, document,'script',
+        'https://connect.facebook.net/en_US/fbevents.js');
+        fbq('init', '{{ $seoSettings['facebook_pixel_id'] }}');
+        fbq('track', 'PageView');
+        </script>
+        <noscript><img height="1" width="1" style="display:none"
+        src="https://www.facebook.com/tr?id={{ $seoSettings['facebook_pixel_id'] }}&ev=PageView&noscript=1"
+        /></noscript>
+    @endif
+
+    <!-- Custom Head Code Injection -->
+    @if(!empty($seoSettings['header_scripts']))
+        {!! $seoSettings['header_scripts'] !!}
+    @endif
     
     <!-- Premium Google Fonts -->
     <link rel="preconnect" href="https://fonts.googleapis.com">
@@ -1142,6 +1208,12 @@
     @yield('styles')
 </head>
 <body>
+    @if(!empty($seoSettings['google_tag_manager_id']))
+        <!-- Google Tag Manager (noscript) -->
+        <noscript><iframe src="https://www.googletagmanager.com/ns.html?id={{ $seoSettings['google_tag_manager_id'] }}"
+        height="0" width="0" style="display:none;visibility:hidden"></iframe></noscript>
+        <!-- End Google Tag Manager (noscript) -->
+    @endif
 
     @include('layouts.partials.header')
 
@@ -1193,5 +1265,10 @@
     </script>
 
     @yield('scripts')
+
+    <!-- Custom Footer Scripts Injection -->
+    @if(!empty($seoSettings['footer_scripts']))
+        {!! $seoSettings['footer_scripts'] !!}
+    @endif
 </body>
 </html>

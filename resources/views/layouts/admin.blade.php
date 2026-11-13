@@ -595,6 +595,12 @@
                         <span>ই-পেপার (E-Paper)</span>
                     </a>
                 </li>
+                <li class="menu-item">
+                    <a href="{{ route('admin.seo.index') }}" class="menu-link {{ request()->routeIs('admin.seo.*') ? 'active' : '' }}">
+                        <i class="fa-solid fa-magnifying-glass-chart"></i>
+                        <span>এসইও ম্যানেজার (SEO)</span>
+                    </a>
+                </li>
             @endcan
             @can('super-admin-only')
                 <li class="menu-item">

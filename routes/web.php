@@ -95,6 +95,11 @@ Route::prefix('admin')->name('admin.')->group(function () {
         Route::get('/theme/settings', [App\Http\Controllers\Admin\AdminThemeSettingsController::class, 'index'])->name('theme.settings');
         Route::post('/theme/settings', [App\Http\Controllers\Admin\AdminThemeSettingsController::class, 'update'])->name('theme.settings.update');
 
+        // SEO Manager (Admin & Super Admin)
+        Route::get('/seo', [App\Http\Controllers\Admin\AdminSeoController::class, 'index'])->name('seo.index');
+        Route::post('/seo', [App\Http\Controllers\Admin\AdminSeoController::class, 'update'])->name('seo.update');
+        Route::post('/seo/ping', [App\Http\Controllers\Admin\AdminSeoController::class, 'ping'])->name('seo.ping');
+
         // E-Paper Layout Builder Routes
         Route::get('/epaper', [App\Http\Controllers\Admin\AdminEPaperController::class, 'index'])->name('epaper.index');
         Route::get('/epaper/load', [App\Http\Controllers\Admin\AdminEPaperController::class, 'loadDateData'])->name('epaper.load');
