@@ -199,8 +199,9 @@ class AdminDashboardController extends Controller
 
         $maxCategoryPosts = $categoriesBreakdown->max('posts_count') ?: 1;
 
-        // 11. Logged-in user name for greeting card
+        // 11. Logged-in user name & today's visitors count for greeting card
         $userName = Auth::user()->name ?? 'অ্যাডমিন';
+        $todayVisitorsCount = ($range === 'today') ? $rangeVisitorsCount : VisitorLog::whereDate('created_at', Carbon::today())->distinct('ip_address')->count('ip_address');
 
         return view('admin.dashboard', compact(
             'range',
@@ -233,7 +234,8 @@ class AdminDashboardController extends Controller
             'recentMessages',
             'categoriesBreakdown',
             'maxCategoryPosts',
-            'userName'
+            'userName',
+            'todayVisitorsCount'
         ));
     }
 }

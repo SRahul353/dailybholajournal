@@ -609,7 +609,7 @@
             <div class="greeting-badge">
                 <i class="fa-solid fa-users"></i>
                 <span>আজকের ভিজিটর</span>
-                <span class="badge-num">{{ number_format(\App\Models\VisitorLog::whereDate('created_at', today())->distinct('ip_address')->count('ip_address')) }}</span>
+                <span class="badge-num">{{ number_format($todayVisitorsCount) }}</span>
             </div>
             @if($unreadMessagesCount > 0)
             <a href="{{ route('admin.messages.index', ['status' => 'unread']) }}" class="greeting-badge">
