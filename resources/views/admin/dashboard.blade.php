@@ -9,6 +9,62 @@
        Dashboard & Visitor Analytics Modern UI Styles
        ======================================================== */
 
+    /* Range Filter Bar */
+    .range-filter-bar {
+        background: var(--content-bg);
+        border: 1px solid var(--border-color);
+        border-radius: var(--radius-md);
+        padding: 12px 18px;
+        margin-bottom: 24px;
+        display: flex;
+        align-items: center;
+        justify-content: space-between;
+        flex-wrap: wrap;
+        gap: 12px;
+        box-shadow: var(--shadow);
+    }
+
+    .range-filter-title {
+        font-size: 0.92rem;
+        font-weight: 700;
+        color: var(--text-dark);
+        display: flex;
+        align-items: center;
+        gap: 8px;
+    }
+
+    .range-btn-group {
+        display: flex;
+        align-items: center;
+        gap: 6px;
+        background: #f1f5f9;
+        padding: 4px;
+        border-radius: 8px;
+    }
+
+    .range-btn {
+        padding: 6px 14px;
+        border-radius: 6px;
+        font-size: 0.82rem;
+        font-weight: 600;
+        color: var(--text-sub);
+        text-decoration: none;
+        transition: var(--transition);
+        display: inline-flex;
+        align-items: center;
+    }
+
+    .range-btn:hover {
+        color: var(--text-dark);
+        background: rgba(255, 255, 255, 0.7);
+    }
+
+    .range-btn.active {
+        background: #dc2626;
+        color: #ffffff !important;
+        box-shadow: 0 2px 4px rgba(220, 38, 38, 0.25);
+    }
+
     /* Stats Grid Layout - 8 Metrics Cards */
     .stats-grid {
         display: grid;
@@ -597,35 +653,57 @@
         </div>
     @endif
 
-    <!-- 2. Metrics Statistics Grid (8 Cards: Visitors, Views & Editorial) -->
+    <!-- 2. Date Range Filter Bar (আজকে, ৭ দিন, ৩০ দিন, ৯০ দিন) -->
+    <div class="range-filter-bar">
+        <div class="range-filter-title">
+            <i class="fa-solid fa-clock-rotate-left text-danger"></i>
+            <span>অ্যানালিটিক্স সময়সীমা ফিল্টার (Date Range):</span>
+        </div>
+        <div class="range-btn-group">
+            <a href="{{ route('admin.dashboard', ['range' => 'today']) }}" class="range-btn {{ $range === 'today' ? 'active' : '' }}">
+                <i class="fa-regular fa-sun me-1"></i>আজকে
+            </a>
+            <a href="{{ route('admin.dashboard', ['range' => '7days']) }}" class="range-btn {{ $range === '7days' ? 'active' : '' }}">
+                <i class="fa-solid fa-calendar-week me-1"></i>৭ দিন
+            </a>
+            <a href="{{ route('admin.dashboard', ['range' => '30days']) }}" class="range-btn {{ $range === '30days' ? 'active' : '' }}">
+                <i class="fa-regular fa-calendar me-1"></i>৩০ দিন
+            </a>
+            <a href="{{ route('admin.dashboard', ['range' => '90days']) }}" class="range-btn {{ $range === '90days' ? 'active' : '' }}">
+                <i class="fa-solid fa-calendar-days me-1"></i>৯০ দিন
+            </a>
+        </div>
+    </div>
+
+    <!-- 3. Metrics Statistics Grid (8 Cards: Range Analytics & Editorial) -->
     <div class="stats-grid">
-        <!-- 1. Today's Unique Visitors -->
+        <!-- 1. Unique Visitors in Selected Range -->
         <div class="stat-card" style="border-left: 4px solid #10b981;">
             <div class="stat-icon stat-icon-visitors"><i class="fa-solid fa-users"></i></div>
             <div class="stat-info">
-                <span class="stat-value">{{ number_format($todayVisitorsCount) }}</span>
-                <span class="stat-label">আজকের ইউনিক ভিজিটর</span>
-                <span class="stat-subtext">আজকের পৃথক পাঠক</span>
+                <span class="stat-value">{{ number_format($rangeVisitorsCount) }}</span>
+                <span class="stat-label">{{ $rangeLabelBn }}র ইউনিক ভিজিটর</span>
+                <span class="stat-subtext">নির্বাচিত সময়সীমায় পাঠক</span>
             </div>
         </div>
 
-        <!-- 2. Today's Page Views -->
+        <!-- 2. Page Views in Selected Range -->
         <div class="stat-card" style="border-left: 4px solid #dc2626;">
             <div class="stat-icon stat-icon-views"><i class="fa-solid fa-chart-line"></i></div>
             <div class="stat-info">
-                <span class="stat-value">{{ number_format($todayViewsCount) }}</span>
-                <span class="stat-label">আজকের পেজ ভিউ</span>
-                <span class="stat-subtext">আজ মোট পড়া হয়েছে</span>
+                <span class="stat-value">{{ number_format($rangeViewsCount) }}</span>
+                <span class="stat-label">{{ $rangeLabelBn }}র পেজ ভিউ</span>
+                <span class="stat-subtext">নির্বাচিত সময়সীমায় পঠিত</span>
             </div>
         </div>
 
-        <!-- 3. Last 7 Days Visitors -->
+        <!-- 3. Published News in Selected Range -->
         <div class="stat-card" style="border-left: 4px solid #0284c7;">
-            <div class="stat-icon stat-icon-traffic"><i class="fa-solid fa-chart-area"></i></div>
+            <div class="stat-icon stat-icon-traffic"><i class="fa-solid fa-newspaper"></i></div>
             <div class="stat-info">
-                <span class="stat-value">{{ number_format($weekVisitorsCount) }}</span>
-                <span class="stat-label">সাপ্তাহিক ভিজিটর</span>
-                <span class="stat-subtext">গত ৭ দিনে মোট পাঠক</span>
+                <span class="stat-value">{{ number_format($rangePostsCount) }}</span>
+                <span class="stat-label">{{ $rangeLabelBn }}র সংবাদ</span>
+                <span class="stat-subtext">সময়সীমায় প্রকাশিত পোস্ট</span>
             </div>
         </div>
 
@@ -641,10 +719,10 @@
 
         <!-- 5. Published News Posts -->
         <a href="{{ route('admin.posts.index') }}" class="stat-card">
-            <div class="stat-icon stat-icon-posts"><i class="fa-solid fa-newspaper"></i></div>
+            <div class="stat-icon stat-icon-posts"><i class="fa-solid fa-file-lines"></i></div>
             <div class="stat-info">
                 <span class="stat-value">{{ number_format($totalPosts) }}</span>
-                <span class="stat-label">প্রকাশিত সংবাদ</span>
+                <span class="stat-label">মোট প্রকাশিত সংবাদ</span>
                 <span class="stat-subtext">আজ {{ $todayPosts }}টি, ড্রাফট {{ $draftPosts }}টি</span>
             </div>
         </a>
@@ -680,14 +758,14 @@
         </a>
     </div>
 
-    <!-- 3. Visitor Traffic Trend & Device Intelligence (Split 8-4) -->
+    <!-- 4. Visitor Traffic Trend & Device Intelligence (Split 8-4) -->
     <div class="dashboard-splits split-8-4">
-        <!-- 7-Day Visitor Traffic Chart -->
+        <!-- Visitor Traffic Chart -->
         <div class="admin-card">
             <div class="card-header-wrapper">
                 <h3 class="card-title">
                     <i class="fa-solid fa-chart-line text-success"></i>
-                    <span>ভিজিটর ট্রাফিক ও পেজ ভিউ ট্রেন্ড (গত ৭ দিন)</span>
+                    <span>ভিজিটর ট্রাফিক ও পেজ ভিউ ট্রেন্ড ({{ $rangeLabelBn }})</span>
                 </h3>
                 <div class="d-flex align-items-center gap-3">
                     <span style="font-size: 0.78rem; display: flex; align-items: center; gap: 6px;">
@@ -712,7 +790,7 @@
             <div class="card-header-wrapper">
                 <h3 class="card-title">
                     <i class="fa-solid fa-mobile-screen-button text-primary"></i>
-                    <span>ভিজিটর ডিভাইস ও প্রযুক্তি বিশ্লেষণ</span>
+                    <span>ভিজিটর ডিভাইস ও প্রযুক্তি বিশ্লেষণ ({{ $rangeLabelBn }})</span>
                 </h3>
                 <span class="badge bg-light text-secondary border px-2 py-1" style="font-size: 0.76rem;">
                     ডিভাইস অ্যানালিটিক্স
@@ -1260,7 +1338,7 @@
                         beginAtZero: true,
                         suggestedMax: Math.max(...viewsData, ...visitorsData, 10) + 5,
                         ticks: {
-                            stepSize: 5,
+                            precision: 0,
                             font: {
                                 family: 'Outfit, sans-serif',
                                 size: 12

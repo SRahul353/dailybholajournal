@@ -13,15 +13,106 @@ use App\Models\Tag;
 use App\Models\User;
 use App\Models\VisitorLog;
 use Carbon\Carbon;
+use Illuminate\Http\Request;
 
 class AdminDashboardController extends Controller
 {
     /**
-     * Display the admin panel dashboard main hub with visitor intelligence.
+     * Display the admin panel dashboard with selectable range filter (today, 7days, 30days, 90days).
      */
-    public function index()
+    public function index(Request $request)
     {
-        // 1. Core Editorial Metrics
+        // 1. Validate and resolve Date Range Filter
+        $validRanges = ['today', '7days', '30days', '90days'];
+        $range = $request->query('range', '7days');
+        if (!in_array($range, $validRanges)) {
+            $range = '7days';
+        }
+
+        $now = Carbon::now();
+        $bengaliDays = [
+            'Sat' => 'শনি', 'Sun' => 'রবি', 'Mon' => 'সোম',
+            'Tue' => 'মঙ্গল', 'Wed' => 'বুধ', 'Thu' => 'বৃহস্পতি', 'Fri' => 'শুক্র'
+        ];
+        $bengaliMonths = [
+            'Jan' => 'জানু', 'Feb' => 'ফেব্রু', 'Mar' => 'মার্চ', 'Apr' => 'এপ্রিল',
+            'May' => 'মে', 'Jun' => 'জুন', 'Jul' => 'জুলাই', 'Aug' => 'আগস্ট',
+            'Sep' => 'সেপ্টে', 'Oct' => 'অক্টো', 'Nov' => 'নভে', 'Dec' => 'ডিসে'
+        ];
+
+        $chartLabels = [];
+        $chartVisitors = [];
+        $chartViews = [];
+
+        if ($range === 'today') {
+            $startDate = Carbon::today()->startOfDay();
+            $endDate = $now;
+            $rangeTitle = 'আজকের ভিজিটর ও পেজ ভিউ';
+            $rangeLabelBn = 'আজকে';
+
+            // 12 2-hour slots for today
+            for ($h = 0; $h < 24; $h += 2) {
+                $slotStart = Carbon::today()->setTime($h, 0, 0);
+                $slotEnd = Carbon::today()->setTime($h + 1, 59, 59);
+                $chartLabels[] = sprintf('%02d:00', $h);
+
+                $chartVisitors[] = VisitorLog::whereBetween('created_at', [$slotStart, $slotEnd])->distinct('ip_address')->count('ip_address');
+                $chartViews[] = VisitorLog::whereBetween('created_at', [$slotStart, $slotEnd])->count();
+            }
+        } elseif ($range === '30days') {
+            $startDate = Carbon::today()->subDays(29)->startOfDay();
+            $endDate = $now;
+            $rangeTitle = 'গত ৩০ দিনের ভিজিটর ট্রেন্ড';
+            $rangeLabelBn = 'গত ৩০ দিন';
+
+            // 30 daily data points
+            for ($i = 29; $i >= 0; $i--) {
+                $date = Carbon::today()->subDays($i);
+                $monthBn = $bengaliMonths[$date->format('M')] ?? $date->format('M');
+                $chartLabels[] = $date->format('d') . ' ' . $monthBn;
+
+                $chartVisitors[] = VisitorLog::whereDate('created_at', $date)->distinct('ip_address')->count('ip_address');
+                $chartViews[] = VisitorLog::whereDate('created_at', $date)->count();
+            }
+        } elseif ($range === '90days') {
+            $startDate = Carbon::today()->subDays(89)->startOfDay();
+            $endDate = $now;
+            $rangeTitle = 'গত ৯০ দিনের ভিজিটর ট্রেন্ড';
+            $rangeLabelBn = 'গত ৯০ দিন';
+
+            // 13 weekly buckets
+            for ($w = 12; $w >= 0; $w--) {
+                $wStart = Carbon::today()->subDays(($w * 7) + 6)->startOfDay();
+                $wEnd = Carbon::today()->subDays($w * 7)->endOfDay();
+                $startMonth = $bengaliMonths[$wStart->format('M')] ?? $wStart->format('M');
+                $endMonth = $bengaliMonths[$wEnd->format('M')] ?? $wEnd->format('M');
+                $chartLabels[] = $wStart->format('d') . ' ' . $startMonth . ' - ' . $wEnd->format('d') . ' ' . $endMonth;
+
+                $chartVisitors[] = VisitorLog::whereBetween('created_at', [$wStart, $wEnd])->distinct('ip_address')->count('ip_address');
+                $chartViews[] = VisitorLog::whereBetween('created_at', [$wStart, $wEnd])->count();
+            }
+        } else { // 7days (default)
+            $startDate = Carbon::today()->subDays(6)->startOfDay();
+            $endDate = $now;
+            $rangeTitle = 'গত ৭ দিনের ভিজিটর ট্রেন্ড';
+            $rangeLabelBn = 'গত ৭ দিন';
+
+            for ($i = 6; $i >= 0; $i--) {
+                $date = Carbon::today()->subDays($i);
+                $dayName = $bengaliDays[$date->format('D')] ?? $date->format('D');
+                $chartLabels[] = ($i === 0) ? 'আজ (' . $dayName . ')' : $dayName . ' (' . $date->format('d/m') . ')';
+
+                $chartVisitors[] = VisitorLog::whereDate('created_at', $date)->distinct('ip_address')->count('ip_address');
+                $chartViews[] = VisitorLog::whereDate('created_at', $date)->count();
+            }
+        }
+
+        // 2. Metrics calculated for the selected Range
+        $rangeVisitorsCount = VisitorLog::whereBetween('created_at', [$startDate, $endDate])->distinct('ip_address')->count('ip_address');
+        $rangeViewsCount = VisitorLog::whereBetween('created_at', [$startDate, $endDate])->count();
+        $rangePostsCount = Post::where('status', 'publish')->whereBetween('created_at', [$startDate, $endDate])->count();
+
+        // 3. Core All-time Editorial Metrics
         $totalPosts = Post::where('status', 'publish')->count();
         $todayPosts = Post::where('status', 'publish')->whereDate('created_at', Carbon::today())->count();
         $draftPosts = Post::where('status', 'draft')->count();
@@ -35,73 +126,38 @@ class AdminDashboardController extends Controller
         $unreadMessagesCount = ContactMessage::unread()->count();
         $activePoll = Poll::where('is_active', true)->first();
 
-        // 2. Visitor Analytics Metrics
-        $today = Carbon::today();
-        $todayVisitorsCount = VisitorLog::whereDate('created_at', $today)->distinct('ip_address')->count('ip_address');
-        if ($todayVisitorsCount === 0) {
-            $todayVisitorsCount = VisitorLog::whereDate('created_at', $today)->count();
-        }
-        $todayViewsCount = VisitorLog::whereDate('created_at', $today)->count();
-        $weekVisitorsCount = VisitorLog::where('created_at', '>=', Carbon::now()->subDays(7))->distinct('ip_address')->count('ip_address');
-        $monthVisitorsCount = VisitorLog::where('created_at', '>=', Carbon::now()->subDays(30))->distinct('ip_address')->count('ip_address');
+        // 4. Technology & Platform Breakdown (Filtered by selected range)
+        $rangeTotalLogs = $rangeViewsCount ?: 1;
 
-        // 3. 7-Day Visitor & Traffic Trend Chart
-        $bengaliDays = [
-            'Sat' => 'শনি',
-            'Sun' => 'রবি',
-            'Mon' => 'সোম',
-            'Tue' => 'মঙ্গল',
-            'Wed' => 'বুধ',
-            'Thu' => 'বৃহস্পতি',
-            'Fri' => 'শুক্র',
-        ];
-
-        $chartLabels = [];
-        $chartVisitors = [];
-        $chartViews = [];
-
-        for ($i = 6; $i >= 0; $i--) {
-            $date = Carbon::today()->subDays($i);
-            $dayName = $bengaliDays[$date->format('D')] ?? $date->format('D');
-            $label = ($i === 0) ? 'আজ (' . $dayName . ')' : $dayName . ' (' . $date->format('d/m') . ')';
-            $chartLabels[] = $label;
-
-            $dailyVisitors = VisitorLog::whereDate('created_at', $date)->distinct('ip_address')->count('ip_address');
-            $dailyViews = VisitorLog::whereDate('created_at', $date)->count();
-
-            $chartVisitors[] = $dailyVisitors;
-            $chartViews[] = $dailyViews;
-        }
-
-        // 4. Technology & Platform Breakdowns
-        $totalLogRecords = VisitorLog::count() ?: 1;
-
-        $deviceStats = VisitorLog::selectRaw('device, count(*) as count')
+        $deviceStats = VisitorLog::whereBetween('created_at', [$startDate, $endDate])
+            ->selectRaw('device, count(*) as count')
             ->groupBy('device')
             ->orderByDesc('count')
             ->get()
-            ->map(function ($item) use ($totalLogRecords) {
-                $item->percent = round(($item->count / $totalLogRecords) * 100);
+            ->map(function ($item) use ($rangeTotalLogs) {
+                $item->percent = round(($item->count / $rangeTotalLogs) * 100);
                 return $item;
             });
 
-        $sourceStats = VisitorLog::selectRaw('referer_source, count(*) as count')
+        $sourceStats = VisitorLog::whereBetween('created_at', [$startDate, $endDate])
+            ->selectRaw('referer_source, count(*) as count')
             ->groupBy('referer_source')
             ->orderByDesc('count')
             ->limit(5)
             ->get()
-            ->map(function ($item) use ($totalLogRecords) {
-                $item->percent = round(($item->count / $totalLogRecords) * 100);
+            ->map(function ($item) use ($rangeTotalLogs) {
+                $item->percent = round(($item->count / $rangeTotalLogs) * 100);
                 return $item;
             });
 
-        $browserStats = VisitorLog::selectRaw('browser, count(*) as count')
+        $browserStats = VisitorLog::whereBetween('created_at', [$startDate, $endDate])
+            ->selectRaw('browser, count(*) as count')
             ->groupBy('browser')
             ->orderByDesc('count')
             ->limit(4)
             ->get()
-            ->map(function ($item) use ($totalLogRecords) {
-                $item->percent = round(($item->count / $totalLogRecords) * 100);
+            ->map(function ($item) use ($rangeTotalLogs) {
+                $item->percent = round(($item->count / $rangeTotalLogs) * 100);
                 return $item;
             });
 
@@ -143,6 +199,12 @@ class AdminDashboardController extends Controller
         $maxCategoryPosts = $categoriesBreakdown->max('posts_count') ?: 1;
 
         return view('admin.dashboard', compact(
+            'range',
+            'rangeTitle',
+            'rangeLabelBn',
+            'rangeVisitorsCount',
+            'rangeViewsCount',
+            'rangePostsCount',
             'totalPosts',
             'todayPosts',
             'draftPosts',
@@ -154,10 +216,6 @@ class AdminDashboardController extends Controller
             'pendingOpinionsCount',
             'unreadMessagesCount',
             'activePoll',
-            'todayVisitorsCount',
-            'todayViewsCount',
-            'weekVisitorsCount',
-            'monthVisitorsCount',
             'chartLabels',
             'chartVisitors',
             'chartViews',
@@ -174,5 +232,6 @@ class AdminDashboardController extends Controller
         ));
     }
 }
+
 
 
