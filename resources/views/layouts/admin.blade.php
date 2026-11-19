@@ -548,7 +548,7 @@
                     </a>
                 </li>
                 <li class="menu-item">
-                    <a href="{{ route('admin.social-card') }}" class="menu-link {{ request()->routeIs('admin.social-card') || request()->routeIs('admin.posts.social-card') ? 'active' : '' }}">
+                    <a href="{{ route('admin.tools.social-card') }}" class="menu-link {{ request()->routeIs('admin.tools.social-card*') || request()->routeIs('admin.social-card') || request()->routeIs('admin.posts.social-card') ? 'active' : '' }}">
                         <i class="fa-solid fa-share-nodes"></i>
                         <span>সোশ্যাল মিডিয়া কার্ড জেনারেটর</span>
                     </a>

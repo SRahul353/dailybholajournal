@@ -56,8 +56,18 @@ Route::prefix('admin')->name('admin.')->group(function () {
         
         // Post CRUD Resource
         Route::resource('posts', App\Http\Controllers\Admin\AdminPostController::class)->except(['show']);
-        Route::get('/posts/{id}/social-card', [App\Http\Controllers\Admin\AdminPostController::class, 'socialCard'])->name('posts.social-card');
-        Route::get('/social-card', [App\Http\Controllers\Admin\AdminPostController::class, 'socialCardIndex'])->name('social-card');
+
+        // Tools: Social Media Card Generator (Dedicated Tool Controller)
+        Route::prefix('tools')->name('tools.')->group(function () {
+            Route::get('/social-card', [App\Http\Controllers\Admin\Tools\SocialCardController::class, 'index'])->name('social-card');
+            Route::get('/social-card/{id}', [App\Http\Controllers\Admin\Tools\SocialCardController::class, 'show'])->name('social-card.show');
+            Route::post('/social-card/settings', [App\Http\Controllers\Admin\Tools\SocialCardController::class, 'saveSettings'])->name('social-card.settings');
+        });
+
+        // Backwards-Compatible Aliases for Social Card
+        Route::get('/posts/{id}/social-card', [App\Http\Controllers\Admin\Tools\SocialCardController::class, 'show'])->name('posts.social-card');
+        Route::get('/social-card', [App\Http\Controllers\Admin\Tools\SocialCardController::class, 'index'])->name('social-card');
+        Route::post('/social-card/settings', [App\Http\Controllers\Admin\Tools\SocialCardController::class, 'saveSettings'])->name('social-card.settings.save');
         
         // Category CRUD Resource
         Route::resource('categories', App\Http\Controllers\Admin\AdminCategoryController::class)->only(['index', 'store', 'update', 'destroy']);
