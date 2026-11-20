@@ -23,9 +23,19 @@
                 <!-- Quote Style Vertical Side Column (Style 3) -->
                 <div class="quote-side-column" id="quoteSideColumn"></div>
 
-                <!-- Top Right Corner Profile/Emblem Logo (attached to top edge) -->
-                <div class="card-top-right-logo" id="cardTopLogo">
-                    <img id="cornerLogoImg" src="{{ !empty($cardSettings['corner_logo_image']) ? asset($cardSettings['corner_logo_image']) : asset('BJ_Content/Profile Pic b.png') }}" alt="Daily Bhola Journal" crossorigin="anonymous" class="{{ !empty($cardSettings['corner_logo_shadow']) || !isset($cardSettings['corner_logo_shadow']) ? 'logo-shadow-effect' : 'no-shadow' }}">
+                <!-- Brand Logo & Date Stack Container (Unified capsule for Poster, Quote & Breaking; transparent in Classic) -->
+                <div class="card-brand-date-stack" id="cardBrandDateStack">
+                    <div class="card-top-right-logo" id="cardTopLogo">
+                        <img id="cornerLogoImg" src="{{ !empty($cardSettings['corner_logo_image']) ? asset($cardSettings['corner_logo_image']) : asset('BJ_Content/Profile Pic b.png') }}" alt="Daily Bhola Journal" crossorigin="anonymous" class="{{ !empty($cardSettings['corner_logo_shadow']) || !isset($cardSettings['corner_logo_shadow']) ? 'logo-shadow-effect' : 'no-shadow' }}">
+                    </div>
+                    <div class="meta-row style-stack-date" id="cardMetaRowStack">
+                        <div class="d-flex align-items-center gap-2">
+                            <i class="fa-regular fa-calendar-days" id="cardDateIconStack" style="color: {{ $cardSettings['date_color'] ?? '#38bdf8' }}; font-size: 18px;"></i>
+                            <div class="news-date" id="cardDatePreviewStack" contenteditable="true" spellcheck="false">
+                                তারিখ...
+                            </div>
+                        </div>
+                    </div>
                 </div>
 
                 <!-- Breaking News Header Strip (Style 4) -->

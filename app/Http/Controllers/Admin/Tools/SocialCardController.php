@@ -100,10 +100,10 @@ class SocialCardController extends Controller
                 'footer_visible' => true,
             ],
             'poster' => [
-                'logo_visible' => false,
+                'logo_visible' => true,
                 'logo_image' => '',
                 'logo_position' => 'right',
-                'logo_size' => 135,
+                'logo_size' => 120,
                 'watermark_visible' => false,
                 'badge_visible' => false,
                 'date_visible' => true,
@@ -314,6 +314,15 @@ class SocialCardController extends Controller
             } elseif ($request->boolean('reset_style_logo_' . $sKey)) {
                 if (isset($currentSettings['style_settings'][$sKey])) {
                     $currentSettings['style_settings'][$sKey]['logo_image'] = '';
+                }
+            }
+        }
+
+        // Ensure no base64 logo_image_preview is saved anywhere in settings
+        if (isset($currentSettings['style_settings']) && is_array($currentSettings['style_settings'])) {
+            foreach ($currentSettings['style_settings'] as $k => &$sConf) {
+                if (is_array($sConf) && isset($sConf['logo_image_preview'])) {
+                    unset($sConf['logo_image_preview']);
                 }
             }
         }

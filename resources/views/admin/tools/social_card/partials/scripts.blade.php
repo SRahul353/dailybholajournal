@@ -32,6 +32,10 @@
         if (dateEl) {
             dateEl.innerText = formattedDate;
         }
+        const dateStackEl = document.getElementById('cardDatePreviewStack');
+        if (dateStackEl) {
+            dateStackEl.innerText = formattedDate;
+        }
     }
 
     // Font selection logic
@@ -196,9 +200,9 @@
     // Per-style settings and state
     const defaultStyleSettings = {
         classic: { logo_visible: true, logo_image: '', logo_position: 'right', logo_size: 135, watermark_visible: true, badge_visible: true, date_visible: true, hint_visible: true, footer_visible: true },
-        poster: { logo_visible: false, logo_image: '', logo_position: 'right', logo_size: 135, watermark_visible: false, badge_visible: false, date_visible: true, hint_visible: false, footer_visible: false },
-        quote: { logo_visible: true, logo_image: '', logo_position: 'right', logo_size: 135, watermark_visible: true, badge_visible: false, date_visible: true, hint_visible: true, footer_visible: false, quote_symbol_visible: true, speaker_visible: true },
-        breaking: { logo_visible: true, logo_image: '', logo_position: 'right', logo_size: 135, watermark_visible: true, badge_visible: false, date_visible: true, hint_visible: true, footer_visible: false, excerpt_visible: true }
+        poster: { logo_visible: true, logo_image: '', logo_position: 'right', logo_size: 120, watermark_visible: false, badge_visible: false, date_visible: true, hint_visible: false, footer_visible: false },
+        quote: { logo_visible: true, logo_image: '', logo_position: 'right', logo_size: 120, watermark_visible: true, badge_visible: false, date_visible: true, hint_visible: true, footer_visible: false, quote_symbol_visible: true, speaker_visible: true },
+        breaking: { logo_visible: true, logo_image: '', logo_position: 'right', logo_size: 120, watermark_visible: true, badge_visible: false, date_visible: true, hint_visible: true, footer_visible: false, excerpt_visible: true }
     };
     let currentStyleSettings = @json($cardSettings['style_settings'] ?? []);
     if (!currentStyleSettings || typeof currentStyleSettings !== 'object' || Array.isArray(currentStyleSettings)) {
@@ -333,19 +337,41 @@
         const cardNode = document.getElementById('social_card_node');
         if (!cardNode) return;
 
-        // 1. Logo
+        // 1. Logo & Brand-Date Stack
+        const cardBrandDateStack = document.getElementById('cardBrandDateStack');
         const cardTopLogo = document.getElementById('cardTopLogo');
         const cornerLogoImg = document.getElementById('cornerLogoImg');
-        if (cardTopLogo) {
-            const isLogoVis = cfg.hasOwnProperty('logo_visible') ? !!cfg.logo_visible : (styleKey !== 'poster');
-            cardTopLogo.style.setProperty('display', isLogoVis ? 'flex' : 'none', 'important');
-            const pos = cfg.logo_position || 'right';
-            if (pos === 'left') {
-                cardTopLogo.style.setProperty('left', '45px', 'important');
-                cardTopLogo.style.setProperty('right', 'auto', 'important');
+        const metaRowStack = document.getElementById('cardMetaRowStack');
+
+        const isLogoVis = cfg.hasOwnProperty('logo_visible') ? !!cfg.logo_visible : true;
+        const isDateVis = cfg.hasOwnProperty('date_visible') ? !!cfg.date_visible : true;
+
+        if (cardBrandDateStack) {
+            if (styleKey === 'poster' || styleKey === 'quote' || styleKey === 'breaking') {
+                const showStack = isLogoVis || isDateVis;
+                cardBrandDateStack.style.setProperty('display', showStack ? 'flex' : 'none', 'important');
+                if (metaRowStack) {
+                    metaRowStack.style.setProperty('display', isDateVis ? 'flex' : 'none', 'important');
+                }
             } else {
-                cardTopLogo.style.setProperty('right', '45px', 'important');
-                cardTopLogo.style.setProperty('left', 'auto', 'important');
+                cardBrandDateStack.style.setProperty('display', 'contents', 'important');
+                if (metaRowStack) {
+                    metaRowStack.style.setProperty('display', 'none', 'important');
+                }
+            }
+        }
+
+        if (cardTopLogo) {
+            cardTopLogo.style.setProperty('display', isLogoVis ? 'flex' : 'none', 'important');
+            if (styleKey === 'classic') {
+                const pos = cfg.logo_position || 'right';
+                if (pos === 'left') {
+                    cardTopLogo.style.setProperty('left', '45px', 'important');
+                    cardTopLogo.style.setProperty('right', 'auto', 'important');
+                } else {
+                    cardTopLogo.style.setProperty('right', '45px', 'important');
+                    cardTopLogo.style.setProperty('left', 'auto', 'important');
+                }
             }
         }
         if (cornerLogoImg) {
@@ -363,20 +389,25 @@
                 }
             }
 
-            // Apply style logo size
-            const logoSize = cfg.logo_size || (serverCardSettings && serverCardSettings.corner_logo_size) || 135;
-            cornerLogoImg.style.width = logoSize + 'px';
-            cornerLogoImg.style.height = logoSize + 'px';
+            // Apply style logo size: 120px width for poster, quote & breaking
+            if (styleKey === 'poster' || styleKey === 'quote' || styleKey === 'breaking') {
+                cornerLogoImg.style.width = '120px';
+                cornerLogoImg.style.height = 'auto';
+            } else {
+                const logoSize = cfg.logo_size || (serverCardSettings && serverCardSettings.corner_logo_size) || 135;
+                cornerLogoImg.style.width = logoSize + 'px';
+                cornerLogoImg.style.height = logoSize + 'px';
+            }
 
             const masterSizeSlider = document.getElementById('cornerLogoSizeSlider');
             const masterSizeBadge = document.getElementById('cornerLogoSizeBadge');
-            if (masterSizeSlider) masterSizeSlider.value = logoSize;
-            if (masterSizeBadge) masterSizeBadge.innerText = logoSize + 'px';
+            if (masterSizeSlider) masterSizeSlider.value = (styleKey === 'classic') ? (cfg.logo_size || 135) : 120;
+            if (masterSizeBadge) masterSizeBadge.innerText = ((styleKey === 'classic') ? (cfg.logo_size || 135) : 120) + 'px';
 
             const styleSlider = document.getElementById('style_logo_size_slider_' + styleKey);
             const styleBadge = document.getElementById('style_logo_size_badge_' + styleKey);
-            if (styleSlider) styleSlider.value = logoSize;
-            if (styleBadge) styleBadge.innerText = logoSize + 'px';
+            if (styleSlider) styleSlider.value = (styleKey === 'classic') ? (cfg.logo_size || 135) : 120;
+            if (styleBadge) styleBadge.innerText = ((styleKey === 'classic') ? (cfg.logo_size || 135) : 120) + 'px';
         }
 
         // 2. Watermark
@@ -736,6 +767,10 @@
         if (dateEl) dateEl.style.color = color;
         if (hintEl) hintEl.style.color = color;
         if (dateIcon) dateIcon.style.color = color;
+        const dateStackEl = document.getElementById('cardDatePreviewStack');
+        const dateStackIcon = document.getElementById('cardDateIconStack');
+        if (dateStackEl) dateStackEl.style.color = color;
+        if (dateStackIcon) dateStackIcon.style.color = color;
 
         const datePicker = document.getElementById('dateColorPicker');
         if (datePicker && color.startsWith('#')) datePicker.value = color;
@@ -1336,6 +1371,17 @@
                     delete resetStyleLogoFlags[sKey];
                 }
 
+                if (data.settings) {
+                    Object.assign(serverCardSettings, data.settings);
+                    if (data.settings.style_settings) {
+                        for (const sKey of ['classic', 'poster', 'quote', 'breaking']) {
+                            if (data.settings.style_settings[sKey]) {
+                                currentStyleSettings[sKey] = Object.assign({}, defaultStyleSettings[sKey], data.settings.style_settings[sKey]);
+                            }
+                        }
+                    }
+                }
+
                 try {
                     localStorage.setItem('dailybhola_social_card_settings', JSON.stringify(data.settings));
                 } catch(e) {}
@@ -1881,7 +1927,7 @@
     }
 
     // Share & Copy to Clipboard Workflow for Facebook
-    function shareOnFacebook(e) {
+    async function shareOnFacebook(e) {
         e.preventDefault();
         const node = document.getElementById('social_card_node');
         const scaleContainer = document.getElementById('scaleContainer');
@@ -1895,6 +1941,11 @@
         const activeEl = document.activeElement;
         if (activeEl && activeEl.isContentEditable) {
             activeEl.blur();
+        }
+
+        // Wait for all web fonts to load completely
+        if (document.fonts && document.fonts.ready) {
+            try { await document.fonts.ready; } catch(err) {}
         }
 
         // 2. Temporarily save and reset scaling transform to 1 (natural 1080x1080 size) to avoid html2canvas crop bugs
@@ -1913,8 +1964,15 @@
                 allowTaint: false,
                 width: 1080,
                 height: 1080,
-                scale: 2, 
-                backgroundColor: '#000000'
+                scale: 2,
+                x: 0,
+                y: 0,
+                scrollX: 0,
+                scrollY: 0,
+                windowWidth: 1080,
+                windowHeight: 1080,
+                backgroundColor: '#000000',
+                logging: false
             }).then(canvas => {
                 // Restore exporting class and scale transform immediately
                 node.classList.remove('exporting');
@@ -1961,11 +2019,11 @@
                 btn.innerHTML = originalText;
                 btn.style.pointerEvents = 'auto';
             });
-        }, 180);
+        }, 150);
     }
 
     // Save as Image Function
-    function download_SocialCard(e) {
+    async function download_SocialCard(e) {
         e.preventDefault();
         const node = document.getElementById('social_card_node');
         const scaleContainer = document.getElementById('scaleContainer');
@@ -1979,6 +2037,11 @@
         const activeEl = document.activeElement;
         if (activeEl && activeEl.isContentEditable) {
             activeEl.blur();
+        }
+
+        // Wait for all web fonts to load completely
+        if (document.fonts && document.fonts.ready) {
+            try { await document.fonts.ready; } catch(err) {}
         }
 
         // 2. Temporarily save and reset scaling transform to 1 (natural 1080x1080 size) to avoid html2canvas crop bugs
@@ -1997,8 +2060,15 @@
                 allowTaint: false,
                 width: 1080,
                 height: 1080,
-                scale: 2, 
-                backgroundColor: '#000000'
+                scale: 2,
+                x: 0,
+                y: 0,
+                scrollX: 0,
+                scrollY: 0,
+                windowWidth: 1080,
+                windowHeight: 1080,
+                backgroundColor: '#000000',
+                logging: false
             }).then(canvas => {
                 // 4. Restore exporting class and scale transform immediately
                 node.classList.remove('exporting');
@@ -2023,7 +2093,7 @@
                 btn.innerHTML = originalText;
                 btn.style.pointerEvents = 'auto';
             });
-        }, 180);
+        }, 150);
     }
 
     // Dynamic Auto-scaling for the 1080x1080 canvas workspace

@@ -708,7 +708,7 @@
     
     .details-hint { 
         font-family: 'Noto Sans Bengali', sans-serif !important;
-        font-size: 22px; 
+        font-size: 24px; 
         color: #7dd3fc; /* Soft Sky Blue */
         margin-top: 15px; 
         font-weight: 500; 

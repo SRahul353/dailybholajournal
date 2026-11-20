@@ -34,61 +34,83 @@
         z-index: 1;
     }
 
-    .news-card-1080.style-quote .quote-side-column {
+    /* 2. Unified Brand & Date Stack (Logo on top, Date below - like Poster) */
+    .news-card-1080.style-quote .card-brand-date-stack {
+        position: absolute !important;
+        top: 45px !important;
+        right: 50px !important;
+        left: auto !important;
+        display: flex !important;
+        flex-direction: column !important;
+        align-items: center !important;
+        gap: 8px !important;
+        background: rgba(10, 15, 30, 0.85) !important;
+        backdrop-filter: blur(14px) !important;
+        -webkit-backdrop-filter: blur(14px) !important;
+        padding: 14px 22px !important;
+        border-radius: 20px !important;
+        border: 1.5px solid rgba(255, 255, 255, 0.22) !important;
+        box-shadow: 0 10px 30px rgba(0, 0, 0, 0.6) !important;
+        z-index: 20 !important;
+        pointer-events: auto !important;
+    }
+    .news-card-1080.style-quote .card-top-right-logo {
+        display: flex !important;
+        position: relative !important;
+        top: auto !important;
+        right: auto !important;
+        left: auto !important;
+        margin: 0 !important;
+        padding: 0 !important;
+    }
+    .news-card-1080.style-quote .card-top-right-logo img {
+        width: 120px !important;
+        height: auto !important;
+        max-height: 60px !important;
+        object-fit: contain !important;
+        filter: drop-shadow(0 2px 8px rgba(0, 0, 0, 0.7)) !important;
+    }
+    .news-card-1080.style-quote .meta-row.style-stack-date {
+        display: flex !important;
+        position: relative !important;
+        top: auto !important;
+        right: auto !important;
+        left: auto !important;
+        margin: 0 !important;
+        padding: 0 !important;
+        width: auto !important;
+        height: auto !important;
+        justify-content: center !important;
+    }
+    .news-card-1080.style-quote .meta-row.style-stack-date > div {
+        background: transparent !important;
+        border: none !important;
+        box-shadow: none !important;
+        padding: 0 !important;
+        gap: 8px !important;
+        display: inline-flex !important;
+        align-items: center !important;
+    }
+    .news-card-1080.style-quote .meta-row.style-stack-date .news-date {
+        font-size: 19px !important;
+        font-weight: 700 !important;
+        color: #f1f5f9 !important;
+        text-shadow: 0 2px 4px rgba(0, 0, 0, 0.8) !important;
+    }
+    .news-card-1080.style-quote .meta-row.style-stack-date i {
+        font-size: 17px !important;
+        color: #38bdf8 !important;
+    }
+
+    /* Hide the bottom-content meta row */
+    .news-card-1080.style-quote .bottom-content-wrapper .meta-row {
         display: none !important;
     }
 
-    /* 2. Top-right Logo (attached to top edge) */
-    .news-card-1080.style-quote .card-top-right-logo {
-        display: flex;
-        position: absolute !important;
-        top: 0 !important;
-        right: 45px;
-        left: auto;
-        z-index: 20 !important;
-    }
-
-    /* 3. Top-right Date (under logo) */
-    .news-card-1080.style-quote .meta-row {
-        position: absolute !important;
-        top: 145px !important;
-        right: 45px !important;
-        left: auto !important;
-        width: auto !important;
-        height: auto !important;
-        margin: 0 !important;
-        padding: 0 !important;
-        z-index: 20 !important;
-        display: flex;
-        justify-content: flex-end !important;
-        align-items: center !important;
-        pointer-events: auto !important;
-    }
-    .news-card-1080.style-quote .meta-row > div {
-        background: rgba(0, 0, 0, 0.45) !important;
-        padding: 7px 18px !important;
-        border-radius: 20px !important;
-        border: 1px solid rgba(255, 255, 255, 0.2) !important;
-        box-shadow: 0 4px 15px rgba(0, 0, 0, 0.5) !important;
-        display: inline-flex !important;
-        align-items: center !important;
-        gap: 8px !important;
-    }
-    .news-card-1080.style-quote .meta-row .news-date {
-        font-size: 19px !important;
-        font-weight: 700 !important;
-        color: #facc15 !important;
-        text-shadow: 0 2px 4px rgba(0, 0, 0, 0.8) !important;
-    }
-    .news-card-1080.style-quote .meta-row i {
-        font-size: 18px !important;
-        color: #facc15 !important;
-    }
-
-    /* 4A. Normal Mode: Picture Frame Box (নরমাল ফ্রেম মোড) */
+    /* 3A. Normal Mode: Picture Frame Box (নরমাল ফ্রেম মোড) */
     .news-card-1080.style-quote .news-image-wrapper {
         position: absolute !important;
-        right: 35px !important;
+        right: 40px !important;
         bottom: 125px !important;
         left: auto !important;
         top: auto !important;
@@ -126,18 +148,18 @@
         margin: auto !important;
     }
 
-    /* 4B. Cutout Mode: Max Width 1080px Cutout PNG (কাটআউট মোড - স্বচ্ছ পিএনজি) */
+    /* 3B. Cutout Mode: EXACT 420px Width on the right side */
     .news-card-1080.style-quote .news-image-wrapper.quote-cutout-mode {
         position: absolute !important;
         right: 0 !important;
-        left: 0 !important;
+        left: auto !important;
         bottom: 100px !important;
-        top: 0 !important;
-        width: 1080px !important;
-        max-width: 1080px !important;
-        height: 980px !important;
+        top: auto !important;
+        width: 420px !important;
+        max-width: 420px !important;
+        height: 870px !important;
         border-radius: 0 !important;
-        overflow: hidden !important;
+        overflow: visible !important;
         border: none !important;
         box-shadow: none !important;
         background: transparent !important;
@@ -149,20 +171,19 @@
     }
     .news-card-1080.style-quote.footer-none .news-image-wrapper.quote-cutout-mode {
         bottom: 0 !important;
-        height: 1080px !important;
+        height: 970px !important;
     }
     .news-card-1080.style-quote .news-image-wrapper.quote-cutout-mode .news-image {
-        width: 100% !important;
-        max-width: 1080px !important;
+        width: 420px !important;
+        max-width: 420px !important;
         height: 100% !important;
         object-fit: contain !important;
         object-position: bottom right !important;
         filter: drop-shadow(0 15px 30px rgba(0, 0, 0, 0.85)) !important;
         transform-origin: bottom right !important;
-        transition: transform 0.12s ease-out;
     }
 
-    /* 5. Content Section Container */
+    /* 4. Content Section Container */
     .news-card-1080.style-quote .bottom-content-wrapper {
         position: absolute !important;
         top: 0 !important;
@@ -180,24 +201,22 @@
         pointer-events: none !important;
     }
 
-    /* 6. Extra Large Quotation mark symbol */
+    /* 5. Big Golden Luxury Quote Icon */
     .news-card-1080.style-quote .quote-symbol-badge {
-        display: inline-flex;
+        display: inline-flex !important;
         position: absolute !important;
         top: 55px !important;
         left: 60px !important;
-        align-items: center !important;
-        justify-content: flex-start !important;
-        font-size: 115px !important;
-        line-height: 0.8 !important;
-        color: #facc15;
-        margin-bottom: 0 !important;
-        filter: drop-shadow(0 6px 20px rgba(250, 204, 21, 0.5)) !important;
-        pointer-events: none !important;
+        font-size: 65px !important;
+        line-height: 1 !important;
+        color: #facc15 !important;
+        opacity: 0.95 !important;
+        filter: drop-shadow(0 4px 12px rgba(250, 204, 21, 0.4)) !important;
         z-index: 15 !important;
+        pointer-events: auto !important;
     }
 
-    /* 7. Quote Headline & Speaker Wrapper */
+    /* 6. Quote Headline & Speaker Wrapper (Left Column) */
     .quote-excerpt-text,
     .quote-speaker-wrapper {
         display: none;
@@ -207,9 +226,9 @@
     }
     .news-card-1080.style-quote .headline-wrapper {
         position: absolute !important;
-        top: 175px !important;
+        top: 155px !important;
         left: 60px !important;
-        width: 530px !important;
+        width: 550px !important;
         display: flex !important;
         flex-direction: column !important;
         align-items: flex-start !important;
@@ -238,10 +257,12 @@
         margin-top: 35px !important;
         margin-left: auto !important;
         width: 100% !important;
+        border-top: 2px solid rgba(250, 204, 21, 0.45) !important;
+        padding-top: 18px !important;
         pointer-events: auto !important;
     }
     .news-card-1080.style-quote .quote-speaker-name {
-        font-size: 28px !important;
+        font-size: 30px !important;
         font-weight: 800 !important;
         color: #facc15 !important;
         font-family: 'Noto Sans Bengali', sans-serif !important;
@@ -258,9 +279,9 @@
         text-shadow: 0 2px 6px rgba(0, 0, 0, 0.8) !important;
     }
 
-    /* 8. Details hint at bottom */
+    /* 7. Details hint at bottom */
     .news-card-1080.style-quote .details-hint {
-        display: inline-block;
+        display: inline-block !important;
         position: absolute !important;
         bottom: 125px !important;
         left: 60px !important;
@@ -277,12 +298,12 @@
         bottom: 45px !important;
     }
 
-    /* 9. Watermark hidden on quote style */
+    /* 8. Watermark hidden on quote style */
     .news-card-1080.style-quote .text-area-watermark {
         display: none !important;
     }
 
-    /* 10. Bottom footer bar */
+    /* 9. Bottom footer bar */
     .news-card-1080.style-quote .full-width-ad-bar,
     .news-card-1080.style-quote .official-brand-footer {
         position: absolute !important;
