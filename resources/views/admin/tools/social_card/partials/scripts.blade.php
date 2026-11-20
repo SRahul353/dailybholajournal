@@ -268,7 +268,7 @@
 
         if (cornerLogoImg) {
             const defaultLogo = "{{ !empty($cardSettings['corner_logo_image']) ? asset($cardSettings['corner_logo_image']) : asset('BJ_Content/Profile Pic b.png') }}";
-            if (cornerLogoImg.dataset.masterSrc) {
+            if (cornerLogoImg.dataset && cornerLogoImg.dataset.masterSrc) {
                 cornerLogoImg.src = cornerLogoImg.dataset.masterSrc;
             } else if (!cornerLogoImg.src || cornerLogoImg.src.includes('Profile%20Pic%20b.png')) {
                 cornerLogoImg.src = defaultLogo;
@@ -310,10 +310,6 @@
             } else {
                 detailsHint.style.setProperty('display', isHintVis ? 'inline-block' : 'none', 'important');
             }
-        }
-            const isHintVis = cfg.hasOwnProperty('hint_visible') ? !!cfg.hint_visible : true;
-            const displayType = (styleKey === 'quote' || styleKey === 'breaking') ? 'inline-block' : 'block';
-            detailsHint.style.setProperty('display', isHintVis ? displayType : 'none', 'important');
         }
 
         // 6. Footer bar (Ad / Official Brand)
