@@ -34,80 +34,54 @@
         z-index: 1;
     }
 
-    /* 2. Unified Brand & Date Stack (Logo on top, Date below - like Poster) */
-    .news-card-1080.style-quote .card-brand-date-stack {
-        position: absolute !important;
-        top: 45px !important;
-        right: 50px !important;
-        left: auto !important;
-        display: flex !important;
-        flex-direction: column !important;
-        align-items: center !important;
-        gap: 8px !important;
-        background: rgba(10, 15, 30, 0.85) !important;
-        backdrop-filter: blur(14px) !important;
-        -webkit-backdrop-filter: blur(14px) !important;
-        padding: 14px 22px !important;
-        border-radius: 20px !important;
-        border: 1.5px solid rgba(255, 255, 255, 0.22) !important;
-        box-shadow: 0 10px 30px rgba(0, 0, 0, 0.6) !important;
-        z-index: 20 !important;
-        pointer-events: auto !important;
-    }
+    /* 2. Corner Logo: Exactly the same as Classic */
     .news-card-1080.style-quote .card-top-right-logo {
-        display: flex !important;
-        position: relative !important;
-        top: auto !important;
-        right: auto !important;
+        position: absolute !important;
+        top: 0 !important;
+        right: 45px !important;
         left: auto !important;
-        margin: 0 !important;
-        padding: 0 !important;
-    }
-    .news-card-1080.style-quote .card-top-right-logo img {
-        width: 120px !important;
-        height: auto !important;
-        max-height: 60px !important;
-        object-fit: contain !important;
-        filter: drop-shadow(0 2px 8px rgba(0, 0, 0, 0.7)) !important;
-    }
-    .news-card-1080.style-quote .meta-row.style-stack-date {
+        z-index: 20 !important;
         display: flex !important;
-        position: relative !important;
-        top: auto !important;
+    }
+
+    /* 3. Meta Row (Date): Same style as Classic, positioned on the left alongside quote badge */
+    .news-card-1080.style-quote .meta-row {
+        position: absolute !important;
+        top: 65px !important;
+        left: 155px !important;
         right: auto !important;
-        left: auto !important;
-        margin: 0 !important;
-        padding: 0 !important;
         width: auto !important;
         height: auto !important;
-        justify-content: center !important;
-    }
-    .news-card-1080.style-quote .meta-row.style-stack-date > div {
-        background: transparent !important;
-        border: none !important;
-        box-shadow: none !important;
+        margin: 0 !important;
         padding: 0 !important;
-        gap: 8px !important;
+        z-index: 20 !important;
+        display: flex !important;
+        align-items: center !important;
+        pointer-events: auto !important;
+    }
+    .news-card-1080.style-quote .meta-row > div {
+        background: rgba(0, 0, 0, 0.45) !important;
+        backdrop-filter: blur(10px) !important;
+        -webkit-backdrop-filter: blur(10px) !important;
+        padding: 7px 20px !important;
+        border-radius: 20px !important;
+        border: 1px solid rgba(255, 255, 255, 0.18) !important;
+        box-shadow: 0 4px 14px rgba(0, 0, 0, 0.3) !important;
         display: inline-flex !important;
         align-items: center !important;
+        gap: 10px !important;
     }
-    .news-card-1080.style-quote .meta-row.style-stack-date .news-date {
-        font-size: 19px !important;
-        font-weight: 700 !important;
-        color: #f1f5f9 !important;
-        text-shadow: 0 2px 4px rgba(0, 0, 0, 0.8) !important;
+    .news-card-1080.style-quote .meta-row .news-date {
+        font-size: 20px !important;
+        font-weight: 600 !important;
+        color: #f8fafc !important;
     }
-    .news-card-1080.style-quote .meta-row.style-stack-date i {
-        font-size: 17px !important;
+    .news-card-1080.style-quote .meta-row i {
+        font-size: 18px !important;
         color: #38bdf8 !important;
     }
 
-    /* Hide the bottom-content meta row */
-    .news-card-1080.style-quote .bottom-content-wrapper .meta-row {
-        display: none !important;
-    }
-
-    /* 3A. Normal Mode: Picture Frame Box (নরমাল ফ্রেম মোড) */
+    /* 4A. Normal Mode: Picture Frame Box */
     .news-card-1080.style-quote .news-image-wrapper {
         position: absolute !important;
         right: 40px !important;
@@ -148,7 +122,7 @@
         margin: auto !important;
     }
 
-    /* 3B. Cutout Mode: EXACT 420px Width on the right side */
+    /* 4B. Cutout Mode: 420px Width on the right side */
     .news-card-1080.style-quote .news-image-wrapper.quote-cutout-mode {
         position: absolute !important;
         right: 0 !important;
@@ -183,7 +157,7 @@
         transform-origin: bottom right !important;
     }
 
-    /* 4. Content Section Container */
+    /* 5. Content Section Container */
     .news-card-1080.style-quote .bottom-content-wrapper {
         position: absolute !important;
         top: 0 !important;
@@ -201,22 +175,22 @@
         pointer-events: none !important;
     }
 
-    /* 5. Big Golden Luxury Quote Icon */
+    /* 6. Big Golden Luxury Quote Icon */
     .news-card-1080.style-quote .quote-symbol-badge {
         display: inline-flex !important;
         position: absolute !important;
         top: 55px !important;
         left: 60px !important;
-        font-size: 65px !important;
+        font-size: 60px !important;
         line-height: 1 !important;
         color: #facc15 !important;
         opacity: 0.95 !important;
         filter: drop-shadow(0 4px 12px rgba(250, 204, 21, 0.4)) !important;
-        z-index: 15 !important;
+        z-index: 20 !important;
         pointer-events: auto !important;
     }
 
-    /* 6. Quote Headline & Speaker Wrapper (Left Column) */
+    /* 7. Quote Headline & Speaker Wrapper */
     .quote-excerpt-text,
     .quote-speaker-wrapper {
         display: none;
@@ -279,7 +253,7 @@
         text-shadow: 0 2px 6px rgba(0, 0, 0, 0.8) !important;
     }
 
-    /* 7. Details hint at bottom */
+    /* 8. Details hint at bottom */
     .news-card-1080.style-quote .details-hint {
         display: inline-block !important;
         position: absolute !important;
@@ -298,12 +272,12 @@
         bottom: 45px !important;
     }
 
-    /* 8. Watermark hidden on quote style */
+    /* 9. Watermark hidden on quote style */
     .news-card-1080.style-quote .text-area-watermark {
         display: none !important;
     }
 
-    /* 9. Bottom footer bar */
+    /* 10. Bottom footer bar */
     .news-card-1080.style-quote .full-width-ad-bar,
     .news-card-1080.style-quote .official-brand-footer {
         position: absolute !important;

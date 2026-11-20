@@ -238,98 +238,10 @@
         }
     }
 
-    function setStyleLogoPosition(sKey, pos) {
-        if (!currentStyleSettings[sKey]) currentStyleSettings[sKey] = {};
-        currentStyleSettings[sKey]['logo_position'] = pos;
-        if (currentCardStyle === sKey) {
-            applyStyleObjectSettings(sKey);
-            const lRadio = document.getElementById('logoPosLeft');
-            const rRadio = document.getElementById('logoPosRight');
-            if (pos === 'left' && lRadio) lRadio.checked = true;
-            if (pos === 'right' && rRadio) rRadio.checked = true;
-            if (sKey === 'poster') {
-                const metaRow = document.getElementById('cardMetaRow');
-                if (metaRow) {
-                    metaRow.style.setProperty('justify-content', pos === 'left' ? 'flex-end' : 'flex-start', 'important');
-                }
-            }
-        }
-    }
-
-    function setStyleLogoSize(sKey, size) {
-        size = parseInt(size, 10) || 135;
-        if (!currentStyleSettings[sKey]) currentStyleSettings[sKey] = {};
-        currentStyleSettings[sKey]['logo_size'] = size;
-
-        const badge = document.getElementById('style_logo_size_badge_' + sKey);
-        if (badge) badge.innerText = size + 'px';
-
-        const slider = document.getElementById('style_logo_size_slider_' + sKey);
-        if (slider) slider.value = size;
-
-        if (currentCardStyle === sKey) {
-            const img = document.getElementById('cornerLogoImg');
-            if (img) {
-                img.style.width = size + 'px';
-                img.style.height = size + 'px';
-            }
-            const masterSlider = document.getElementById('cornerLogoSizeSlider');
-            const masterBadge = document.getElementById('cornerLogoSizeBadge');
-            if (masterSlider) masterSlider.value = size;
-            if (masterBadge) masterBadge.innerText = size + 'px';
-        }
-    }
-
-    function previewStyleLogo(sKey, input) {
-        if (input.files && input.files[0]) {
-            const file = input.files[0];
-            styleLogoFiles[sKey] = file;
-            delete resetStyleLogoFlags[sKey];
-            const reader = new FileReader();
-            reader.onload = function(e) {
-                const previewImg = document.getElementById('styleLogoPreview_' + sKey);
-                if (previewImg) previewImg.src = e.target.result;
-                const logoBox = document.getElementById('styleLogoBox_' + sKey);
-                const noLogoBox = document.getElementById('styleNoLogoBox_' + sKey);
-                if (logoBox) logoBox.style.display = '';
-                if (noLogoBox) noLogoBox.style.display = 'none';
-                if (!currentStyleSettings[sKey]) currentStyleSettings[sKey] = {};
-                currentStyleSettings[sKey].logo_image_preview = e.target.result;
-                if (currentCardStyle === sKey) {
-                    applyStyleObjectSettings(sKey);
-                }
-            };
-            reader.readAsDataURL(file);
-        }
-    }
-
-    function resetStyleLogo(sKey) {
-        delete styleLogoFiles[sKey];
-        resetStyleLogoFlags[sKey] = true;
-        if (currentStyleSettings[sKey]) {
-            currentStyleSettings[sKey].logo_image = '';
-            delete currentStyleSettings[sKey].logo_image_preview;
-        }
-        if (sKey === 'poster') {
-            const logoBox = document.getElementById('styleLogoBox_' + sKey);
-            const noLogoBox = document.getElementById('styleNoLogoBox_' + sKey);
-            if (logoBox) logoBox.style.display = 'none';
-            if (noLogoBox) noLogoBox.style.display = 'flex';
-        } else {
-            const defaultCornerLogo = "{{ !empty($cardSettings['corner_logo_image']) ? asset($cardSettings['corner_logo_image']) : asset('BJ_Content/Profile Pic b.png') }}";
-            const previewImg = document.getElementById('styleLogoPreview_' + sKey);
-            if (previewImg) previewImg.src = defaultCornerLogo;
-            const logoBox = document.getElementById('styleLogoBox_' + sKey);
-            const noLogoBox = document.getElementById('styleNoLogoBox_' + sKey);
-            if (logoBox) logoBox.style.display = '';
-            if (noLogoBox) noLogoBox.style.display = 'none';
-        }
-        const fileInput = document.getElementById('style_logo_input_' + sKey);
-        if (fileInput) fileInput.value = '';
-        if (currentCardStyle === sKey) {
-            applyStyleObjectSettings(sKey);
-        }
-    }
+    function setStyleLogoPosition(sKey, pos) {}
+    function setStyleLogoSize(sKey, size) {}
+    function previewStyleLogo(sKey, input) {}
+    function resetStyleLogo(sKey) {}
 
     function applyStyleObjectSettings(styleKey) {
         if (!styleKey) styleKey = currentCardStyle || 'classic';
@@ -337,112 +249,68 @@
         const cardNode = document.getElementById('social_card_node');
         if (!cardNode) return;
 
-        // 1. Logo & Brand-Date Stack
-        const cardBrandDateStack = document.getElementById('cardBrandDateStack');
+        // 1. Unified Corner Logo (Classic, Poster, Quote, Breaking - all identical to Classic)
         const cardTopLogo = document.getElementById('cardTopLogo');
         const cornerLogoImg = document.getElementById('cornerLogoImg');
-        const metaRowStack = document.getElementById('cardMetaRowStack');
-
-        const isLogoVis = cfg.hasOwnProperty('logo_visible') ? !!cfg.logo_visible : true;
-        const isDateVis = cfg.hasOwnProperty('date_visible') ? !!cfg.date_visible : true;
-
-        if (cardBrandDateStack) {
-            if (styleKey === 'poster' || styleKey === 'quote' || styleKey === 'breaking') {
-                const showStack = isLogoVis || isDateVis;
-                cardBrandDateStack.style.setProperty('display', showStack ? 'flex' : 'none', 'important');
-                if (metaRowStack) {
-                    metaRowStack.style.setProperty('display', isDateVis ? 'flex' : 'none', 'important');
-                }
-            } else {
-                cardBrandDateStack.style.setProperty('display', 'contents', 'important');
-                if (metaRowStack) {
-                    metaRowStack.style.setProperty('display', 'none', 'important');
-                }
-            }
-        }
+        const isLogoVis = document.getElementById('toggleCornerLogo') ? document.getElementById('toggleCornerLogo').checked : true;
 
         if (cardTopLogo) {
             cardTopLogo.style.setProperty('display', isLogoVis ? 'flex' : 'none', 'important');
-            if (styleKey === 'classic') {
-                const pos = cfg.logo_position || 'right';
-                if (pos === 'left') {
-                    cardTopLogo.style.setProperty('left', '45px', 'important');
-                    cardTopLogo.style.setProperty('right', 'auto', 'important');
-                } else {
-                    cardTopLogo.style.setProperty('right', '45px', 'important');
-                    cardTopLogo.style.setProperty('left', 'auto', 'important');
-                }
+            const pos = (document.getElementById('logoPosLeft') && document.getElementById('logoPosLeft').checked) ? 'left' : 'right';
+            if (pos === 'left') {
+                cardTopLogo.style.setProperty('left', '45px', 'important');
+                cardTopLogo.style.setProperty('right', 'auto', 'important');
+            } else {
+                cardTopLogo.style.setProperty('right', '45px', 'important');
+                cardTopLogo.style.setProperty('left', 'auto', 'important');
             }
         }
+
         if (cornerLogoImg) {
             const defaultLogo = "{{ !empty($cardSettings['corner_logo_image']) ? asset($cardSettings['corner_logo_image']) : asset('BJ_Content/Profile Pic b.png') }}";
-            if (cfg.logo_image_preview) {
-                cornerLogoImg.src = cfg.logo_image_preview;
-            } else if (cfg.logo_image) {
-                const src = (cfg.logo_image.startsWith('http') || cfg.logo_image.startsWith('/')) ? cfg.logo_image : ('/' + cfg.logo_image);
-                cornerLogoImg.src = src;
-            } else {
-                if (cornerLogoImg.dataset.masterSrc) {
-                    cornerLogoImg.src = cornerLogoImg.dataset.masterSrc;
-                } else {
-                    cornerLogoImg.src = defaultLogo;
-                }
-            }
-
-            // Apply style logo size: 120px width for poster, quote & breaking
-            if (styleKey === 'poster' || styleKey === 'quote' || styleKey === 'breaking') {
-                cornerLogoImg.style.width = '120px';
-                cornerLogoImg.style.height = 'auto';
-            } else {
-                const logoSize = cfg.logo_size || (serverCardSettings && serverCardSettings.corner_logo_size) || 135;
-                cornerLogoImg.style.width = logoSize + 'px';
-                cornerLogoImg.style.height = logoSize + 'px';
+            if (cornerLogoImg.dataset.masterSrc) {
+                cornerLogoImg.src = cornerLogoImg.dataset.masterSrc;
+            } else if (!cornerLogoImg.src || cornerLogoImg.src.includes('Profile%20Pic%20b.png')) {
+                cornerLogoImg.src = defaultLogo;
             }
 
             const masterSizeSlider = document.getElementById('cornerLogoSizeSlider');
-            const masterSizeBadge = document.getElementById('cornerLogoSizeBadge');
-            if (masterSizeSlider) masterSizeSlider.value = (styleKey === 'classic') ? (cfg.logo_size || 135) : 120;
-            if (masterSizeBadge) masterSizeBadge.innerText = ((styleKey === 'classic') ? (cfg.logo_size || 135) : 120) + 'px';
-
-            const styleSlider = document.getElementById('style_logo_size_slider_' + styleKey);
-            const styleBadge = document.getElementById('style_logo_size_badge_' + styleKey);
-            if (styleSlider) styleSlider.value = (styleKey === 'classic') ? (cfg.logo_size || 135) : 120;
-            if (styleBadge) styleBadge.innerText = ((styleKey === 'classic') ? (cfg.logo_size || 135) : 120) + 'px';
+            const logoSize = masterSizeSlider ? (parseInt(masterSizeSlider.value, 10) || 135) : 135;
+            cornerLogoImg.style.width = logoSize + 'px';
+            cornerLogoImg.style.height = logoSize + 'px';
         }
 
         // 2. Watermark
         const watermark = document.getElementById('cardWatermarkImg');
         if (watermark) {
-            const isWatermarkVis = cfg.hasOwnProperty('watermark_visible') ? !!cfg.watermark_visible : (styleKey !== 'poster');
-            watermark.style.setProperty('display', isWatermarkVis ? 'block' : 'none', 'important');
+            const isWatermarkVis = document.getElementById('toggleWatermark') ? document.getElementById('toggleWatermark').checked : true;
+            watermark.style.setProperty('display', (isWatermarkVis && styleKey !== 'poster') ? 'block' : 'none', 'important');
         }
 
         // 3. Reporter Badge
         const badgeWrapper = document.getElementById('reporterBadgeWrapper');
         if (badgeWrapper) {
-            const isBadgeVis = cfg.hasOwnProperty('badge_visible') ? !!cfg.badge_visible : false;
-            badgeWrapper.style.setProperty('display', isBadgeVis ? 'flex' : 'none', 'important');
+            const isBadgeVis = document.getElementById('toggleCategoryBadge') ? document.getElementById('toggleCategoryBadge').checked : true;
+            badgeWrapper.style.setProperty('display', (isBadgeVis && styleKey !== 'poster') ? 'flex' : 'none', 'important');
         }
 
-        // 4. Date bar
+        // 4. Date bar (Meta Row) - Unified across all styles, same as Classic
         const metaRow = document.getElementById('cardMetaRow');
         if (metaRow) {
-            const isDateVis = cfg.hasOwnProperty('date_visible') ? !!cfg.date_visible : true;
-            metaRow.style.setProperty('display', isDateVis ? 'flex' : 'none', 'important');
-
-            if (styleKey === 'poster') {
-                const pos = cfg.logo_position || 'right';
-                metaRow.style.setProperty('justify-content', pos === 'left' ? 'flex-end' : 'flex-start', 'important');
-            } else if (styleKey === 'classic') {
-                metaRow.style.setProperty('justify-content', 'flex-start', 'important');
-            } else if (styleKey === 'quote' || styleKey === 'breaking') {
-                metaRow.style.setProperty('justify-content', 'flex-end', 'important');
-            }
+            metaRow.style.setProperty('display', 'flex', 'important');
+            metaRow.style.setProperty('justify-content', 'flex-start', 'important');
         }
 
         // 5. Details hint
         const detailsHint = document.getElementById('cardDetailsHint');
         if (detailsHint) {
+            const isHintVis = document.getElementById('toggleDetailsHint') ? document.getElementById('toggleDetailsHint').checked : true;
+            if (styleKey === 'poster') {
+                detailsHint.style.setProperty('display', 'none', 'important');
+            } else {
+                detailsHint.style.setProperty('display', isHintVis ? 'inline-block' : 'none', 'important');
+            }
+        }
             const isHintVis = cfg.hasOwnProperty('hint_visible') ? !!cfg.hint_visible : true;
             const displayType = (styleKey === 'quote' || styleKey === 'breaking') ? 'inline-block' : 'block';
             detailsHint.style.setProperty('display', isHintVis ? displayType : 'none', 'important');
@@ -593,22 +461,11 @@
             } catch(e) {}
         }
 
-        // Date row and watermark logo alignment according to style requirements
+        // Date row: Unified across all styles, same as Classic
         const metaRow = document.getElementById('cardMetaRow');
         const watermark = document.getElementById('cardWatermarkImg');
         if (metaRow) {
-            if (styleKey === 'classic') {
-                metaRow.style.setProperty('justify-content', 'flex-start', 'important');
-            } else if (styleKey === 'quote' || styleKey === 'breaking') {
-                metaRow.style.setProperty('justify-content', 'flex-end', 'important');
-            } else if (styleKey === 'poster') {
-                const sCfg = (currentStyleSettings && currentStyleSettings['poster']) || {};
-                const logoPos = sCfg.logo_position || (document.getElementById('style_pos_left_poster') && document.getElementById('style_pos_left_poster').checked ? 'left' : (document.getElementById('logoPosLeft') && document.getElementById('logoPosLeft').checked ? 'left' : 'right'));
-                metaRow.style.setProperty('justify-content', logoPos === 'left' ? 'flex-end' : 'flex-start', 'important');
-            } else {
-                const isLeft = document.getElementById('alignLeftBtn') && document.getElementById('alignLeftBtn').classList.contains('active');
-                metaRow.style.justifyContent = isLeft ? 'flex-start' : 'center';
-            }
+            metaRow.style.setProperty('justify-content', 'flex-start', 'important');
         }
         if (watermark) {
             if (styleKey === 'poster') {
@@ -885,28 +742,11 @@
         const logo = document.getElementById('cardTopLogo');
         if (logo) {
             if (pos === 'left') {
-                logo.style.right = 'auto';
-                logo.style.left = '50px';
+                logo.style.setProperty('right', 'auto', 'important');
+                logo.style.setProperty('left', '45px', 'important');
             } else {
-                logo.style.left = 'auto';
-                logo.style.right = '50px';
-            }
-        }
-        if (currentCardStyle && currentStyleSettings[currentCardStyle]) {
-            currentStyleSettings[currentCardStyle]['logo_position'] = pos;
-            const subLeft = document.getElementById('style_pos_left_' + currentCardStyle);
-            const subRight = document.getElementById('style_pos_right_' + currentCardStyle);
-            if (pos === 'left' && subLeft) subLeft.checked = true;
-            if (pos === 'right' && subRight) subRight.checked = true;
-        }
-        const metaRow = document.getElementById('cardMetaRow');
-        const watermark = document.getElementById('cardWatermarkImg');
-        if (currentCardStyle === 'poster') {
-            if (metaRow) {
-                metaRow.style.setProperty('justify-content', pos === 'left' ? 'flex-end' : 'flex-start', 'important');
-            }
-            if (watermark) {
-                watermark.style.setProperty('align-self', pos === 'left' ? 'flex-start' : 'flex-end', 'important');
+                logo.style.setProperty('left', 'auto', 'important');
+                logo.style.setProperty('right', '45px', 'important');
             }
         }
     }
@@ -920,15 +760,6 @@
             img.style.height = size + 'px';
         }
         if (badge) badge.innerText = size + 'px';
-
-        // Keep current style's slider and badge in sync
-        if (currentStyleSettings[currentCardStyle]) {
-            currentStyleSettings[currentCardStyle].logo_size = size;
-            const styleSlider = document.getElementById('style_logo_size_slider_' + currentCardStyle);
-            const styleBadge = document.getElementById('style_logo_size_badge_' + currentCardStyle);
-            if (styleSlider) styleSlider.value = size;
-            if (styleBadge) styleBadge.innerText = size + 'px';
-        }
     }
 
     function toggleCornerLogoShadow(enable) {
@@ -1162,15 +993,7 @@
         if (headline) headline.style.textAlign = align;
         if (wrapper) wrapper.style.alignItems = align === 'left' ? 'flex-start' : 'center';
         if (metaRow) {
-            if (currentCardStyle === 'classic') {
-                metaRow.style.setProperty('justify-content', 'flex-start', 'important');
-            } else if (currentCardStyle === 'poster') {
-                const sCfg = (currentStyleSettings && currentStyleSettings['poster']) || {};
-                const logoPos = sCfg.logo_position || (document.getElementById('style_pos_left_poster') && document.getElementById('style_pos_left_poster').checked ? 'left' : (document.getElementById('logoPosLeft') && document.getElementById('logoPosLeft').checked ? 'left' : 'right'));
-                metaRow.style.setProperty('justify-content', logoPos === 'left' ? 'flex-end' : 'flex-start', 'important');
-            } else {
-                metaRow.style.justifyContent = align === 'left' ? 'flex-start' : 'center';
-            }
+            metaRow.style.setProperty('justify-content', 'flex-start', 'important');
         }
 
         const btnLeft = document.getElementById('alignLeftBtn');

@@ -33,10 +33,57 @@
         display: none !important;
     }
 
-    /* 2. Headline at TOP and Sub-Headline below in FULL WIDTH (width: 960px) */
+    /* 2. Corner Logo: Exactly the same as Classic */
+    .news-card-1080.style-breaking .card-top-right-logo {
+        position: absolute !important;
+        top: 0 !important;
+        right: 45px !important;
+        left: auto !important;
+        z-index: 20 !important;
+        display: flex !important;
+    }
+
+    /* 3. Meta Row (Date): Same style as Classic, positioned on the left above headline */
+    .news-card-1080.style-breaking .meta-row {
+        position: absolute !important;
+        top: 55px !important;
+        left: 60px !important;
+        right: auto !important;
+        width: auto !important;
+        height: auto !important;
+        margin: 0 !important;
+        padding: 0 !important;
+        z-index: 20 !important;
+        display: flex !important;
+        align-items: center !important;
+        pointer-events: auto !important;
+    }
+    .news-card-1080.style-breaking .meta-row > div {
+        background: rgba(0, 0, 0, 0.45) !important;
+        backdrop-filter: blur(10px) !important;
+        -webkit-backdrop-filter: blur(10px) !important;
+        padding: 7px 20px !important;
+        border-radius: 20px !important;
+        border: 1px solid rgba(255, 255, 255, 0.18) !important;
+        box-shadow: 0 4px 14px rgba(0, 0, 0, 0.3) !important;
+        display: inline-flex !important;
+        align-items: center !important;
+        gap: 10px !important;
+    }
+    .news-card-1080.style-breaking .meta-row .news-date {
+        font-size: 20px !important;
+        font-weight: 600 !important;
+        color: #f8fafc !important;
+    }
+    .news-card-1080.style-breaking .meta-row i {
+        font-size: 18px !important;
+        color: #38bdf8 !important;
+    }
+
+    /* 4. Headline at TOP and Sub-Headline below in FULL WIDTH */
     .news-card-1080.style-breaking .headline-wrapper {
         position: absolute !important;
-        top: 60px !important;
+        top: 130px !important;
         left: 60px !important;
         width: 960px !important;
         display: flex !important;
@@ -79,103 +126,6 @@
     .news-card-1080.style-breaking .quote-excerpt-text,
     .news-card-1080.style-breaking .quote-speaker-wrapper {
         display: none !important;
-    }
-
-    /* 3. Unified Logo & Date Stack at BOTTOM LEFT (Logo on top, Date below with background capsule) */
-    .news-card-1080.style-breaking .card-brand-date-stack {
-        position: absolute !important;
-        bottom: 185px !important;
-        left: 60px !important;
-        right: auto !important;
-        top: auto !important;
-        display: flex !important;
-        flex-direction: column !important;
-        align-items: flex-start !important;
-        gap: 8px !important;
-        background: rgba(10, 15, 30, 0.85) !important;
-        backdrop-filter: blur(14px) !important;
-        -webkit-backdrop-filter: blur(14px) !important;
-        padding: 12px 22px !important;
-        border-radius: 18px !important;
-        border: 1.5px solid rgba(255, 255, 255, 0.22) !important;
-        box-shadow: 0 8px 24px rgba(0, 0, 0, 0.6) !important;
-        z-index: 20 !important;
-        pointer-events: auto !important;
-    }
-    .news-card-1080.style-breaking.footer-none .card-brand-date-stack {
-        bottom: 105px !important;
-    }
-    .news-card-1080.style-breaking .card-top-right-logo {
-        display: flex !important;
-        position: relative !important;
-        top: auto !important;
-        right: auto !important;
-        left: auto !important;
-        margin: 0 !important;
-        padding: 0 !important;
-    }
-    .news-card-1080.style-breaking .card-top-right-logo img {
-        width: 120px !important;
-        height: auto !important;
-        max-height: 55px !important;
-        object-fit: contain !important;
-        filter: drop-shadow(0 2px 8px rgba(0, 0, 0, 0.7)) !important;
-    }
-    .news-card-1080.style-breaking .meta-row.style-stack-date {
-        display: flex !important;
-        position: relative !important;
-        top: auto !important;
-        right: auto !important;
-        left: auto !important;
-        width: auto !important;
-        height: auto !important;
-        margin: 0 !important;
-        padding: 0 !important;
-    }
-    .news-card-1080.style-breaking .meta-row.style-stack-date > div {
-        background: transparent !important;
-        border: none !important;
-        box-shadow: none !important;
-        padding: 0 !important;
-        gap: 8px !important;
-        display: inline-flex !important;
-        align-items: center !important;
-    }
-    .news-card-1080.style-breaking .meta-row.style-stack-date .news-date {
-        font-size: 19px !important;
-        font-weight: 700 !important;
-        color: #f1f5f9 !important;
-        text-shadow: 0 2px 4px rgba(0, 0, 0, 0.8) !important;
-    }
-    .news-card-1080.style-breaking .meta-row.style-stack-date i {
-        font-size: 17px !important;
-        color: #ef4444 !important;
-    }
-
-    /* Hide the bottom-content-wrapper meta row */
-    .news-card-1080.style-breaking .bottom-content-wrapper .meta-row {
-        display: none !important;
-    }
-
-    /* 4. Details hint: positioned directly UNDER the Logo & Date stack on the left */
-    .news-card-1080.style-breaking .details-hint {
-        display: inline-block !important;
-        position: absolute !important;
-        bottom: 135px !important;
-        left: 60px !important;
-        right: auto !important;
-        top: auto !important;
-        margin: 0 !important;
-        font-size: 22px !important;
-        font-weight: 700 !important;
-        color: #7dd3fc !important;
-        text-align: left !important;
-        pointer-events: auto !important;
-        text-shadow: 0 2px 6px rgba(0, 0, 0, 0.8) !important;
-        z-index: 20 !important;
-    }
-    .news-card-1080.style-breaking.footer-none .details-hint {
-        bottom: 55px !important;
     }
 
     /* 5A. Normal Mode: Picture Frame Box on the Right Side */
@@ -272,12 +222,32 @@
         pointer-events: none !important;
     }
 
-    /* 7. Watermark hidden on breaking style */
+    /* 7. Details hint at bottom */
+    .news-card-1080.style-breaking .details-hint {
+        display: inline-block !important;
+        position: absolute !important;
+        bottom: 125px !important;
+        left: 60px !important;
+        right: auto !important;
+        margin: 0 !important;
+        font-size: 20px !important;
+        font-weight: 700 !important;
+        color: rgba(255, 255, 255, 0.85) !important;
+        text-align: left !important;
+        pointer-events: auto !important;
+        text-shadow: 0 2px 6px rgba(0, 0, 0, 0.8) !important;
+        z-index: 20 !important;
+    }
+    .news-card-1080.style-breaking.footer-none .details-hint {
+        bottom: 45px !important;
+    }
+
+    /* 8. Watermark hidden on breaking style */
     .news-card-1080.style-breaking .text-area-watermark {
         display: none !important;
     }
 
-    /* 8. Bottom footer bar */
+    /* 9. Bottom footer bar */
     .news-card-1080.style-breaking .full-width-ad-bar,
     .news-card-1080.style-breaking .official-brand-footer {
         position: absolute !important;

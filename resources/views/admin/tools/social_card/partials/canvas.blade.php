@@ -23,19 +23,9 @@
                 <!-- Quote Style Vertical Side Column (Style 3) -->
                 <div class="quote-side-column" id="quoteSideColumn"></div>
 
-                <!-- Brand Logo & Date Stack Container (Unified capsule for Poster, Quote & Breaking; transparent in Classic) -->
-                <div class="card-brand-date-stack" id="cardBrandDateStack">
-                    <div class="card-top-right-logo" id="cardTopLogo">
-                        <img id="cornerLogoImg" src="{{ !empty($cardSettings['corner_logo_image']) ? asset($cardSettings['corner_logo_image']) : asset('BJ_Content/Profile Pic b.png') }}" alt="Daily Bhola Journal" crossorigin="anonymous" class="{{ !empty($cardSettings['corner_logo_shadow']) || !isset($cardSettings['corner_logo_shadow']) ? 'logo-shadow-effect' : 'no-shadow' }}">
-                    </div>
-                    <div class="meta-row style-stack-date" id="cardMetaRowStack">
-                        <div class="d-flex align-items-center gap-2">
-                            <i class="fa-regular fa-calendar-days" id="cardDateIconStack" style="color: {{ $cardSettings['date_color'] ?? '#38bdf8' }}; font-size: 18px;"></i>
-                            <div class="news-date" id="cardDatePreviewStack" contenteditable="true" spellcheck="false">
-                                তারিখ...
-                            </div>
-                        </div>
-                    </div>
+                <!-- Top Corner Profile/Emblem Logo (Unified across all styles - same as Classic) -->
+                <div class="card-top-right-logo" id="cardTopLogo">
+                    <img id="cornerLogoImg" src="{{ !empty($cardSettings['corner_logo_image']) ? asset($cardSettings['corner_logo_image']) : asset('BJ_Content/Profile Pic b.png') }}" alt="Daily Bhola Journal" crossorigin="anonymous" class="{{ !empty($cardSettings['corner_logo_shadow']) || !isset($cardSettings['corner_logo_shadow']) ? 'logo-shadow-effect' : 'no-shadow' }}">
                 </div>
 
                 <!-- Breaking News Header Strip (Style 4) -->
@@ -89,22 +79,8 @@
                         <span>ব্রেকিং নিউজ</span>
                     </div>
 
-                    @php
-                        $currStyle = $cardSettings['card_style'] ?? 'classic';
-                        $posterLogoPos = $cardSettings['style_settings']['poster']['logo_position'] ?? ($cardSettings['corner_logo_position'] ?? 'right');
-                        $metaJustify = 'center';
-                        if ($currStyle === 'classic') {
-                            $metaJustify = 'flex-start';
-                        } elseif ($currStyle === 'poster') {
-                            $metaJustify = ($posterLogoPos === 'left') ? 'flex-end' : 'flex-start';
-                        } elseif ($currStyle === 'quote' || $currStyle === 'breaking') {
-                            $metaJustify = 'flex-end';
-                        } else {
-                            $metaJustify = (($cardSettings['headline_align'] ?? 'center') === 'left') ? 'flex-start' : 'center';
-                        }
-                    @endphp
-                    <!-- Meta Row: Bengali Date -->
-                    <div class="meta-row" id="cardMetaRow" style="justify-content: {{ $metaJustify }};">
+                    <!-- Meta Row: Bengali Date (Unified across all styles - same as Classic) -->
+                    <div class="meta-row" id="cardMetaRow" style="justify-content: flex-start;">
                         <div class="d-flex align-items-center gap-2">
                             <i class="fa-regular fa-calendar-days" id="cardDateIcon" style="color: {{ $cardSettings['date_color'] ?? '#38bdf8' }}; font-size: 20px;"></i>
                             <div class="news-date" id="cardDatePreview" contenteditable="true" spellcheck="false">
