@@ -128,13 +128,7 @@
                 <!-- Official Brand Website Strip (Alternative to Ad Bar) -->
                 <div class="official-brand-footer" id="official_brand_footer" style="display: none;">
                     <div class="brand-footer-left">
-                        <div class="brand-logo-frame">
-                            <img id="brandFooterLogoImg" src="{{ !empty($cardSettings['corner_logo_image']) ? asset($cardSettings['corner_logo_image']) : asset('BJ_Content/Profile Pic b.png') }}" class="brand-footer-icon" alt="Logo" crossorigin="anonymous">
-                        </div>
-                        <div class="brand-text-block">
-                            <div class="brand-footer-title" id="brandFooterTitleText" contenteditable="true" spellcheck="false" title="ক্লিক করে নাম পরিবর্তন করুন">{{ $cardSettings['brand_title'] ?? 'দৈনিক ভোলা জার্নাল' }}</div>
-                            <div class="brand-footer-tagline" id="brandFooterTaglineText" contenteditable="true" spellcheck="false" title="ক্লিক করে স্লোগান পরিবর্তন করুন">{{ $cardSettings['brand_tagline'] ?? 'সত্য ও ন্যায়ের নির্ভীক কণ্ঠস্বর' }}</div>
-                        </div>
+                        <img id="brandFooterLogoImg" src="{{ !empty($themeSettings['logo_image']) ? asset($themeSettings['logo_image']) : asset('BJ_Content/Text Logo.png') }}" class="brand-footer-watermark-logo" alt="Daily Bhola Journal" crossorigin="anonymous">
                     </div>
                     <div class="brand-footer-center">
                         <div class="brand-pill-badge website-pill">

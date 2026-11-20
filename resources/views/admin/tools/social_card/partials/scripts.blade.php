@@ -777,10 +777,8 @@
             reader.onload = function(e) {
                 const cornerImg = document.getElementById('cornerLogoImg');
                 const previewImg = document.getElementById('cornerLogoPreviewImg');
-                const brandFooterImg = document.getElementById('brandFooterLogoImg');
                 if (cornerImg) cornerImg.src = e.target.result;
                 if (previewImg) previewImg.src = e.target.result;
-                if (brandFooterImg) brandFooterImg.src = e.target.result;
             };
             reader.readAsDataURL(input.files[0]);
         }
@@ -789,10 +787,8 @@
     function resetCornerLogo() {
         const cornerImg = document.getElementById('cornerLogoImg');
         const previewImg = document.getElementById('cornerLogoPreviewImg');
-        const brandFooterImg = document.getElementById('brandFooterLogoImg');
         if (cornerImg) cornerImg.src = defaultCornerLogoSrc;
         if (previewImg) previewImg.src = defaultCornerLogoSrc;
-        if (brandFooterImg) brandFooterImg.src = defaultCornerLogoSrc;
         const input = document.getElementById('customCornerLogoInput');
         if (input) input.value = '';
         resetCornerLogoFlag = true;
@@ -820,8 +816,10 @@
             reader.onload = function(e) {
                 const watermark = document.getElementById('cardWatermarkImg');
                 const preview = document.getElementById('watermarkPreviewImg');
+                const brandFooterImg = document.getElementById('brandFooterLogoImg');
                 if (watermark) watermark.src = e.target.result;
                 if (preview) preview.src = e.target.result;
+                if (brandFooterImg) brandFooterImg.src = e.target.result;
             };
             reader.readAsDataURL(input.files[0]);
         }
@@ -830,8 +828,10 @@
     function resetWatermark() {
         const watermark = document.getElementById('cardWatermarkImg');
         const preview = document.getElementById('watermarkPreviewImg');
+        const brandFooterImg = document.getElementById('brandFooterLogoImg');
         if (watermark) watermark.src = defaultWatermarkSrc;
         if (preview) preview.src = defaultWatermarkSrc;
+        if (brandFooterImg) brandFooterImg.src = defaultWatermarkSrc;
         const input = document.getElementById('customWatermarkInput');
         if (input) input.value = '';
         resetWatermarkFlag = true;
@@ -1301,10 +1301,8 @@
             const fullUrl = settings.corner_logo_image.startsWith('http') ? settings.corner_logo_image : '{{ url("/") }}/' + settings.corner_logo_image;
             const cImg = document.getElementById('cornerLogoImg');
             const pImg = document.getElementById('cornerLogoPreviewImg');
-            const bImg = document.getElementById('brandFooterLogoImg');
             if (cImg) cImg.src = fullUrl;
             if (pImg) pImg.src = fullUrl;
-            if (bImg) bImg.src = fullUrl;
         }
 
         // 4. Watermark
@@ -1322,8 +1320,10 @@
             const fullUrl = settings.watermark_image.startsWith('http') ? settings.watermark_image : '{{ url("/") }}/' + settings.watermark_image;
             const wImg = document.getElementById('cardWatermarkImg');
             const pImg = document.getElementById('watermarkPreviewImg');
+            const bImg = document.getElementById('brandFooterLogoImg');
             if (wImg) wImg.src = fullUrl;
             if (pImg) pImg.src = fullUrl;
+            if (bImg) bImg.src = fullUrl;
         }
 
         // 5. Footer Mode, Ads & Branding

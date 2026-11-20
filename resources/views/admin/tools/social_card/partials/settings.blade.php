@@ -329,17 +329,13 @@
 
                                 <!-- Brand Controls (Shown when mode is 'brand') -->
                                 <div id="footerBrandControls" style="display: none;">
-                                    <label class="studio-label mb-2">অফিশিয়াল ব্র্যান্ডিং টেক্সট ও লিংক কনফিগারেশন</label>
-                                    <div class="row g-2 mb-2">
-                                        <div class="col-md-6">
-                                            <label class="form-label text-muted small mb-1 fw-bold">ব্র্যান্ডের নাম (Title)</label>
-                                            <input type="text" id="modal_brand_title_input" class="studio-input" value="{{ $cardSettings['brand_title'] ?? 'দৈনিক ভোলা জার্নাল' }}" placeholder="দৈনিক ভোলা জার্নাল" oninput="updateBrandFooterTitle(this.value)">
-                                        </div>
-                                        <div class="col-md-6">
-                                            <label class="form-label text-muted small mb-1 fw-bold">স্লোগান / ট্যাগলাইন (Tagline)</label>
-                                            <input type="text" id="modal_brand_tagline_input" class="studio-input" value="{{ $cardSettings['brand_tagline'] ?? 'সত্য ও ন্যায়ের নির্ভীক কণ্ঠস্বর' }}" placeholder="সত্য ও ন্যায়ের নির্ভীক কণ্ঠস্বর" oninput="updateBrandFooterTagline(this.value)">
-                                        </div>
+                                    <label class="studio-label mb-2">অফিশিয়াল ব্র্যান্ডিং লিংক ও সোশ্যাল কনফিগারেশন</label>
+                                    <div class="alert alert-light border py-2 px-3 mb-3 d-flex align-items-center gap-2" style="font-size: 0.8rem; border-radius: 8px;">
+                                        <i class="fa-solid fa-stamp text-danger fs-6"></i>
+                                        <span>ফুটারের বাম পাশে স্বয়ংক্রিয়ভাবে পোর্টালের প্রধান টেক্সট লোগো (ওয়াটারমার্ক লোগো) প্রদর্শিত হবে। এটি পরিবর্তন করতে <strong>ব্র্যান্ড ও লোগো</strong> ট্যাব ব্যবহার করুন।</span>
                                     </div>
+                                    <input type="hidden" id="modal_brand_title_input" value="{{ $cardSettings['brand_title'] ?? 'দৈনিক ভোলা জার্নাল' }}">
+                                    <input type="hidden" id="modal_brand_tagline_input" value="{{ $cardSettings['brand_tagline'] ?? 'সত্য ও ন্যায়ের নির্ভীক কণ্ঠস্বর' }}">
                                     <div class="row g-2">
                                         <div class="col-md-6">
                                             <label class="form-label text-muted small mb-1 fw-bold"><i class="fa-solid fa-globe text-info me-1"></i> ওয়েবসাইট ইউআরএল</label>
@@ -349,9 +345,6 @@
                                             <label class="form-label text-muted small mb-1 fw-bold"><i class="fa-brands fa-facebook text-primary me-1"></i> সোশ্যাল হ্যান্ডেল</label>
                                             <input type="text" id="modal_brand_social_input" class="studio-input" value="{{ $cardSettings['brand_social'] ?? '/dailybholajournalBN' }}" placeholder="/dailybholajournalBN" oninput="updateBrandFooterSocial(this.value)">
                                         </div>
-                                    </div>
-                                    <div class="mt-2 text-muted small">
-                                        <i class="fa-solid fa-circle-info text-primary me-1"></i> কার্ডের ফুটারের টেক্সটগুলোতে সরাসরি ক্লিক করেও তাৎক্ষণিক এডিট করা যাবে।
                                     </div>
                                 </div>
                             </div>

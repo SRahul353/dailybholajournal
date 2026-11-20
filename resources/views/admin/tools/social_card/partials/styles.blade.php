@@ -1016,49 +1016,16 @@
     .brand-footer-left {
         display: flex;
         align-items: center;
-        gap: 14px;
         flex-shrink: 0;
     }
-    .brand-logo-frame {
-        width: 58px;
-        height: 58px;
-        border-radius: 50%;
-        background: #ffffff;
-        padding: 3px;
-        box-shadow: 0 4px 12px rgba(0, 0, 0, 0.5), 0 0 0 2px rgba(255, 255, 255, 0.25);
-        display: flex;
-        align-items: center;
-        justify-content: center;
-        flex-shrink: 0;
-    }
+    .brand-footer-watermark-logo,
     .brand-footer-icon {
-        width: 100%;
-        height: 100%;
+        height: 52px;
+        max-width: 280px;
+        width: auto;
         object-fit: contain;
-        border-radius: 50%;
-    }
-    .brand-text-block {
-        display: flex;
-        flex-direction: column;
-        justify-content: center;
-        text-align: left;
-    }
-    .brand-footer-title {
-        font-size: 25px;
-        font-weight: 800;
-        color: #ffffff;
-        letter-spacing: 0.3px;
-        line-height: 1.15;
-        text-shadow: 0 2px 4px rgba(0, 0, 0, 0.6);
-        outline: none;
-    }
-    .brand-footer-tagline {
-        font-size: 13.5px;
-        font-weight: 600;
-        color: #94a3b8;
-        letter-spacing: 0.4px;
-        margin-top: 2px;
-        outline: none;
+        filter: drop-shadow(0 2px 6px rgba(0, 0, 0, 0.7));
+        display: block;
     }
     .brand-footer-title:focus,
     .brand-footer-tagline:focus,
