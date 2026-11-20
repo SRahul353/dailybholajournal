@@ -995,12 +995,12 @@
         display: flex;
         justify-content: space-between;
         align-items: center;
-        padding: 0 45px;
+        padding: 0 35px 0 25px;
         z-index: 20;
         font-family: 'Noto Sans Bengali', sans-serif;
         box-sizing: border-box;
         position: relative;
-        overflow: hidden;
+        overflow: visible;
         transition: border-color 0.2s ease;
     }
     .official-brand-footer::before {
@@ -1017,15 +1017,20 @@
         display: flex;
         align-items: center;
         flex-shrink: 0;
+        height: 100%;
     }
     .brand-footer-watermark-logo,
     .brand-footer-icon {
-        height: 52px;
-        max-width: 280px;
-        width: auto;
-        object-fit: contain;
-        filter: drop-shadow(0 2px 6px rgba(0, 0, 0, 0.7));
-        display: block;
+        height: 95px !important;
+        max-height: 95px !important;
+        max-width: 440px !important;
+        width: auto !important;
+        object-fit: contain !important;
+        display: block !important;
+        filter: drop-shadow(0 0 1.5px rgba(255, 255, 255, 0.95)) 
+                drop-shadow(0 0 8px rgba(255, 255, 255, 0.5)) 
+                drop-shadow(0 3px 12px rgba(0, 0, 0, 0.9)) !important;
+        transition: filter 0.2s ease, transform 0.2s ease;
     }
     .brand-footer-title:focus,
     .brand-footer-tagline:focus,

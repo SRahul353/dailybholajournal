@@ -796,6 +796,7 @@
 
     // 2. Watermark Logo Controls
     const defaultWatermarkSrc = "{{ !empty($themeSettings['logo_image']) ? asset($themeSettings['logo_image']) : (file_exists(public_path('BJ_Content/Text Logo.png')) ? asset('BJ_Content/Text Logo.png') : '') }}";
+    const defaultBrandFooterLogoSrc = "{{ !empty($themeSettings['logo_image']) ? asset($themeSettings['logo_image']) : (file_exists(public_path('BJ_Content/Text Logo White.png')) ? asset('BJ_Content/Text Logo White.png') : asset('BJ_Content/Text Logo.png')) }}";
 
     function toggleWatermarkVisibility(visible) {
         const watermark = document.getElementById('cardWatermarkImg');
@@ -831,7 +832,7 @@
         const brandFooterImg = document.getElementById('brandFooterLogoImg');
         if (watermark) watermark.src = defaultWatermarkSrc;
         if (preview) preview.src = defaultWatermarkSrc;
-        if (brandFooterImg) brandFooterImg.src = defaultWatermarkSrc;
+        if (brandFooterImg) brandFooterImg.src = defaultBrandFooterLogoSrc;
         const input = document.getElementById('customWatermarkInput');
         if (input) input.value = '';
         resetWatermarkFlag = true;

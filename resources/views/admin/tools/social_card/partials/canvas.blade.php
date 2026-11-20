@@ -127,8 +127,11 @@
 
                 <!-- Official Brand Website Strip (Alternative to Ad Bar) -->
                 <div class="official-brand-footer" id="official_brand_footer" style="display: none;">
+                    @php
+                        $defaultBrandLogo = file_exists(public_path('BJ_Content/Text Logo White.png')) ? asset('BJ_Content/Text Logo White.png') : asset('BJ_Content/Text Logo.png');
+                    @endphp
                     <div class="brand-footer-left">
-                        <img id="brandFooterLogoImg" src="{{ !empty($themeSettings['logo_image']) ? asset($themeSettings['logo_image']) : asset('BJ_Content/Text Logo.png') }}" class="brand-footer-watermark-logo" alt="Daily Bhola Journal" crossorigin="anonymous">
+                        <img id="brandFooterLogoImg" src="{{ !empty($themeSettings['logo_image']) ? asset($themeSettings['logo_image']) : $defaultBrandLogo }}" class="brand-footer-watermark-logo" alt="Daily Bhola Journal" crossorigin="anonymous">
                     </div>
                     <div class="brand-footer-center">
                         <div class="brand-pill-badge website-pill">
